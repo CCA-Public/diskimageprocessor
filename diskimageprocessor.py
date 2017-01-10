@@ -317,9 +317,9 @@ for file in os.listdir(args.source):
                     files_abs = os.path.abspath(files_dir)
                 
                 if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("python /usr/share/brunnhilde/brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
                 else: # brunnhilde without bulk_extractor
-                    subprocess.call("python /usr/share/brunnhilde/brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
                 logandprint('Brunnhilde report written.')
 
 
@@ -363,9 +363,9 @@ for file in os.listdir(args.source):
                     files_abs = os.path.abspath(files_dir)
 
                 if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("python /usr/share/brunnhilde/brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
                 else: # brunnhilde without bulk_extractor
-                    subprocess.call("python /usr/share/brunnhilde/brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
                 logandprint('Brunnhilde report written.')
 
             elif 'udf' in disk_fs.lower():
