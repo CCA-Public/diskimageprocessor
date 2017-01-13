@@ -27,8 +27,8 @@ sudo touch '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
 echo '[Desktop Entry]' | sudo tee --append '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
 echo 'Type=Application' | sudo tee --append '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
 echo 'Name=Disk Image Processor' | sudo tee --append '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
-echo 'Exec=/usr/share/cca-tools/diskimageprocessor/launch' | sudo tee --append '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
-echo 'Icon=/usr/share/cca-tools/diskimageprocessor/icon.png' | sudo tee --append '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
+echo 'Exec=/usr/share/cca-diskimageprocessor/launch' | sudo tee --append '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
+echo 'Icon=/usr/share/cca-diskimageprocessor/icon.png' | sudo tee --append '/home/bcadmin/Desktop/CCA Tools/Disk Image Processor.desktop'
 
 # Change permissions, ownership for CCA Tools
 sudo chown -R bcadmin:bcadmin '/home/bcadmin/Desktop/CCA Tools'
