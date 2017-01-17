@@ -371,20 +371,18 @@ for file in os.listdir(args.source):
                 logandprint('Brunnhilde report written.')
 
             elif 'udf' in disk_fs.lower():
-                # use fiwalk to make dfxml
-                fiwalk_file = os.path.join(subdoc_dir, 'dfxml.xml')
-                try:
-                    subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
-                    logandprint('Fiwalk-generated DFXML written to metadata/submissionDocumentation')
-                except subprocess.CalledProcessError, e:
-                    logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % e.output)
-                
                 # mount image
                 subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % diskimage, shell=True)
 
+                # use fiwalk to create dfxml
+                dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
+                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
+                logandprint('md5deep-generated DFXML written to metadata/submissionDocumentation/')
+                
                 # copy files from disk image to new dir
                 shutil.rmtree(files_dir) # delete to enable use of copytree
                 shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
+                logandprint("Files copied from mount to objects/files/")
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
