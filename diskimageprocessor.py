@@ -55,7 +55,7 @@ def convert_size(size):
 
 def create_spreadsheet():
     # process each SIP
-    for item in os.listdir(sips):
+    for item in sorted(os.listdir(sips)):
         current = os.path.join(sips, item)
         # test if entry if directory
         if os.path.isdir(current):
@@ -207,7 +207,7 @@ except:
 unprocessed = []
 
 # iterate through files in source directory
-for file in os.listdir(args.source):
+for file in sorted(os.listdir(args.source)):
 
     # record filename in log
     logandprint('>>> NEW FILE: %s' % file)
