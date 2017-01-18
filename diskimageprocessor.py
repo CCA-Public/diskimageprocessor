@@ -242,8 +242,6 @@ for file in os.listdir(args.source):
                 raw_image = True
                 os.rename(os.path.join(diskimage_dir, '%s.raw' % image_id), os.path.join(diskimage_dir, '%s.img' % image_id)) # change file extension from .raw to .img
                 diskimage = os.path.join(diskimage_dir, '%s.img' % image_id) # use raw disk image in objects/diskimage moving forward
-                
-            
             except subprocess.CalledProcessError:
                 logandprint('ERROR: Disk image could not be converted to raw image format. Skipping disk.')
 
