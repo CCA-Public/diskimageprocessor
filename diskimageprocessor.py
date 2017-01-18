@@ -206,7 +206,7 @@ unprocessed = []
 for file in os.listdir(args.source):
 
     # record filename in log
-    logandprint('NEW FILE: %s' % file)
+    logandprint('\n>>> NEW FILE: %s' % file)
     
     # determine if disk image
     if file.endswith(".E01") or file.endswith(".000") or file.endswith(".raw") or file.endswith(".img") or file.endswith(".dd") or file.endswith(".iso"):
