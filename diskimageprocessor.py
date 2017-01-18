@@ -124,7 +124,7 @@ def create_spreadsheet():
             elif ('udf' in disk_fs.lower()):
                 tool = "by mounting disk image and copying files with Python's shutil.copytree function"
 
-            # gather info from burnnhilde & write scope and content note
+            # gather info from brunnhilde & write scope and content note
             if extent == 'EMPTY':
                 scopecontent = ''
             else:
