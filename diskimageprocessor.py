@@ -135,10 +135,10 @@ def create_spreadsheet():
                     fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', '%s_brunnhilde' % os.path.basename(current), 'csv_reports', 'formats.csv')
                 try: 
                     with open(fileformat_csv, 'r') as f:
-                    reader = csv.reader(f)
-                    reader.next()
-                    for row in itertools.islice(reader, 5):
-                        fileformats.append(row[0])
+                        reader = csv.reader(f)
+                        reader.next()
+                        for row in itertools.islice(reader, 5):
+                            fileformats.append(row[0])
                 except:
                     fileformats.append("ERROR! No formats.csv file to pull formats from.")
                 fileformats = [element or 'Unidentified' for element in fileformats] # replace empty elements with 'Unidentified'
