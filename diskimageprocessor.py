@@ -379,7 +379,7 @@ for file in os.listdir(args.source):
                 subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
                 logandprint('md5deep-generated DFXML written to metadata/submissionDocumentation/')
                 
-                # copy files from disk image to new dir
+                # copy files from disk image to files dir
                 shutil.rmtree(files_dir) # delete to enable use of copytree
                 shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
                 logandprint("Files copied from mount to objects/files/")
