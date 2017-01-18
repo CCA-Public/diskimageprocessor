@@ -133,13 +133,17 @@ def create_spreadsheet():
                     fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', '%s_brunnhilde' % os.path.basename(current), 'csv_reports', 'formats.csv')
                 else:
                     fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', '%s_brunnhilde' % os.path.basename(current), 'csv_reports', 'formats.csv')
-                with open(fileformat_csv, 'r') as f:
+                try: 
+                    with open(fileformat_csv, 'r') as f:
                     reader = csv.reader(f)
                     reader.next()
                     for row in itertools.islice(reader, 5):
                         fileformats.append(row[0])
+                except:
+                    fileformats.append("ERROR! No formats.csv file to pull formats from.")
                 fileformats = [element or 'Unidentified' for element in fileformats] # replace empty elements with 'Unidentified'
                 formatlist = ', '.join(fileformats) # format list of top file formats as human-readable
+                
                 
                 # create scope and content note
                 scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
