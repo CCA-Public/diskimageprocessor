@@ -240,7 +240,10 @@ for file in os.listdir(args.source):
                 subprocess.check_output(['ewfexport', '-t', raw_out, '-f', 'raw', '-o', '0', '-S', '0', '-u', image_path])
                 logandprint('Successfully converted disk image')
                 raw_image = True
-                diskimage = os.path.join(diskimage_dir, '%s.raw' % image_id) # use raw disk image in objects/diskimage moving forward
+                os.rename(os.path.join(diskimage_dir, '%s.raw' % image_id), os.path.join(diskimage_dir, '%s.img' % image_id)) # change file extension from .raw to .img
+                diskimage = os.path.join(diskimage_dir, '%s.img' % image_id) # use raw disk image in objects/diskimage moving forward
+                
+            
             except subprocess.CalledProcessError:
                 logandprint('ERROR: Disk image could not be converted to raw image format. Skipping disk.')
 
