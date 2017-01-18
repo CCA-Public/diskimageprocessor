@@ -118,11 +118,11 @@ def create_spreadsheet():
 
             # save tool used to carve files
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                tool = "SleuthKit's tsk_recover"
+                tool = "using SleuthKit's tsk_recover"
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
-                tool = "the HFSExplorer command line utility unhfs"
+                tool = "using the HFSExplorer command line utility unhfs"
             elif ('udf' in disk_fs.lower()):
-                tool = "mount and the Python shutil.copytree() function"
+                tool = "by mounting disk and copying files with the Python shutil.copytree function"
 
             # gather info from burnnhilde & write scope and content note
             if extent == 'EMPTY':
@@ -142,7 +142,7 @@ def create_spreadsheet():
                 formatlist = ', '.join(fileformats) # format list of top file formats as human-readable
                 
                 # create scope and content note
-                scopecontent = 'File includes both a disk image and logical files carved from the disk image using %s. Most common file formats: %s' % (tool, formatlist)
+                scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
 
             # write csv row
             writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
