@@ -210,6 +210,8 @@ unprocessed = []
 for file in sorted(os.listdir(args.source)):
 
     # record filename in log
+    logandprint("")
+    logandprint("")
     logandprint('>>> NEW FILE: %s' % file)
     
     # determine if disk image
