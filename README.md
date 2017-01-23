@@ -2,7 +2,7 @@
 
 Creates ready-to-ingest SIPs from a directory of disk images and related files.  
 
-![flowchart](https://github.com/timothyryanwalsh/cca-diskimageprocessor/blob/master/media/diskimageprocessor_flowchart.png)  
+![flowchart](https://github.com/timothyryanwalsh/cca-diskimageprocessor/blob/master/media/flowchart.png)  
 
 **GUI:**  
 
