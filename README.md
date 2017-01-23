@@ -18,7 +18,7 @@ Creates ready-to-ingest SIPs from a directory of disk images and related files.
 
 ![spreadsheet](https://github.com/timothyryanwalsh/cca-diskimageprocessor/blob/master/media/desc_spreadsheet.png)  
 
-*Each processed SIP*:  
+*Each processed SIP (default behavior, not bagged)*:  
 
 ![one_sip](https://github.com/timothyryanwalsh/cca-diskimageprocessor/blob/master/media/diskimageprocessor_output.png)  
 
