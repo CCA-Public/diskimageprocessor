@@ -47,7 +47,7 @@ To process HFS and UDF disk images, create /mnt/diskid prior to use with `mkdir 
 
 #### 5. Update HFSExplorer 
 
-\unhfs, the command-line version of HFSExplorer, until recently had a bug that prevented some files from being extracted from HFS disks. Be sure that you have the [latest version](https://sourceforge.net/projects/catacombae/files/HFSExplorer/0.23.1%20%28snapshot%202016-09-02%29/) of HFSExplorer installed. On Bitcurator, this must be done manually by replacing the contents of /usr/share/hfsexplorer with the downloaded and extracted source.
+unhfs, the command-line version of HFSExplorer, until recently had a bug that prevented some files from being extracted from HFS disks. Be sure that you have the [latest version](https://sourceforge.net/projects/catacombae/files/HFSExplorer/0.23.1%20%28snapshot%202016-09-02%29/) of HFSExplorer installed. On Bitcurator, this must be done manually by replacing the contents of /usr/share/hfsexplorer with the downloaded and extracted source.
 
 In this patched release, unhfs.sh is renamed to unhfs (without a file extension). If file /usr/share/hfsexplorer/bin/unhfs.sh (with file extension) exists in your system, you must update HFSExplorer with the version linked above.  
 
