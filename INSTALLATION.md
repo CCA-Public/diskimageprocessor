@@ -59,7 +59,7 @@ Thanks, install script :-)
 * OR `python /usr/share/cca-diskimageprocessor/main.py`
 
 ##### CL:
-The underlying script is `diskimageprocessor.py`. To have diskimageprocessor.py create bagged SIPs instead, pass the "-b" or "--bagfiles" argument. It will only export allocated files from non-HFS disks by default. To export all files, including deleted files and file segments residing in slack space, pass the "-e" or "--exportall" argument. To have Brunnhilde also complete a PII scan using bulk_extractor, pass the "-p" or "-piiscan" argument.
+The underlying script is `diskimageprocessor.py`. To have diskimageprocessor.py create bagged SIPs instead, pass the "-b" or "--bagfiles" argument. It will only export allocated files from non-HFS disks by default. To export all files, including deleted files and file segments residing in slack space, pass the "-e" or "--exportall" argument. To have Brunnhilde also complete a PII scan using bulk_extractor, pass the "-p" or "--piiscan" argument.
 
 A command to export all files and create bagged SIPS would look like this:
 ```
