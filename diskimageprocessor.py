@@ -308,7 +308,6 @@ for file in sorted(os.listdir(args.source)):
 
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
-                
                 if args.piiscan == True: # brunnhilde with bulk_extractor
                     subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
                 else: # brunnhilde without bulk_extractor
@@ -347,6 +346,14 @@ for file in sorted(os.listdir(args.source)):
                 except subprocess.CalledProcessError, e:
                     logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
 
+                # run brunnhilde and write to reports directory
+                files_abs = os.path.abspath(files_dir)
+                if args.piiscan == True: # brunnhilde with bulk_extractor
+                    subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                else: # brunnhilde without bulk_extractor
+                    subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                logandprint('Brunnhilde report written.')
+                
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
@@ -359,19 +366,6 @@ for file in sorted(os.listdir(args.source)):
                 subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % sip_dir, shell=True)
                 subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % sip_dir, shell=True)
                 logandprint('File permissions rewritten.')
-
-                # run brunnhilde and write to reports directory
-                if args.bagfiles == True:
-                    files_abs = os.path.abspath(os.path.join(sip_dir, 'data', 'objects', 'files'))
-                    subdoc_dir = os.path.abspath(os.path.join(sip_dir, 'data', 'metadata', 'submissionDocumentation'))
-                else:
-                    files_abs = os.path.abspath(files_dir)
-
-                if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
-                else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
-                logandprint('Brunnhilde report written.')
 
             elif 'udf' in disk_fs.lower():
                 # mount image
@@ -390,6 +384,14 @@ for file in sorted(os.listdir(args.source)):
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
 
+                # run brunnhilde and write to submissionDocumentation
+                files_abs = os.path.abspath(files_dir)
+                if args.piiscan == True: # brunnhilde with bulk_extractor
+                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                else: # brunnhilde without bulk_extractor
+                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                logandprint('Brunnhilde report written.')
+                
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
@@ -402,19 +404,6 @@ for file in sorted(os.listdir(args.source)):
                 subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % sip_dir, shell=True)
                 subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % sip_dir, shell=True)
                 logandprint('File permissions rewritten.')
-
-                # run brunnhilde and write to submissionDocumentation
-                if args.bagfiles == True:
-                    files_abs = os.path.abspath(os.path.join(sip_dir, 'data', 'objects', 'files'))
-                    subdoc_dir = os.path.abspath(os.path.join(sip_dir, 'data', 'metadata', 'submissionDocumentation'))
-                else:
-                    files_abs = os.path.abspath(files_dir)
-                
-                if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
-                else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
-                logandprint('Brunnhilde report written.')
             
             else:
                 logandprint('NOTICE: Skipping processing of unknown disk type.')
