@@ -38,7 +38,7 @@ import sys
 from time import localtime, strftime
 
 #import Objects.py from python dfxml tools
-sys.path.append('/Users/twalsh/dfxml/python')
+sys.path.append('/usr/share/dfmxl/python')
 import Objects
 
 def logandprint(message):
