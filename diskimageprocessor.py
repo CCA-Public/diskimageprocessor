@@ -103,14 +103,14 @@ def create_spreadsheet():
                 ctime = obj.ctime
                 if not ctime:
                     ctime = ''
-                ctime = str(atime)
-                ctimes.append(atime)
+                ctime = str(ctime)
+                ctimes.append(ctime)
 
                 crtime = obj.crtime
                 if not crtime:
                     crtime = ''
-                crtime = str(atime)
-                crtimes.append(atime)
+                crtime = str(crtime)
+                crtimes.append(crtime)
         
                 total_bytes += obj.filesize
 
