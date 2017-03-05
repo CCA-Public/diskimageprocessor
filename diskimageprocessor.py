@@ -74,9 +74,9 @@ def create_spreadsheet():
 
             # parse dfxml file
             if args.bagfiles == True:
-                dfxml_file = os.path.abspath(os.path.join(item, 'data', 'metadata', 'submissionDocumentation', 'dfxml.xml'))
+                dfxml_file = os.path.abspath(os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'dfxml.xml'))
             else:
-                dfxml_file = os.path.abspath(os.path.join(item, 'metadata', 'submissionDocumentation', 'dfxml.xml'))
+                dfxml_file = os.path.abspath(os.path.join(current, 'metadata', 'submissionDocumentation', 'dfxml.xml'))
 
             # gather info for each FileObject
             for (event, obj) in Objects.iterparse(dfxml_file):
