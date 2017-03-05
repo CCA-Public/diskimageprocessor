@@ -124,17 +124,68 @@ def create_spreadsheet():
             else:
                 extent = "%d digital files (%s)" % (number_files, size_readable)
 
-            # build date statement TODO: use full MAC dates!
-            if mdates:
-                date_earliest = min(mdates)
-                date_latest = max(mdates)
+            # determine which dates to use (logic: use earliest on disk) and create date statement
+            date_earliest_m = ""
+            date_latest_m = ""
+            date_earliest_a = ""
+            date_latest_a = ""
+            date_earliest_c = ""
+            date_latest_c = ""
+            date_earliest_cr = ""
+            date_latest_cr = ""
+            date_statement = ""
+
+            if mtimes:
+                date_earliest_m = min(mtimes)
+                date_latest_m = max(mtimes)
+            if atimes:
+                date_earliest_a = min(atimes)
+                date_latest_a = max(atimes)
+            if ctimes:
+                date_earliest_c = min(ctimes)
+                date_latest_c = max(ctimes)
+            if crtimes:
+                date_earliest_cr = min(crtimes)
+                date_latest_cr = max(crtimes)
+
+            use_atimes = False
+            use_ctimes = False
+            use_crtimes = False
+
+            date_to_use = date_earliest_m
+            if date_earliest_a < date_to_use:
+                date_to_use = date_earliest_a
+                use_atimes = True
+            if date_earliest_c < date_to_use:
+                date_to_use = date_earliest_c
+                use_atimes = False
+                use_ctimes = True
+            if date_earliest_cr < date_to_use:
+                date_to_use = date_earliest_cr
+                use_atimes = False
+                use_ctimes = False
+                use_crtimes = True
+
+            if use_atimes == True:
+                if date_earliest_a == date_latest_a:
+                    date_statement = '%s' % date_earliest_a[:4]
+                else:
+                    date_statement = '%s - %s' % (date_earliest_a[:4], date_latest_a[:4])
+            else if use_ctimes == True:
+                if date_earliest_c == date_latest_c:
+                    date_statement = '%s' % date_earliest_c[:4]
+                else:
+                    date_statement = '%s - %s' % (date_earliest_c[:4], date_latest_c[:4])
+            else if use_crtimes == True:
+                if date_earliest_cr == date_latest_cr:
+                    date_statement = '%s' % date_earliest_cr[:4]
+                else:
+                    date_statement = '%s - %s' % (date_earliest_cr[:4], date_latest_cr[:4])
             else:
-                date_earliest = 'N/A'
-                date_latest = 'N/A'
-            if date_earliest == date_latest:
-                date_statement = '%s' % date_earliest[:4]
-            else:
-                date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
+                if date_earliest_m == date_latest_m:
+                    date_statement = '%s' % date_earliest_m[:4]
+                else:
+                    date_statement = '%s - %s' % (date_earliest_m[:4], date_latest_m[:4])
 
             # gather file system info, discern tool used
             if args.bagfiles == True:
