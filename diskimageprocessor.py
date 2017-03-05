@@ -124,7 +124,7 @@ def create_spreadsheet():
             else:
                 extent = "%d digital files (%s)" % (number_files, size_readable)
 
-            # determine which dates to use (logic: use earliest on disk) and create date statement
+            # determine earliest and latest MAC dates from lists
             date_earliest_m = ""
             date_latest_m = ""
             date_earliest_a = ""
@@ -148,24 +148,33 @@ def create_spreadsheet():
                 date_earliest_cr = min(crtimes)
                 date_latest_cr = max(crtimes)
 
+            # determine which set of dates to use (logic: use set with earliest start date)
             use_atimes = False
             use_ctimes = False
             use_crtimes = False
 
-            date_to_use = date_earliest_m
-            if date_earliest_a < date_to_use:
-                date_to_use = date_earliest_a
-                use_atimes = True
-            if date_earliest_c < date_to_use:
-                date_to_use = date_earliest_c
-                use_atimes = False
-                use_ctimes = True
-            if date_earliest_cr < date_to_use:
-                date_to_use = date_earliest_cr
-                use_atimes = False
-                use_ctimes = False
-                use_crtimes = True
+            if not date_earliest_m:
+                date_earliest_m = "N/A"
+                date_latest_m = "N/A"
+            date_to_use = date_earliest_m # default to date modified
 
+            if date_earliest_a:
+                if date_earliest_a < date_to_use:
+                    date_to_use = date_earliest_a
+                    use_atimes = True
+            if date_earliest_c:
+                if date_earliest_c < date_to_use:
+                    date_to_use = date_earliest_c
+                    use_atimes = False
+                    use_ctimes = True
+            if date_earliest_cr:
+                if date_earliest_cr < date_to_use:
+                    date_to_use = date_earliest_cr
+                    use_atimes = False
+                    use_ctimes = False
+                    use_crtimes = True
+
+            # create date statement
             if use_atimes == True:
                 if date_earliest_a == date_latest_a:
                     date_statement = '%s' % date_earliest_a[:4]
