@@ -176,29 +176,29 @@ def create_spreadsheet():
 
             # create date statement
             if use_atimes == True:
-                date_earliest = date_earliest_a
-                date_latest = date_latest_a
+                date_earliest = date_earliest_a[:10]
+                date_latest = date_latest_a[:10]
                 if date_earliest == date_latest:
                     date_statement = '%s' % date_earliest[:4]
                 else:
                     date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
             elif use_ctimes == True:
-                date_earliest = date_earliest_c
-                date_latest = date_latest_c
+                date_earliest = date_earliest_c[:10]
+                date_latest = date_latest_c[:10]
                 if date_earliest == date_latest:
                     date_statement = '%s' % date_earliest[:4]
                 else:
                     date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
             elif use_crtimes == True:
-                date_earliest = date_earliest_cr
-                date_latest = date_latest_cr
+                date_earliest = date_earliest_cr[:10]
+                date_latest = date_latest_cr[:10]
                 if date_earliest == date_latest:
                     date_statement = '%s' % date_earliest[:4]
                 else:
                     date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
             else:
-                date_earliest = date_earliest_m
-                date_latest = date_latest_m
+                date_earliest = date_earliest_m[:10]
+                date_latest = date_latest_m[:10]
                 if date_earliest == date_latest:
                     date_statement = '%s' % date_earliest[:4]
                 else:
