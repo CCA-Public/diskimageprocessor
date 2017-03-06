@@ -111,12 +111,9 @@ def create_spreadsheet():
                 total_bytes += obj.filesize
 
             # remove None values from date lists
-            mtimes = [x for x in mtimes if x is not None]
-            mtimes = [x for x in mtimes if x is not "None"]
-            atimes = [x for x in atimes if x is not None]
-            atimes = [x for x in atimes if x is not "None"]
-            crtimes = [x for x in crtimes if x is not None]
-            crtimes = [x for x in crtimes if x is not "None"]
+            mtimes_filtered = [x for x in mtimes if x is not None]
+            atimes_filtered = [x for x in atimes if x is not None]
+            crtimes_filtered = [x for x in crtimes if x is not None]
 
             # build extent statement
             size_readable = convert_size(total_bytes)
@@ -136,15 +133,15 @@ def create_spreadsheet():
             date_latest_cr = ""
             date_statement = ""
 
-            if mtimes:
-                date_earliest_m = min(mtimes)
-                date_latest_m = max(mtimes)
-            if atimes:
-                date_earliest_a = min(atimes)
-                date_latest_a = max(atimes)
-            if crtimes:
-                date_earliest_cr = min(crtimes)
-                date_latest_cr = max(crtimes)
+            if mtimes_filtered:
+                date_earliest_m = min(mtimes_filtered)
+                date_latest_m = max(mtimes_filtered)
+            if atimes_filtered:
+                date_earliest_a = min(atimes_filtered)
+                date_latest_a = max(atimes_filtered)
+            if crtimes_filtered:
+                date_earliest_cr = min(crtimes_filtered)
+                date_latest_cr = max(crtimes_filtered)
 
             # determine which set of dates to use (logic: use set with earliest start date)
             use_atimes = False
