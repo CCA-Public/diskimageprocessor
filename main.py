@@ -71,7 +71,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         call.append(self.destination1.text())
 
         # call program and redirect stdout to GUI
-        self.proc.start("python", call)
+        self.proc.start("python3", call)
         self.proc.setProcessChannelMode(QProcess.MergedChannels);
         QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self, SLOT("readStdOutput()"));
         QObject.connect(self.proc, SIGNAL("readyReadStandardError()"), self, SLOT("readStdError()"));
