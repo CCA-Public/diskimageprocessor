@@ -212,9 +212,9 @@ def create_spreadsheet():
             else:
                 fileformats = []
                 if args.bagfiles == True:
-                    fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'formats.csv')
+                    fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
                 else:
-                    fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde', 'formats.csv')
+                    fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
                 try: 
                     with open(fileformat_csv, 'r') as f:
                         reader = csv.reader(f)
