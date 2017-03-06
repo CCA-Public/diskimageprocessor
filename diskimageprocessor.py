@@ -110,6 +110,11 @@ def create_spreadsheet():
         
                 total_bytes += obj.filesize
 
+            # remove Nones, 0s, and empty strings from lists
+            mtimes = filter(None, mtimes)
+            atimes = filter(None, atimes)
+            crtimes = filter(None, crtimes)
+
             # build extent statement
             size_readable = convert_size(total_bytes)
             if number_files == 1:
@@ -207,9 +212,9 @@ def create_spreadsheet():
             else:
                 fileformats = []
                 if args.bagfiles == True:
-                    fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde' % 'csv_reports', 'formats.csv')
+                    fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'formats.csv')
                 else:
-                    fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde' % 'csv_reports', 'formats.csv')
+                    fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde', 'formats.csv')
                 try: 
                     with open(fileformat_csv, 'r') as f:
                         reader = csv.reader(f)
