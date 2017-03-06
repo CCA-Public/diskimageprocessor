@@ -111,9 +111,9 @@ def create_spreadsheet():
                 total_bytes += obj.filesize
 
             # remove None values from date lists
-            mtimes = [x for x in mtimes if x != None]
-            atimes = [x for x in atimes if x != None]
-            crtimes = [x for x in crtimes if x != None]
+            mtimes = [x for x in mtimes if x is not None]
+            atimes = [x for x in atimes if x is not None]
+            crtimes = [x for x in crtimes if x is not None]
 
             # build extent statement
             size_readable = convert_size(total_bytes)
@@ -205,12 +205,15 @@ def create_spreadsheet():
                 tool = "using the HFSExplorer command line utility unhfs"
             elif ('udf' in disk_fs.lower()):
                 tool = "by mounting disk image and copying files with Python's shutil.copytree function"
+            else:
+                tool = "UNSUCCESSFULLY"
 
             # gather info from brunnhilde & write scope and content note
             if extent == 'EMPTY':
                 scopecontent = ''
             else:
                 fileformats = []
+                fileformat_csv = ""
                 if args.bagfiles == True:
                     fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
                 else:
