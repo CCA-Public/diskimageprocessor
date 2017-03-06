@@ -128,13 +128,13 @@ def create_spreadsheet():
             date_latest_cr = ""
             date_statement = ""
 
-            if mtimes_filtered:
+            if mtimes:
                 date_earliest_m = min(mtimes)
                 date_latest_m = max(mtimes)
-            if atimes_filtered:
+            if atimes:
                 date_earliest_a = min(atimes)
                 date_latest_a = max(atimes)
-            if crtimes_filtered:
+            if crtimes:
                 date_earliest_cr = min(crtimes)
                 date_latest_cr = max(crtimes)
 
