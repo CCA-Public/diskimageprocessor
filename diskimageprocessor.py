@@ -373,19 +373,19 @@ for file in sorted(os.listdir(args.source)):
                 fiwalk_file = os.path.join(subdoc_dir, 'dfxml.xml')
                 try:
                     subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
-                except subprocess.CalledProcessError, e:
+                except subprocess.CalledProcessError as e:
                     logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % e.output)
                 
                 # carve images using tsk_recover
                 if args.exportall == True: # export all files
                     try:
                         subprocess.check_output(['tsk_recover', '-e', diskimage, files_dir])
-                    except subprocess.CalledProcessError, e:
+                    except subprocess.CalledProcessError as e:
                         logandprint('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % e.output)
                 else: # export only allocated files (default)
                     try:
                         subprocess.check_output(['tsk_recover', '-a', diskimage, files_dir])
-                    except subprocess.CalledProcessError, e:
+                    except subprocess.CalledProcessError as e:
                         logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % e.output)    
 
                 # run brunnhilde and write to submissionDocumentation
@@ -419,7 +419,7 @@ for file in sorted(os.listdir(args.source)):
                 # carve files using hfsexplorer
                 try:
                     subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', files_dir, diskimage])
-                except subprocess.CalledProcessError, e:
+                except subprocess.CalledProcessError as e:
                     logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
 
                 # run brunnhilde and write to reports directory
