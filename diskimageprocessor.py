@@ -315,7 +315,6 @@ for file in sorted(os.listdir(args.source)):
             raw_out = os.path.join(diskimage_dir, image_id)
             try:
                 subprocess.check_output(['ewfexport', '-t', raw_out, '-f', 'raw', '-o', '0', '-S', '0', '-u', image_path])
-                logandprint('Successfully converted %s to raw disk image' % file)
                 raw_image = True
                 os.rename(os.path.join(diskimage_dir, '%s.raw' % image_id), os.path.join(diskimage_dir, '%s.img' % image_id)) # change file extension from .raw to .img
                 os.rename(os.path.join(diskimage_dir, '%s.raw.info' % image_id), os.path.join(diskimage_dir, '%s.img.info' % image_id)) # rename sidecar md5 file
