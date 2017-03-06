@@ -89,31 +89,26 @@ def create_spreadsheet():
 
                 try:
                     mtime = obj.mtime
+                    mtime = str(mtime)
+                    mtimes.append(mtime)
                 except:
-                    mtime = ''
-                mtime = str(mtime)
-                mtimes.append(mtime)
+                    pass
 
                 try:
                     atime = obj.atime
+                    atime = str(atime)
+                    atimes.append(atime)
                 except:
-                    atime = ''
-                atime = str(atime)
-                atimes.append(atime)
+                    pass
 
                 try:
                     crtime = obj.crtime
+                    crtime = str(crtime)
+                    crtimes.append(crtime)
                 except:
-                    crtime = ''
-                crtime = str(crtime)
-                crtimes.append(crtime)
+                    pass
         
                 total_bytes += obj.filesize
-
-            # remove None values from date lists
-            mtimes_filtered = [x for x in mtimes if x is not None]
-            atimes_filtered = [x for x in atimes if x is not None]
-            crtimes_filtered = [x for x in crtimes if x is not None]
 
             # build extent statement
             size_readable = convert_size(total_bytes)
@@ -134,14 +129,14 @@ def create_spreadsheet():
             date_statement = ""
 
             if mtimes_filtered:
-                date_earliest_m = min(mtimes_filtered)
-                date_latest_m = max(mtimes_filtered)
+                date_earliest_m = min(mtimes)
+                date_latest_m = max(mtimes)
             if atimes_filtered:
-                date_earliest_a = min(atimes_filtered)
-                date_latest_a = max(atimes_filtered)
+                date_earliest_a = min(atimes)
+                date_latest_a = max(atimes)
             if crtimes_filtered:
-                date_earliest_cr = min(crtimes_filtered)
-                date_latest_cr = max(crtimes_filtered)
+                date_earliest_cr = min(crtimes)
+                date_latest_cr = max(crtimes)
 
             # determine which set of dates to use (logic: use set with earliest start date)
             use_atimes = False
