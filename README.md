@@ -1,5 +1,7 @@
 # CCA Disk Image Processor  
 
+**NOTE**: Behavior is currently a bit buggy, as I switch from using directory walks to using DFXML files as the source for description spreadsheet information.  
+
 Creates ready-to-ingest SIPs from a directory of disk images and related files.  
 
 ![flowchart](https://github.com/timothyryanwalsh/cca-diskimageprocessor/blob/master/media/di_flowchart.png)  
