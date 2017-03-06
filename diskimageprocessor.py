@@ -207,9 +207,9 @@ def create_spreadsheet():
             else:
                 fileformats = []
                 if args.bagfiles == True:
-                    fileformat_csv = os.path.abspath(os.path.join(current, 'data', 'metadata', 'submissionDocumentation', '%s_brunnhilde' % os.path.basename(current), 'csv_reports', 'formats.csv'))
+                    fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde' % 'csv_reports', 'formats.csv')
                 else:
-                    fileformat_csv = os.path.abspath(os.path.join(current, 'metadata', 'submissionDocumentation', '%s_brunnhilde' % os.path.basename(current), 'csv_reports', 'formats.csv'))
+                    fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde' % 'csv_reports', 'formats.csv')
                 try: 
                     with open(fileformat_csv, 'r') as f:
                         reader = csv.reader(f)
@@ -374,9 +374,9 @@ for file in sorted(os.listdir(args.source)):
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
                 if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
@@ -408,9 +408,9 @@ for file in sorted(os.listdir(args.source)):
                 # run brunnhilde and write to reports directory
                 files_abs = os.path.abspath(files_dir)
                 if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
@@ -440,9 +440,9 @@ for file in sorted(os.listdir(args.source)):
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
                 if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, '%s_brunnhilde' % file), shell=True)
+                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
