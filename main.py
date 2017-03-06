@@ -50,7 +50,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         self.textEdit.clear()
         
         # path to script
-        self.processing_script = "/usr/share/cca-diskimageprocessor/diskimageprocessor.py"
+        self.processing_script = "/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py"
 
         # start QProcess
         self.proc = QProcess()
