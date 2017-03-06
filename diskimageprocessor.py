@@ -180,12 +180,12 @@ def create_spreadsheet():
                     date_statement = '%s' % date_earliest_a[:4]
                 else:
                     date_statement = '%s - %s' % (date_earliest_a[:4], date_latest_a[:4])
-            else if use_ctimes == True:
+            elif use_ctimes == True:
                 if date_earliest_c == date_latest_c:
                     date_statement = '%s' % date_earliest_c[:4]
                 else:
                     date_statement = '%s - %s' % (date_earliest_c[:4], date_latest_c[:4])
-            else if use_crtimes == True:
+            elif use_crtimes == True:
                 if date_earliest_cr == date_latest_cr:
                     date_statement = '%s' % date_earliest_cr[:4]
                 else:
