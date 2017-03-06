@@ -224,7 +224,7 @@ def create_spreadsheet():
                 try: 
                     with open(fileformat_csv, 'r') as f:
                         reader = csv.reader(f)
-                        reader.next()
+                        next(reader)
                         for row in itertools.islice(reader, 5):
                             fileformats.append(row[0])
                 except:
