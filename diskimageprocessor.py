@@ -110,6 +110,11 @@ def create_spreadsheet():
         
                 total_bytes += obj.filesize
 
+            # filter 'None' values from date lists
+            mtimes = [x for x in mtimes if x is not 'None']
+            atimes = [x for x in atimes if x is not 'None']
+            crtimes = [x for x in crtimes if x is not 'None']
+
             # build extent statement
             size_readable = convert_size(total_bytes)
             if number_files == 1:
