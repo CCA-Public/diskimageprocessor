@@ -69,6 +69,7 @@ def create_spreadsheet():
             total_bytes = 0
             mtimes = []
             atimes = []
+            ctimes = []
             crtimes = []
 
             # parse dfxml file
@@ -102,6 +103,13 @@ def create_spreadsheet():
                     pass
 
                 try:
+                    ctime = obj.ctime
+                    ctime = str(ctime)
+                    ctimes.append(ctime)
+                except:
+                    pass
+
+                try:
                     crtime = obj.crtime
                     crtime = str(crtime)
                     crtimes.append(crtime)
@@ -115,6 +123,8 @@ def create_spreadsheet():
                 mtimes.remove('None')
             while 'None' in atimes:
                 atimes.remove('None')
+            while 'None' in ctimes:
+                ctimes.remove('None')
             while 'None' in crtimes:
                 crtimes.remove('None')
 
@@ -132,6 +142,8 @@ def create_spreadsheet():
             date_latest_m = ""
             date_earliest_a = ""
             date_latest_a = ""
+            date_earliest_c = ""
+            date_latest_c = ""
             date_earliest_cr = ""
             date_latest_cr = ""
             date_statement = ""
@@ -142,12 +154,16 @@ def create_spreadsheet():
             if atimes:
                 date_earliest_a = min(atimes)
                 date_latest_a = max(atimes)
+            if ctimes:
+                date_earliest_c = min(ctimes)
+                date_latest_c = max(ctimes)
             if crtimes:
                 date_earliest_cr = min(crtimes)
                 date_latest_cr = max(crtimes)
 
             # determine which set of dates to use (logic: use set with earliest start date)
             use_atimes = False
+            use_ctimes = False
             use_crtimes = False
 
             if not date_earliest_m:
@@ -159,16 +175,29 @@ def create_spreadsheet():
                 if date_earliest_a < date_to_use:
                     date_to_use = date_earliest_a
                     use_atimes = True
+            if date_earliest_c:
+                if date_earliest_c < date_to_use:
+                    date_to_use = date_earliest_c
+                    use_atimes = False
+                    use_ctimes = True
             if date_earliest_cr:
                 if date_earliest_cr < date_to_use:
                     date_to_use = date_earliest_cr
                     use_atimes = False
+                    use_ctimes = False
                     use_crtimes = True
 
             # create date statement
             if use_atimes == True:
                 date_earliest = date_earliest_a[:10]
                 date_latest = date_latest_a[:10]
+                if date_earliest == date_latest:
+                    date_statement = '%s' % date_earliest[:4]
+                else:
+                    date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
+            elif use_ctimes == True:
+                date_earliest = date_earliest_c[:10]
+                date_latest = date_latest_c[:10]
                 if date_earliest == date_latest:
                     date_statement = '%s' % date_earliest[:4]
                 else:
