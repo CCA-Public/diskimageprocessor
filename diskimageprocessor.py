@@ -119,14 +119,9 @@ def create_spreadsheet():
                 total_bytes += obj.filesize
 
             # filter 'None' values from date lists
-            while 'None' in mtimes:
-                mtimes.remove('None')
-            while 'None' in atimes:
-                atimes.remove('None')
-            while 'None' in ctimes:
-                ctimes.remove('None')
-            while 'None' in crtimes:
-                crtimes.remove('None')
+            for date_list in mtimes, atimes, ctimes, crtimes:
+                while 'None' in date_list:
+                    date_list.remove('None')
 
             # build extent statement
             size_readable = convert_size(total_bytes)
@@ -187,35 +182,25 @@ def create_spreadsheet():
                     use_ctimes = False
                     use_crtimes = True
 
-            # create date statement
+            # store date_earliest and date_latest values based on datetype used
             if use_atimes == True:
                 date_earliest = date_earliest_a[:10]
-                date_latest = date_latest_a[:10]
-                if date_earliest == date_latest:
-                    date_statement = '%s' % date_earliest[:4]
-                else:
-                    date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
+                date_latest = date_latest_a[:10] 
             elif use_ctimes == True:
                 date_earliest = date_earliest_c[:10]
                 date_latest = date_latest_c[:10]
-                if date_earliest == date_latest:
-                    date_statement = '%s' % date_earliest[:4]
-                else:
-                    date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
             elif use_crtimes == True:
                 date_earliest = date_earliest_cr[:10]
                 date_latest = date_latest_cr[:10]
-                if date_earliest == date_latest:
-                    date_statement = '%s' % date_earliest[:4]
-                else:
-                    date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
             else:
                 date_earliest = date_earliest_m[:10]
                 date_latest = date_latest_m[:10]
-                if date_earliest == date_latest:
-                    date_statement = '%s' % date_earliest[:4]
-                else:
-                    date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
+
+            # write date statement
+            if date_earliest == date_latest:
+                date_statement = '%s' % date_earliest[:4]
+            else:
+                date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
 
             # gather file system info, discern tool used
             if args.bagfiles == True:
