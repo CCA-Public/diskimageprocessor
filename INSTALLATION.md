@@ -7,17 +7,6 @@ Note: these instructions assume you're installing Disk Image Processor on a fres
 ##### 1. Install PyQT4:
 `sudo apt-get install python-qt4` 
 
-You can try `pip install SIP` or `pip3 install SIP`, but if those are out of date (you need at least SIP 4.19), you will need to...
-
-* Visit <https://riverbankcomputing.com/software/sip/download>. 
-* Copy the download link for the Linux source tar.gz
-* `wget <copied link>`
-* `tar -xzvf <filename>`
-* `cd sip-4.19` 
-* `python configure.py`
-* `make`
-* `make install` (may have to do as sudo)
-
 ##### 2. Create /mnt/diskid
 
 To process HFS and UDF disk images, create /mnt/diskid prior to use with `mkdir /mnt/diskid`)  
