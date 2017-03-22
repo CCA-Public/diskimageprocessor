@@ -26,8 +26,10 @@ Inspired by [Jess Whyte's work at the University of Toronto's Fisher Rare Book L
 
 ### Installation  
 
-This utility is designed for easy use in Bitcurator, and in v1.8.0+ requires installation of only [PyQt4](https://www.riverbankcomputing.com/software/pyqt/download): 
+This utility is designed for easy use in Bitcurator, and in v1.8.0+ requires installation of only [PyQT4](https://www.riverbankcomputing.com/software/pyqt/download): 
 `sudo apt-get install python-qt4`  
+
+Alternatively, install all of the CCA Tools (and PyQT4) using the install script in the [CCA Tools repo](https://github.com/timothyryanwalsh/cca-tools).  
 
 After running the install script, either select "Disk Image Processor" from the "CCA Tools" directory on the Bitcurator desktop or use the CLI:  
 `python /usr/share/ccatools/diskimageprocessor/diskimageprocessor.py` . 
