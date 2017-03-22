@@ -1,10 +1,11 @@
 # Installation Instructions
 
-Note: these instructions assume you're installing Disk Image Processor on a fresh install of [BitCurator](https://wiki.bitcurator.net/index.php?title=Main_Page) VM v1.7.102.  
+Note: these instructions assume you're installing Disk Image Processor on a fresh install of [BitCurator](https://wiki.bitcurator.net/index.php?title=Main_Page) v1.8.0+ 
 
 ### Prepping to Install:
 
-##### 1. Install an updated version of [SIP](https://riverbankcomputing.com/software/sip/intro)
+##### 1. Install PyQT4:
+`sudo apt-get install python-qt4` 
 
 You can try `pip install SIP` or `pip3 install SIP`, but if those are out of date (you need at least SIP 4.19), you will need to...
 
@@ -17,39 +18,9 @@ You can try `pip install SIP` or `pip3 install SIP`, but if those are out of dat
 * `make`
 * `make install` (may have to do as sudo)
 
-##### 2. Install [PyQt4](http://pyqt.sourceforge.net/Docs/PyQt4/installation.html) (if you plan on using the GUI)
-
-First, install Qt4: `sudo apt-get install qt4-default`
-Then, install PyQt4... 
-* Visit <https://riverbankcomputing.com/software/pyqt/download>
-* Copy the download link for the Linux source tar.gz
-* `wget <copied link>`
-* `tar -xzvf <filename>`
-* `cd PyQt4_gpl_x11-4.12`
-* `python configure-ng.py`
-* `make`
-* `make install` (may have to do as sudo)
-	
-##### 3. Install [brunnhilde](https://github.com/timothyryanwalsh/brunnhilde) 
-Brunnhilde generates aggregate reports of files in a directory or disk image based on input from Siegfried. Disk Image Processor will run without it, but the reporting capacity will be limited. 
-* Get [Siegfried](https://github.com/richardlehane/siegfried/wiki/Getting-started) *(not going to lie, this might be a bit bumpy, but it should work)*
-```
-wget -qO - https://bintray.com/user/downloadSubjectPublicKey?username=bintray | sudo apt-key add -
-echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | sudo tee -a /etc/apt/sources.list
-sudo apt-get update && sudo apt-get install siegfried
-```
-
-* Install brunnhilde `pip install brunnhilde`
-	
-##### 4. Create /mnt/diskid
+##### 2. Create /mnt/diskid
 
 To process HFS and UDF disk images, create /mnt/diskid prior to use with `mkdir /mnt/diskid`)  
-
-##### 5. Update HFSExplorer 
-
-unhfs, the command-line version of HFSExplorer, until recently had a bug that prevented some files from being extracted from HFS disks. Be sure that you have the [latest version](https://sourceforge.net/projects/catacombae/files/HFSExplorer/0.23.1%20%28snapshot%202016-09-02%29/) of HFSExplorer installed. On Bitcurator, this must be done manually by replacing the contents of /usr/share/hfsexplorer with the downloaded and extracted source.
-
-In this patched release, unhfs.sh is renamed to unhfs (without a file extension). If file /usr/share/hfsexplorer/bin/unhfs.sh (with file extension) exists in your system, you must update HFSExplorer with the version linked above.  
 
 ### Installing:
 
