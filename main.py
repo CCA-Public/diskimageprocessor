@@ -67,6 +67,8 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
             call.append("-e")
         if self.checkBox_3.isChecked():
             call.append("-p")
+        if self.filesonlyBtn.isChecked():
+            call.append("-f")
         call.append(self.source1.text())
         call.append(self.destination1.text())
 

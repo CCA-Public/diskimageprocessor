@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'design.ui'
 #
-# Created: Thu Sep  8 12:08:25 2016
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -55,6 +54,9 @@ class Ui_MainWindow(object):
         self.checkBox = QtGui.QCheckBox(self.centralwidget)
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.verticalLayout.addWidget(self.checkBox)
+        self.filesonlyBtn = QtGui.QCheckBox(self.centralwidget)
+        self.filesonlyBtn.setObjectName(_fromUtf8("filesonlyBtn"))
+        self.verticalLayout.addWidget(self.filesonlyBtn)
         self.checkBox_2 = QtGui.QCheckBox(self.centralwidget)
         self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
         self.verticalLayout.addWidget(self.checkBox_2)
@@ -91,6 +93,7 @@ class Ui_MainWindow(object):
         self.destination1btn.setText(_translate("MainWindow", "Browse", None))
         self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Options</span></p></body></html>", None))
         self.checkBox.setText(_translate("MainWindow", "Bag SIPs", None))
+        self.filesonlyBtn.setText(_translate("MainWindow", "Make SIP from logical files only (no disk image)", None))
         self.checkBox_2.setText(_translate("MainWindow", "Export all files (not only allocated)", None))
         self.checkBox_3.setText(_translate("MainWindow", "Run bulk_extractor", None))
         self.label_7.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Detailed output</span></p></body></html>", None))

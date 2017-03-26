@@ -258,12 +258,28 @@ def create_spreadsheet():
 
     logandprint('All SIPs described in spreadsheet. Process complete.')
 
+def keep_logical_files_only(objects_dir):
+    # get list of files in files dir
+    files_dir = os.path.join(objects_dir, 'files')
+    fileList = os.listdir(files_dir)
+    fileList = [files_dir+filename for filename in fileList]
+
+    # move files up one directory
+    for f in fileList:
+        shutil.move(f, objects_dir)
+
+    # delete file and diskimage dirs
+    shutil.remove(files_dir)
+    shutil.remove(os.path.join(objects_dir, 'diskimage'))
+
+
 # MAIN FLOW
 
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing checksum.md5", action="store_true")
 parser.add_argument("-e", "--exportall", help="Export all files from disk images using tsk_recover", action="store_true")
+parser.add_argument("-f", "--filesonly", help="Include logical files only (not disk images) in SIPs")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
@@ -402,7 +418,11 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
-                
+
+                # if user selected 'filesonly', remove disk image files and repackage
+                if args.filesonly == True:
+                    keep_logical_files_only(object_dir)
+
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
@@ -437,6 +457,10 @@ for file in sorted(os.listdir(args.source)):
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
+                # if user selected 'filesonly', remove disk image files and repackage
+                if args.filesonly == True:
+                    keep_logical_files_only(object_dir)
+
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
@@ -469,6 +493,10 @@ for file in sorted(os.listdir(args.source)):
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
+                # if user selected 'filesonly', remove disk image files and repackage
+                if args.filesonly == True:
+                    keep_logical_files_only(object_dir)
+
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
