@@ -249,7 +249,7 @@ def create_spreadsheet(files_only):
                 
                 # create scope and content note
                 if files_only == True:
-                    scopecontent = 'File includes logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
+                    scopecontent = 'File includes logical files carved from a disk image %s. Most common file formats: %s' % (tool, formatlist)
                 else:
                     scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
 
