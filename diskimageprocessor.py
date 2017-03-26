@@ -262,7 +262,7 @@ def keep_logical_files_only(objects_dir):
     # get list of files in files dir
     files_dir = os.path.join(objects_dir, 'files')
     fileList = os.listdir(files_dir)
-    fileList = [files_dir+filename for filename in fileList]
+    fileList = [files_dir + '/' + filename for filename in fileList]
 
     # move files up one directory
     for f in fileList:
