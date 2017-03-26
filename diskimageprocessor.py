@@ -57,7 +57,7 @@ def convert_size(size):
     s = s.replace('.0', '')
     return '%s %s' % (s,size_name[i])
 
-def create_spreadsheet():
+def create_spreadsheet(files_only):
     # process each SIP
     for item in sorted(os.listdir(sips)):
         current = os.path.join(sips, item)
@@ -248,7 +248,10 @@ def create_spreadsheet():
                 
                 
                 # create scope and content note
-                scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
+                if files_only == True:
+                    scopecontent = 'File includes logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
+                else:
+                    scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
 
             # write csv row
             writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
@@ -528,7 +531,7 @@ else:
     logandprint('Processing complete. All disk images processed. Results in %s.' % destination)
 
 # write description spreadsheet
-create_spreadsheet()
+create_spreadsheet(args.filesonly)
 
 # close files
 spreadsheet.close()
