@@ -284,6 +284,7 @@ parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing check
 parser.add_argument("-e", "--exportall", help="Export all files from disk images using tsk_recover", action="store_true")
 parser.add_argument("-f", "--filesonly", help="Include logical files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
+parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
@@ -448,10 +449,16 @@ for file in sorted(os.listdir(args.source)):
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # carve files using hfsexplorer
-                try:
-                    subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', files_dir, diskimage])
-                except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
+                if args.resforks == True:
+                    try:
+                        subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', files_dir, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output)
+                else:
+                    try:
+                        subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', files_dir, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
 
                 # run brunnhilde and write to reports directory
                 files_abs = os.path.abspath(files_dir)

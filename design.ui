@@ -72,9 +72,23 @@
      </widget>
     </item>
     <item>
+     <widget class="QCheckBox" name="filesonlyBtn">
+      <property name="text">
+       <string>Make SIPs from logical files only (do not include disk image)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QCheckBox" name="checkBox_2">
       <property name="text">
        <string>Export all files (not only allocated)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="resforksBtn">
+      <property name="text">
+       <string>Export AppleDouble resource forks for HFS-formatted disks</string>
       </property>
      </widget>
     </item>

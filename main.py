@@ -50,7 +50,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         self.textEdit.clear()
         
         # path to script
-        self.processing_script = "/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py"
+        self.processing_script = "/home/bcadmin/Desktop/cca-diskimageprocessor/diskimageprocessor.py"
 
         # start QProcess
         self.proc = QProcess()
@@ -69,6 +69,8 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
             call.append("-p")
         if self.filesonlyBtn.isChecked():
             call.append("-f")
+        if self.resforksBtn.isChecked():
+            call.append("-r")
         call.append(self.source1.text())
         call.append(self.destination1.text())
 
