@@ -269,8 +269,8 @@ def keep_logical_files_only(objects_dir):
         shutil.move(f, objects_dir)
 
     # delete file and diskimage dirs
-    os.rmdir(files_dir)
-    os.rmdir(os.path.join(objects_dir, 'diskimage'))
+    shutil.rmtree(files_dir)
+    shutil.rmtree(os.path.join(objects_dir, 'diskimage'))
 
 
 # MAIN FLOW
