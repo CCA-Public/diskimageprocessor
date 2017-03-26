@@ -449,7 +449,7 @@ for file in sorted(os.listdir(args.source)):
 
                 # carve files using hfsexplorer
                 try:
-                    subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', files_dir, diskimage])
+                    subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', files_dir, diskimage])
                 except subprocess.CalledProcessError as e:
                     logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
 
