@@ -60,7 +60,7 @@
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -79,23 +79,30 @@
      </widget>
     </item>
     <item>
+     <widget class="QCheckBox" name="checkBox_3">
+      <property name="text">
+       <string>Run bulk_extractor</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;File export options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QCheckBox" name="checkBox_2">
       <property name="text">
-       <string>Export all files (not only allocated)</string>
+       <string>tsk_recover: Export all files (not only allocated)</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QCheckBox" name="resforksBtn">
       <property name="text">
-       <string>Export AppleDouble resource forks for HFS-formatted disks</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="checkBox_3">
-      <property name="text">
-       <string>Run bulk_extractor</string>
+       <string>unhfs: Export AppleDouble resource forks</string>
       </property>
      </widget>
     </item>
