@@ -84,8 +84,9 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         QObject.connect(self.proc, SIGNAL("readyReadStandardOutput()"), self, SLOT("readStdOutput()"));
         QObject.connect(self.proc, SIGNAL("readyReadStandardError()"), self, SLOT("readStdError()"));
 
-        # update status when finished
+        # update status and display pop-up message when finished
         self.proc.finished.connect(self.on_finished)
+        QMessageBox.information(self, "Done!", "Process complete.")
 
 def main():
     app = QApplication(sys.argv)
