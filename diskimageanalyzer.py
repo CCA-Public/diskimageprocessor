@@ -367,4 +367,4 @@ for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
     write_to_spreadsheet(disk_result, spreadsheet_path)
 
-print("Analysis complete. Results in %s" % destination)
+print("Analysis complete. Results in %s." % destination)
