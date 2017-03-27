@@ -312,7 +312,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwbdr '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
+                subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 
@@ -327,7 +327,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwbdr --hfs '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
+                subprocess.call("brunnhilde.py -zwbdr --hfs '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
 
             elif 'udf' in disk_fs.lower():
 
@@ -346,7 +346,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwb '%s' '%s' '%s'" % (temp_dir, disk_dir, 'brunnhilde'), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (temp_dir, disk_dir), shell=True)
                 
                 # delete tempdir
                 shutil.rmtree(temp_dir)
