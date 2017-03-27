@@ -348,6 +348,9 @@ for file in sorted(os.listdir(source)):
                 # run brunnhilde
                 subprocess.call("brunnhilde.py -zwdr '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
 
+# delete disk images
+shutil.rmtree(diskimages_dir)
+
 # create analysis spreadsheet
 spreadsheet_path = os.path.join(destination, 'analysis.csv')
 # open description spreadsheet
@@ -360,6 +363,8 @@ writer.writerow(header_list)
 spreadsheet.close()
 
 # add info to description spreadsheet
-for item in os.listdir(results_dir):
+for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
     write_to_spreadsheet(disk_result, spreadsheet_path)
+
+print("Analysis complete. Results in %s" % destination)
