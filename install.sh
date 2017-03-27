@@ -12,6 +12,11 @@ if [ ! -d /usr/share/ccatools/diskimageprocessor ]; then
   sudo mkdir /usr/share/ccatools/diskimageprocessor
 fi
 
+# Make /mnt/diskid/ if doesn't already exist
+if [ ! -d /mnt/diskid ]; then
+  sudo mkdir /mnt/diskid
+fi
+
 # Move files into /usr/share/ccatools/diskimageprocessor
 sudo mv diskimageprocessor.py /usr/share/ccatools/diskimageprocessor
 sudo mv diskimageanalyzer.py /usr/share/ccatools/diskimageprocessor
