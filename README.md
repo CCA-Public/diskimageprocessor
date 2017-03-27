@@ -28,7 +28,7 @@ The destination directory also contains a "reports" directory containing a sub-d
 
 * A DFXML file  
 * Text output from "disktype"  
-* Brunnhilde reports  
+* Brunnhilde reports (including logs and reports from clamAV and bulk_extractor)  
 
 ### Processing
 
@@ -45,7 +45,7 @@ The destination directory also contains a log file and a "SIPs" directory contai
 
 * A DFXML file  
 * Text output from "disktype"  
-* Brunnhilde reports  
+* Brunnhilde reports (including logs and reports from clamAV and, optionally, bulk_extractor)  
 
 ## Installation
 
