@@ -14,6 +14,7 @@ fi
 
 # Move files into /usr/share/ccatools/diskimageprocessor
 sudo mv diskimageprocessor.py /usr/share/ccatools/diskimageprocessor
+sudo mv diskimageanalyzer.py /usr/share/ccatools/diskimageprocessor
 sudo mv main.py /usr/share/ccatools/diskimageprocessor
 sudo mv launch /usr/share/ccatools/diskimageprocessor
 sudo mv design.py /usr/share/ccatools/diskimageprocessor
