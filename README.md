@@ -8,7 +8,7 @@ Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk 
 
 Disk Image Processor has two modes: Analysis and Processing. Each mode can be run from the GUI interface or as a separate CLI utility by calling the underlying Python 3 script.  
 
-## Analysis
+### Analysis
 
 Underlying script: `diskimageanalyzer.py`  
 
@@ -30,7 +30,7 @@ The destination directory also contains a "reports" directory containing a sub-d
 * Text output from "disktype"  
 * Brunnhilde reports  
 
-## Processing
+### Processing
 
 Underlying script: `diskimageprocessor.py`  
 
