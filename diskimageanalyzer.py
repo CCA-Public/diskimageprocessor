@@ -249,7 +249,7 @@ destination = args.destination
 if not os.path.exists(destination):
     os.makedirs(destination)
 diskimages_dir = os.path.join(destination, 'diskimages')
-results_dir = os.path.join(destination, 'results')
+results_dir = os.path.join(destination, 'reports')
 for new_dir in diskimages_dir, results_dir:
     os.makedirs(new_dir)
 
