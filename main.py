@@ -50,7 +50,10 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         self.textEdit.clear()
         
         # path to script
-        self.processing_script = "/home/bcadmin/Desktop/cca-diskimageprocessor/diskimageprocessor.py"
+        if self.processingBtn.isChecked():
+            self.processing_script = "/home/bcadmin/Desktop/cca-diskimageprocessor/diskimageprocessor.py"
+        else:
+            self.processing_script = "/home/bcadmin/Desktop/cca-diskimageprocessor/diskimageanalyzer.py"
 
         # start QProcess
         self.proc = QProcess()
@@ -61,16 +64,17 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         # build QStringList
         call = QStringList()
         call.append(self.processing_script)
-        if self.checkBox.isChecked():
-            call.append("-b")
-        if self.checkBox_2.isChecked():
-            call.append("-e")
-        if self.checkBox_3.isChecked():
-            call.append("-p")
-        if self.filesonlyBtn.isChecked():
-            call.append("-f")
-        if self.resforksBtn.isChecked():
-            call.append("-r")
+        if self.processingBtn.isChecked():
+            if self.checkBox.isChecked():
+                call.append("-b")
+            if self.checkBox_2.isChecked():
+                call.append("-e")
+            if self.checkBox_3.isChecked():
+                call.append("-p")
+            if self.filesonlyBtn.isChecked():
+                call.append("-f")
+            if self.resforksBtn.isChecked():
+                call.append("-r")
         call.append(self.source1.text())
         call.append(self.destination1.text())
 
