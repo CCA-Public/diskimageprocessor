@@ -361,5 +361,5 @@ spreadsheet.close()
 
 # add info to description spreadsheet
 for item in os.listdir(results_dir):
-    disk_result = os.path.join(results_dir, disk_result)
+    disk_result = os.path.join(results_dir, item)
     write_to_spreadsheet(disk_result, spreadsheet_path)
