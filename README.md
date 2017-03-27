@@ -55,7 +55,7 @@ This utility is designed for easy use in Bitcurator v1.8.0+.
 
 Install all of the CCA Tools (and PyQT4) together using the install bash script in the [CCA Tools repo](https://github.com/timothyryanwalsh/cca-tools).  
 
-### Install as a separate utlity
+### Install as a separate utility
 * Install [PyQt4](https://www.riverbankcomputing.com/software/pyqt/download):  
 `sudo apt-get install python-qt4`  
 * Clone this repo to your local machine.  
