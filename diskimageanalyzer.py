@@ -312,7 +312,7 @@ for file in sorted(os.listdir(source)):
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
                 
                 # use fiwalk to make dfxml
-                fiwalk_file = os.path.join(disk_dirc_dir, 'dfxml.xml')
+                fiwalk_file = os.path.join(disk_dir, 'dfxml.xml')
                 subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
 
                 # run brunnhilde
@@ -324,7 +324,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % diskimage, shell=True)
 
                 # use md5deep to make dfxml
-                dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
+                dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
                 subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
 
                 # unmount disk image
@@ -339,7 +339,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % diskimage, shell=True)
 
                 # use fiwalk to create dfxml
-                dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
+                dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
                 subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
 
                 # unmount disk image
@@ -349,7 +349,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.call("brunnhilde.py -zwdr '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
 
 # create analysis spreadsheet
-spreadsheet_path = os.path.join(destination, 'description.csv')
+spreadsheet_path = os.path.join(destination, 'analysis.csv')
 # open description spreadsheet
 spreadsheet = open(spreadsheet_path, 'w')
 writer = csv.writer(spreadsheet, quoting=csv.QUOTE_NONNUMERIC)
