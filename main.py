@@ -53,7 +53,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         if self.processingBtn.isChecked():
             self.processing_script = "/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py"
         else:
-            self.processing_script = "/usr/share/ccatools/cca-diskimageprocessor/diskimageanalyzer.py"
+            self.processing_script = "/usr/share/ccatools/diskimageprocessor/diskimageanalyzer.py"
 
         # start QProcess
         self.proc = QProcess()
