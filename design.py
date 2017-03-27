@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'design.ui'
 #
-# Created: Thu Sep  8 12:08:25 2016
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -55,12 +54,21 @@ class Ui_MainWindow(object):
         self.checkBox = QtGui.QCheckBox(self.centralwidget)
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.verticalLayout.addWidget(self.checkBox)
-        self.checkBox_2 = QtGui.QCheckBox(self.centralwidget)
-        self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
-        self.verticalLayout.addWidget(self.checkBox_2)
+        self.filesonlyBtn = QtGui.QCheckBox(self.centralwidget)
+        self.filesonlyBtn.setObjectName(_fromUtf8("filesonlyBtn"))
+        self.verticalLayout.addWidget(self.filesonlyBtn)
         self.checkBox_3 = QtGui.QCheckBox(self.centralwidget)
         self.checkBox_3.setObjectName(_fromUtf8("checkBox_3"))
         self.verticalLayout.addWidget(self.checkBox_3)
+        self.label_5 = QtGui.QLabel(self.centralwidget)
+        self.label_5.setObjectName(_fromUtf8("label_5"))
+        self.verticalLayout.addWidget(self.label_5)
+        self.checkBox_2 = QtGui.QCheckBox(self.centralwidget)
+        self.checkBox_2.setObjectName(_fromUtf8("checkBox_2"))
+        self.verticalLayout.addWidget(self.checkBox_2)
+        self.resforksBtn = QtGui.QCheckBox(self.centralwidget)
+        self.resforksBtn.setObjectName(_fromUtf8("resforksBtn"))
+        self.verticalLayout.addWidget(self.resforksBtn)
         self.label_7 = QtGui.QLabel(self.centralwidget)
         self.label_7.setObjectName(_fromUtf8("label_7"))
         self.verticalLayout.addWidget(self.label_7)
@@ -89,10 +97,13 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Destination</span></p></body></html>", None))
         self.destination1.setPlaceholderText(_translate("MainWindow", "/path/to/destination", None))
         self.destination1btn.setText(_translate("MainWindow", "Browse", None))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Options</span></p></body></html>", None))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">General options</span></p></body></html>", None))
         self.checkBox.setText(_translate("MainWindow", "Bag SIPs", None))
-        self.checkBox_2.setText(_translate("MainWindow", "Export all files (not only allocated)", None))
+        self.filesonlyBtn.setText(_translate("MainWindow", "Make SIPs from logical files only (do not include disk image)", None))
         self.checkBox_3.setText(_translate("MainWindow", "Run bulk_extractor", None))
+        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">File export options</span></p></body></html>", None))
+        self.checkBox_2.setText(_translate("MainWindow", "tsk_recover: Export all files (not only allocated)", None))
+        self.resforksBtn.setText(_translate("MainWindow", "unhfs: Export AppleDouble resource forks", None))
         self.label_7.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Detailed output</span></p></body></html>", None))
         self.label_4.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Status</span></p></body></html>", None))
         self.process.setText(_translate("MainWindow", "Process disk images", None))

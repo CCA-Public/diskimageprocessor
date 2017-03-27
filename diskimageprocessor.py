@@ -57,7 +57,7 @@ def convert_size(size):
     s = s.replace('.0', '')
     return '%s %s' % (s,size_name[i])
 
-def create_spreadsheet():
+def create_spreadsheet(files_only):
     # process each SIP
     for item in sorted(os.listdir(sips)):
         current = os.path.join(sips, item)
@@ -248,7 +248,10 @@ def create_spreadsheet():
                 
                 
                 # create scope and content note
-                scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
+                if files_only == True:
+                    scopecontent = 'File includes logical files carved from a disk image %s. Most common file formats: %s' % (tool, formatlist)
+                else:
+                    scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
 
             # write csv row
             writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
@@ -258,13 +261,30 @@ def create_spreadsheet():
 
     logandprint('All SIPs described in spreadsheet. Process complete.')
 
+def keep_logical_files_only(objects_dir):
+    # get list of files in files dir
+    files_dir = os.path.join(objects_dir, 'files')
+    fileList = os.listdir(files_dir)
+    fileList = [files_dir + '/' + filename for filename in fileList]
+
+    # move files up one directory
+    for f in fileList:
+        shutil.move(f, objects_dir)
+
+    # delete file and diskimage dirs
+    shutil.rmtree(files_dir)
+    shutil.rmtree(os.path.join(objects_dir, 'diskimage'))
+
+
 # MAIN FLOW
 
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing checksum.md5", action="store_true")
 parser.add_argument("-e", "--exportall", help="Export all files from disk images using tsk_recover", action="store_true")
+parser.add_argument("-f", "--filesonly", help="Include logical files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
+parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
@@ -402,7 +422,11 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
-                
+
+                # if user selected 'filesonly', remove disk image files and repackage
+                if args.filesonly == True:
+                    keep_logical_files_only(object_dir)
+
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
@@ -425,10 +449,16 @@ for file in sorted(os.listdir(args.source)):
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # carve files using hfsexplorer
-                try:
-                    subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', files_dir, diskimage])
-                except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
+                if args.resforks == True:
+                    try:
+                        subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', files_dir, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output)
+                else:
+                    try:
+                        subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', files_dir, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
 
                 # run brunnhilde and write to reports directory
                 files_abs = os.path.abspath(files_dir)
@@ -437,6 +467,10 @@ for file in sorted(os.listdir(args.source)):
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
+                # if user selected 'filesonly', remove disk image files and repackage
+                if args.filesonly == True:
+                    keep_logical_files_only(object_dir)
+
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
@@ -469,6 +503,10 @@ for file in sorted(os.listdir(args.source)):
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
+                # if user selected 'filesonly', remove disk image files and repackage
+                if args.filesonly == True:
+                    keep_logical_files_only(object_dir)
+
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
                     subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
@@ -500,7 +538,7 @@ else:
     logandprint('Processing complete. All disk images processed. Results in %s.' % destination)
 
 # write description spreadsheet
-create_spreadsheet()
+create_spreadsheet(args.filesonly)
 
 # close files
 spreadsheet.close()
