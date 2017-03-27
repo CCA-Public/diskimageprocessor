@@ -25,10 +25,6 @@ from time import localtime, strftime
 sys.path.append('/usr/share/dfxml/python')
 import Objects
 
-def logandprint(message):
-    log.write('\n' + (strftime("%H:%M:%S %b %d, %Y - ", localtime())) + message)
-    print(message)
-
 def convert_size(size):
     # convert size to human-readable form
     if (size == 0):
