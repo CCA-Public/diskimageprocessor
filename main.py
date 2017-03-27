@@ -86,7 +86,6 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
 
         # update status and display pop-up message when finished
         self.proc.finished.connect(self.on_finished)
-        QMessageBox.information(self, "Done!", "Process complete.")
 
 def main():
     app = QApplication(sys.argv)
