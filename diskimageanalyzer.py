@@ -312,7 +312,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwdr '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
+                subprocess.call("brunnhilde.py -zwbdr '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 
@@ -327,7 +327,7 @@ for file in sorted(os.listdir(source)):
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwdr --hfs '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
+                subprocess.call("brunnhilde.py -zwbdr --hfs '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
 
             elif 'udf' in disk_fs.lower():
 
@@ -337,12 +337,19 @@ for file in sorted(os.listdir(source)):
                 # use fiwalk to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
                 subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
+                
+                # write files to tempdir
+                temp_dir = os.path.join(disk_dir, 'temp')
+                shutil.copytree('/mnt/diskid/', temp_dir, symlinks=False, ignore=None)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwdr '%s' '%s' '%s'" % (diskimage, disk_dir, 'brunnhilde'), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' '%s'" % (temp_dir, disk_dir, 'brunnhilde'), shell=True)
+                
+                # delete tempdir
+                shutil.rmtree(temp_dir)
 
 # delete disk images
 shutil.rmtree(diskimages_dir)
