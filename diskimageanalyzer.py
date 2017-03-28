@@ -378,6 +378,6 @@ for item in sorted(os.listdir(results_dir)):
 # write closing message
 if unanalyzed:
     skipped_disks = ', '.join(unanalyzed)
-    logandprint('Analysis complete. Skipped disks: %s.' % skipped_disks)
+    print('Analysis complete. Skipped disks: %s.' % skipped_disks)
 else:
-    logandprint('Analysis complete. All disk images analyzed. Results in %s.' % destination)
+    print('Analysis complete. All disk images analyzed. Results in %s.' % destination)
