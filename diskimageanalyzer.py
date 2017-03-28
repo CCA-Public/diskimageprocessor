@@ -375,9 +375,9 @@ for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
     write_to_spreadsheet(disk_result, spreadsheet_path)
 
-# print unprocessed list
+# write closing message
 if unanalyzed:
     skipped_disks = ', '.join(unanalyzed)
-    logandprint('Analysis complete. Skipped disks: %s' % skipped_disks)
+    logandprint('Analysis complete. Skipped disks: %s.' % skipped_disks)
 else:
     logandprint('Analysis complete. All disk images analyzed. Results in %s.' % destination)
