@@ -248,6 +248,9 @@ diskimages_dir = os.path.join(destination, 'diskimages')
 results_dir = os.path.join(destination, 'reports')
 for new_dir in diskimages_dir, results_dir:
     os.makedirs(new_dir)
+    
+# make list for unanalyzed disks
+unanalyzed = []
 
 # process each disk image
 for file in sorted(os.listdir(source)):
@@ -306,7 +309,6 @@ for file in sorted(os.listdir(source)):
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                
                 # use fiwalk to make dfxml
                 fiwalk_file = os.path.join(disk_dir, 'dfxml.xml')
                 subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
@@ -315,7 +317,6 @@ for file in sorted(os.listdir(source)):
                 subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
-                
                 # mount disk image
                 subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % diskimage, shell=True)
 
@@ -330,7 +331,6 @@ for file in sorted(os.listdir(source)):
                 subprocess.call("brunnhilde.py -zwbdr --hfs '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
 
             elif 'udf' in disk_fs.lower():
-
                 # mount image
                 subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % diskimage, shell=True)
 
@@ -350,6 +350,11 @@ for file in sorted(os.listdir(source)):
                 
                 # delete tempdir
                 shutil.rmtree(temp_dir)
+            
+            else:
+                # add disk to unanalyzed list
+                unanalyzed.append(diskimage)
+                
 
 # delete disk images
 shutil.rmtree(diskimages_dir)
@@ -370,4 +375,9 @@ for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
     write_to_spreadsheet(disk_result, spreadsheet_path)
 
-print("Analysis complete. Results in %s." % destination)
+# print unprocessed list
+if unanalyzed:
+    skipped_disks = ', '.join(unanalyzed)
+    logandprint('Analysis complete. Skipped disks: %s' % skipped_disks)
+else:
+    logandprint('Analysis complete. All disk images analyzed. Results in %s.' % destination)
