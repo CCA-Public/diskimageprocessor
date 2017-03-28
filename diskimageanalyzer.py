@@ -300,12 +300,10 @@ for file in sorted(os.listdir(source)):
             subprocess.call("disktype '%s' > '%s'" % (diskimage, disktype_txt), shell=True)
 
             # pull filesystem info from disktype.txt
+            disk_fs = ''
             for line in open(disktype_txt, 'r'):
                 if "file system" in line:
                     disk_fs = line
-            # if none, write empty string
-            if not disk_fs:
-                disk_fs = ''
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
