@@ -228,9 +228,11 @@ def create_spreadsheet(files_only):
             # gather info from brunnhilde & write scope and content note
             if extent == 'EMPTY':
                 scopecontent = ''
+                formatlist = ''
             else:
                 fileformats = []
-                fileformat_csv = ""
+                formatlist = ''
+                fileformat_csv = ''
                 if args.bagfiles == True:
                     fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
                 else:
