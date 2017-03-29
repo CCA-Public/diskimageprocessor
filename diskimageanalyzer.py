@@ -225,7 +225,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             if "FOUND" in first_line:
                 virus_found = True
     except:
-        print("ERROR: Issue reading virus log.")
+        print("ERROR: Issue reading virus log for disk %s." % (os.path.basename(disk_result)))
 
     # write csv row
     writer.writerow([os.path.basename(disk_result), disk_fs, date_type, date_statement, date_earliest, date_latest, extent, virus_found, formatlist])
