@@ -200,9 +200,11 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
     # gather info from brunnhilde
     if extent == 'EMPTY':
         scopecontent = ''
+        formatlist = ''
     else:
         fileformats = []
-        fileformat_csv = ""
+        formatlist = ''
+        fileformat_csv = ''
         fileformat_csv = os.path.join(disk_result, 'brunnhilde', 'csv_reports', 'formats.csv')
         try: 
             with open(fileformat_csv, 'r') as f:
