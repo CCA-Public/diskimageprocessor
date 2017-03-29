@@ -323,12 +323,12 @@ for file in sorted(os.listdir(source)):
                 # use md5deep to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
                 subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
+                
+                # run brunnhilde
+                subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
-
-                # run brunnhilde
-                subprocess.call("brunnhilde.py -zwbdr --hfs '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
 
             elif 'udf' in disk_fs.lower():
                 # mount image
