@@ -389,12 +389,13 @@ for file in sorted(os.listdir(args.source)):
             subprocess.call("disktype '%s' > '%s'" % (diskimage, disktype_txt), shell=True)
 
             # pull filesystem info from disktype.txt
-            for line in open(disktype_txt, 'r'):
-                if "file system" in line:
-                    disk_fs = line
-            # if none, write empty string
-            if not disk_fs:
-                disk_fs = ''
+            disk_fs = ''
+            try:
+                for line in open(disktype_txt, 'r'):
+                    if "file system" in line:
+                        disk_fs = line
+            except:
+                pass
             logandprint('File system: %s' % disk_fs)
 
             # handle differently by file system
