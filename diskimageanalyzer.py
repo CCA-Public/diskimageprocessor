@@ -305,8 +305,8 @@ for file in sorted(os.listdir(source)):
             disk_fs = ''
             try:
                 for line in open(disktype_txt, 'r'):
-                if "file system" in line:
-                    disk_fs = line
+                    if "file system" in line:
+                        disk_fs = line
             except:
                 pass
 
@@ -367,7 +367,7 @@ spreadsheet_path = os.path.join(destination, 'analysis.csv')
 # open description spreadsheet
 spreadsheet = open(spreadsheet_path, 'w')
 writer = csv.writer(spreadsheet, quoting=csv.QUOTE_NONNUMERIC)
-header_list = ['Disk image', 'File system', 'Date type', 'Date statement', 'Date begin', 'Date end', 'Extent', 'Virus found?', 'File formats']
+header_list = ['Disk image', 'File system', 'Date type', 'Date statement', 'Date begin', 'Date end', 'Extent', 'Virus found', 'File formats']
 writer.writerow(header_list)
 
 # close description spreadsheet
