@@ -102,7 +102,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
     # build extent statement
     size_readable = convert_size(total_bytes)
     if number_files == 1:
-        extent = "1 digital file (%s)" % size_readable
+        extent = "1 digital file (%s)" % (size_readable)
     elif number_files == 0:
         extent = "EMPTY"
     else:
@@ -183,7 +183,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
     # write date statement
     if date_earliest == date_latest:
-        date_statement = '%s' % date_earliest[:4]
+        date_statement = '%s' % (date_earliest[:4])
     else:
         date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
 
@@ -318,11 +318,11 @@ for file in sorted(os.listdir(source)):
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
-                subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % diskimage, shell=True)
+                subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
 
                 # use md5deep to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
+                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
                 
                 # run brunnhilde
                 subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
@@ -332,11 +332,11 @@ for file in sorted(os.listdir(source)):
 
             elif 'udf' in disk_fs.lower():
                 # mount image
-                subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % diskimage, shell=True)
+                subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
 
                 # use fiwalk to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
+                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
                 
                 # write files to tempdir
                 temp_dir = os.path.join(disk_dir, 'temp')
@@ -378,6 +378,6 @@ for item in sorted(os.listdir(results_dir)):
 # write closing message
 if unanalyzed:
     skipped_disks = ', '.join(unanalyzed)
-    print('Analysis complete. Skipped disks: %s.' % skipped_disks)
+    print('Analysis complete. Skipped disks: %s.' % (skipped_disks))
 else:
-    print('Analysis complete. All disk images analyzed. Results in %s.' % destination)
+    print('Analysis complete. All disk images analyzed. Results in %s.' % (destination))
