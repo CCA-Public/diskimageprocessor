@@ -44,6 +44,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
 
     def on_finished(self):
     	self.lineEdit.setText('Finished')
+        self.process.setEnabled(True)
 
     def start_processing(self):
         # clear reports
@@ -60,6 +61,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
 
         # acknowledge process has started
         self.lineEdit.setText('Started')
+        self.process.setEnabled(False)
 
         # build QStringList
         call = QStringList()
