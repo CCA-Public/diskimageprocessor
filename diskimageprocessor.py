@@ -208,12 +208,14 @@ def create_spreadsheet(files_only):
                 disktype = os.path.join(current, 'metadata', 'submissionDocumentation', 'disktype.txt')
             # pull filesystem info from disktype.txt
             disk_fs = ''
-            for line in open(disktype_txt, 'r'):
-                try:
+            try:
+                for line in open(disktype, 'r'):
                     if "file system" in line:
                         disk_fs = line
-                except:
-                    pass
+            except: # disktype output contains non-unicode text
+                for line in open(disktype, 'rb'):
+                    if "file system" in line:
+                        disk_fs = line
 
             # save tool used to carve files
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
@@ -390,12 +392,14 @@ for file in sorted(os.listdir(args.source)):
 
             # pull filesystem info from disktype.txt
             disk_fs = ''
-            for line in open(disktype_txt, 'r'):
-                try:
+            try:
+                for line in open(disktype, 'r'):
                     if "file system" in line:
                         disk_fs = line
-                except:
-                    pass
+            except: # disktype output contains non-unicode text
+                for line in open(disktype, 'rb'):
+                    if "file system" in line:
+                        disk_fs = line
             logandprint('File system: %s' % (disk_fs))
 
             # handle differently by file system
