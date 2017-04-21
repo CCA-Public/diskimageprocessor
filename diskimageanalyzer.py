@@ -298,7 +298,7 @@ for file in sorted(os.listdir(source)):
             
             # run disktype on disk image, save output to disk_dir
             disktype = os.path.join(disk_dir, 'disktype.txt')
-            subprocess.call("disktype '%s' > '%s'" % (diskimage, disktype_txt), shell=True)
+            subprocess.call("disktype '%s' > '%s'" % (diskimage, disktype), shell=True)
 
             # pull filesystem info from disktype.txt
             disk_fs = ''
