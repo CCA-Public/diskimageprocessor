@@ -191,7 +191,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
         try:
             if "file system" in line:
                 disk_fs = line
-        else:
+        except:
             pass
 
     # gather info from brunnhilde
