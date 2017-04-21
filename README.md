@@ -72,7 +72,7 @@ Install all of the CCA Tools (and PyQT4) together using the install bash script 
 `sudo apt-get install python-qt4`  
 * Clone this repo to your local machine.  
 * Make install script executable (may need to be run with sudo privileges):  
-`chmod +x install.sh` 
+`chmod u+x install.sh` 
 * Run the install script with sudo privileges:  
 `sudo ./install.sh`  
 
