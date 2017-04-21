@@ -159,28 +159,23 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             use_ctimes = False
             use_crtimes = True
 
-    # store date_earliest and date_latest values based on datetype used
+    # store date_earliest and date_latest values based on datetype & record datetype
+    date_type = 'Modified'
     if use_atimes == True:
         date_earliest = date_earliest_a[:10]
         date_latest = date_latest_a[:10] 
+        date_type = 'Accessed'
     elif use_ctimes == True:
         date_earliest = date_earliest_c[:10]
         date_latest = date_latest_c[:10]
+        date_type = 'Created'
     elif use_crtimes == True:
         date_earliest = date_earliest_cr[:10]
         date_latest = date_latest_cr[:10]
+        date_type = 'Created'
     else:
         date_earliest = date_earliest_m[:10]
         date_latest = date_latest_m[:10]
-
-    # record date type used
-    date_type = 'Modified'
-    if use_atimes == True:
-        date_type = 'Accessed'
-    if use_ctimes == True:
-        date_type = 'Created'
-    if use_crtimes == True:
-        date_type = 'Created'
 
     # write date statement
     if date_earliest == date_latest:
@@ -191,12 +186,13 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
     # gather file system info, discern tool used
     disktype = os.path.join(disk_result, 'disktype.txt')
     # pull filesystem info from disktype.txt
+    disk_fs = ''
     for line in open(disktype, 'r'):
-        if "file system" in line:
-            disk_fs = line
-    # if none, write empty string
-    if not disk_fs:
-        disk_fs = ''
+        try:
+            if "file system" in line:
+                disk_fs = line
+        else:
+            pass
 
     # gather info from brunnhilde
     if extent == 'EMPTY':
