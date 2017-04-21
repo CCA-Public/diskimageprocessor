@@ -208,11 +208,11 @@ def create_spreadsheet(files_only):
                 disktype = os.path.join(current, 'metadata', 'submissionDocumentation', 'disktype.txt')
             # pull filesystem info from disktype.txt
             disk_fs = ''
-            for line in open(disktype, 'r'):
+            for line in open(disktype_txt, 'r'):
                 try:
                     if "file system" in line:
-                    disk_fs = line
-                else:
+                        disk_fs = line
+                except:
                     pass
 
             # save tool used to carve files
