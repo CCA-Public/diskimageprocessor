@@ -49,6 +49,14 @@ The destination directory also contains a log file and a "SIPs" directory contai
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and, optionally, bulk_extractor)  
 
+## Details
+
+### Dates
+
+CCA Disk Image Processor gathers dates from the DFXML files it generates, **not** from the file system. In practice, this means the dates reported in the CCA Disk Image Processor-generated spreadsheets and the dates shown in the file system for carved files may differ. The underlying logic is that file system dates may be modified by the tools used to export files, but it is dates of creation and use prior to digital files' arrival at a collecting institution that we want to convey to end users of our archival description.
+
+The utility compares dates created, modified, and accessed, and uses the set of dates with the earliest start date to populate the analysis/description spreadsheets. In "Analysis" mode, which set of dates is being used to generate date statements is made explicit. In "Processing" mode, it is not. The same logic applies for dates in both modes, so if you want to verify which set of dates are being used, simply run the same set of disk images in "Analysis" mode and refer to the resulting analysis.csv file.
+
 ## Installation
 
 This utility is designed for easy use in Bitcurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in Bitcurator.    
