@@ -18,14 +18,13 @@ To have Brunnhilde also complete a PII scan using bulk_extractor, pass the
 
 For processing HFS and UDF disk images, make sure /mnt/diskid/ exists prior to use.
 
-Python 2.7
+Python 3
 
 MIT License
 (c) Tim Walsh 2016
 http://bitarchivist.net
 """
 
-from __future__ import print_function
 import argparse
 import csv
 import datetime
@@ -304,7 +303,7 @@ os.makedirs(sips)
 log_file = os.path.join(destination, 'diskimageprocessor-log.txt')
 try:
     log = open(log_file, 'w')   # open the log file
-    logandprint('Source of disk images: %s' % args.source)
+    logandprint('Source of disk images: %s' % (args.source))
 except:
     sys.exit('There was an error creating the log file.')
 
@@ -332,7 +331,7 @@ unprocessed = []
 for file in sorted(os.listdir(args.source)):
 
     # record filename in log
-    logandprint('>>> NEW FILE: %s' % file)
+    logandprint('>>> NEW FILE: %s' % (file))
     
     # determine if disk image
     if file.endswith(".E01") or file.endswith(".000") or file.endswith(".raw") or file.endswith(".img") or file.endswith(".dd") or file.endswith(".iso"):
@@ -363,9 +362,9 @@ for file in sorted(os.listdir(args.source)):
             try:
                 subprocess.check_output(['ewfexport', '-t', raw_out, '-f', 'raw', '-o', '0', '-S', '0', '-u', image_path])
                 raw_image = True
-                os.rename(os.path.join(diskimage_dir, '%s.raw' % image_id), os.path.join(diskimage_dir, '%s.img' % image_id)) # change file extension from .raw to .img
-                os.rename(os.path.join(diskimage_dir, '%s.raw.info' % image_id), os.path.join(diskimage_dir, '%s.img.info' % image_id)) # rename sidecar md5 file
-                diskimage = os.path.join(diskimage_dir, '%s.img' % image_id) # use raw disk image in objects/diskimage moving forward
+                os.rename(os.path.join(diskimage_dir, '%s.raw' % (image_id)), os.path.join(diskimage_dir, '%s.img' % image_id)) # change file extension from .raw to .img
+                os.rename(os.path.join(diskimage_dir, '%s.raw.info' % (image_id)), os.path.join(diskimage_dir, '%s.img.info' % image_id)) # rename sidecar md5 file
+                diskimage = os.path.join(diskimage_dir, '%s.img' % (image_id)) # use raw disk image in objects/diskimage moving forward
             except subprocess.CalledProcessError:
                 logandprint('ERROR: Disk image could not be converted to raw image format. Skipping disk.')
 
@@ -396,7 +395,7 @@ for file in sorted(os.listdir(args.source)):
                         disk_fs = line
             except:
                 pass
-            logandprint('File system: %s' % disk_fs)
+            logandprint('File system: %s' % (disk_fs))
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
@@ -405,19 +404,19 @@ for file in sorted(os.listdir(args.source)):
                 try:
                     subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
                 except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % e.output)
+                    logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
                 
                 # carve images using tsk_recover
                 if args.exportall == True: # export all files
                     try:
                         subprocess.check_output(['tsk_recover', '-e', diskimage, files_dir])
                     except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % e.output)
+                        logandprint('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % (e.output))
                 else: # export only allocated files (default)
                     try:
                         subprocess.check_output(['tsk_recover', '-a', diskimage, files_dir])
                     except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % e.output)    
+                        logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
 
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
@@ -432,21 +431,21 @@ for file in sorted(os.listdir(args.source)):
 
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
-                    subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
+                    subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
                 else: # write metadata/checksum.md5
-                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % metadata_dir, shell=True)
+                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
                 # modify file permissions
-                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % sip_dir, shell=True)
-                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % sip_dir, shell=True)
+                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
-                subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % diskimage, shell=True)
+                subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
 
                 # use md5deep to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
+                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
@@ -456,12 +455,12 @@ for file in sorted(os.listdir(args.source)):
                     try:
                         subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', files_dir, diskimage])
                     except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output)
+                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
                 else:
                     try:
                         subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', files_dir, diskimage])
                     except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % e.output) 
+                        logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output)) 
 
                 # run brunnhilde and write to reports directory
                 files_abs = os.path.abspath(files_dir)
@@ -476,21 +475,21 @@ for file in sorted(os.listdir(args.source)):
 
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
-                    subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
+                    subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
                 else: # write metadata/checksum.md5
-                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % metadata_dir, shell=True)
+                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
                 # modify file permissions
-                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % sip_dir, shell=True)
-                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % sip_dir, shell=True)
+                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
             elif 'udf' in disk_fs.lower():
                 # mount image
-                subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % diskimage, shell=True)
+                subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
 
                 # use fiwalk to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % dfxml_file, shell=True)
+                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
                 
                 # copy files from disk image to files dir
                 shutil.rmtree(files_dir) # delete to enable use of copytree
@@ -512,13 +511,13 @@ for file in sorted(os.listdir(args.source)):
 
                 # write checksums
                 if args.bagfiles == True: # bag entire SIP
-                    subprocess.call("bagit.py --processes 4 '%s'" % sip_dir, shell=True)
+                    subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
                 else: # write metadata/checksum.md5
-                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % metadata_dir, shell=True)
+                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
                 # modify file permissions
-                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % sip_dir, shell=True)
-                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % sip_dir, shell=True)
+                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
             
             else:
                 logandprint('NOTICE: Skipping processing of unknown disk type.')
@@ -536,9 +535,9 @@ for file in sorted(os.listdir(args.source)):
 # print unprocessed list
 if unprocessed:
     skipped_disks = ', '.join(unprocessed)
-    logandprint('Processing complete. Skipped disks: %s' % skipped_disks)
+    logandprint('Processing complete. Skipped disks: %s' % (skipped_disks))
 else:
-    logandprint('Processing complete. All disk images processed. Results in %s.' % destination)
+    logandprint('Processing complete. All disk images processed. Results in %s.' % (destination))
 
 # write description spreadsheet
 create_spreadsheet(args.filesonly)
