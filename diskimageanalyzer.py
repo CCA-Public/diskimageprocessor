@@ -193,7 +193,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
                 disk_fs = line
     except:
         for line in open(disktype, 'rb'):
-            if "file system" in line:
+            if "file system" in line.decode(encoding='UTF-8'):
                 disk_fs = line.decode(encoding='UTF-8')
 
     # gather info from brunnhilde
