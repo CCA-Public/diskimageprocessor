@@ -191,7 +191,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
         for line in open(disktype, 'r'):
             if "file system" in line:
                 disk_fs = line
-    except:
+    except: # handle non-Unicode chars
         for line in open(disktype, 'rb'):
             if "file system" in line.decode('utf-8','ignore'):
                 disk_fs = line.decode('utf-8','ignore')
@@ -306,7 +306,7 @@ for file in sorted(os.listdir(source)):
                 for line in open(disktype, 'r'):
                     if "file system" in line:
                         disk_fs = line
-            except:
+            except: # handle non-Unicode chars
                 for line in open(disktype, 'rb'):
                     if "file system" in line.decode('utf-8','ignore'):
                         disk_fs = line.decode('utf-8','ignore')

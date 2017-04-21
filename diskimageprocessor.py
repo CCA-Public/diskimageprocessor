@@ -212,10 +212,10 @@ def create_spreadsheet(files_only):
                 for line in open(disktype, 'r'):
                     if "file system" in line:
                         disk_fs = line
-            except: # disktype output contains non-unicode text
+            except: # handle non-Unicode chars
                 for line in open(disktype, 'rb'):
-                    if "file system" in line:
-                        disk_fs = line
+                    if "file system" in line.decode('utf-8','ignore'):
+                        disk_fs = line.decode('utf-8','ignore')
 
             # save tool used to carve files
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
@@ -396,10 +396,10 @@ for file in sorted(os.listdir(args.source)):
                 for line in open(disktype, 'r'):
                     if "file system" in line:
                         disk_fs = line
-            except: # disktype output contains non-unicode text
+            except: # handle non-Unicode chars
                 for line in open(disktype, 'rb'):
-                    if "file system" in line:
-                        disk_fs = line
+                    if "file system" in line.decode('utf-8','ignore'):
+                        disk_fs = line.decode('utf-8','ignore')
             logandprint('File system: %s' % (disk_fs))
 
             # handle differently by file system
