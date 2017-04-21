@@ -3,13 +3,14 @@
 
 """
 Disk Image Analyzer
-Used as CLI utility or for "Analysis" mode in CCA Disk Image Processor.
+Called from "Analysis" mode in CCA Disk Image Processor.
+Can also be run as separate script.
+Python 3
 
 Tim Walsh 2017
 MIT License
 """
 
-from __future__ import print_function
 import argparse
 import csv
 import datetime
