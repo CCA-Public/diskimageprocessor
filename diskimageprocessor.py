@@ -207,12 +207,13 @@ def create_spreadsheet(files_only):
             else:
                 disktype = os.path.join(current, 'metadata', 'submissionDocumentation', 'disktype.txt')
             # pull filesystem info from disktype.txt
+            disk_fs = ''
             for line in open(disktype, 'r'):
-                if "file system" in line:
+                try:
+                    if "file system" in line:
                     disk_fs = line
-            # if none, write empty string
-            if not disk_fs:
-                disk_fs = ''
+                else:
+                    pass
 
             # save tool used to carve files
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
