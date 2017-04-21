@@ -191,10 +191,8 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
         for line in open(disktype, 'r'):
             if "file system" in line:
                 disk_fs = line
-    except: # disktype output contains non-unicode text
-        for line in open(disktype, 'rb'):
-            if "file system" in line:
-                disk_fs = line
+    except:
+        pass
 
     # gather info from brunnhilde
     if extent == 'EMPTY':
