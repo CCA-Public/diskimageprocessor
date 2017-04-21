@@ -30,6 +30,8 @@ The destination directory also contains a "reports" directory containing a sub-d
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and bulk_extractor)  
 
+Because "Analysis" mode runs bulk_extractor against each disk, this process can take a while.  
+
 ### Processing
 
 Underlying script: `diskimageprocessor.py`  
