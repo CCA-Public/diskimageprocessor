@@ -192,7 +192,9 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             if "file system" in line:
                 disk_fs = line
     except:
-        pass
+        for line in open(disktype, 'rb'):
+            if "file system" in line:
+                disk_fs = line
 
     # gather info from brunnhilde
     if extent == 'EMPTY':
@@ -300,12 +302,14 @@ for file in sorted(os.listdir(source)):
 
             # pull filesystem info from disktype.txt
             disk_fs = ''
-            for line in open(disktype_txt, 'r'):
-                try:
+            try:
+                for line in open(disktype, 'r'):
                     if "file system" in line:
                         disk_fs = line
-                except:
-                    pass
+            except:
+                for line in open(disktype, 'rb'):
+                    if "file system" in line:
+                        disk_fs = line
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
