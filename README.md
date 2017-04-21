@@ -21,7 +21,7 @@ In Analysis mode, each disk image is scanned and reported on. When complete, an 
 * Date begin  
 * Date end  
 * Extent  
-* Virus found? (Boolean value)  
+* Virus found (Boolean value)  
 * File formats  
 
 The destination directory also contains a "reports" directory containing a sub-directory for each disk image scanned. Each of these disk image sub-directories contains:  
