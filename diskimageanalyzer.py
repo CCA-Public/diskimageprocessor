@@ -300,12 +300,12 @@ for file in sorted(os.listdir(source)):
 
             # pull filesystem info from disktype.txt
             disk_fs = ''
-            try:
-                for line in open(disktype_txt, 'r'):
+            for line in open(disktype_txt, 'r'):
+                try:
                     if "file system" in line:
                         disk_fs = line
-            except:
-                pass
+                except:
+                    pass
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):

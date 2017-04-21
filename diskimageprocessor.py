@@ -390,12 +390,12 @@ for file in sorted(os.listdir(args.source)):
 
             # pull filesystem info from disktype.txt
             disk_fs = ''
-            try:
-                for line in open(disktype_txt, 'r'):
+            for line in open(disktype_txt, 'r'):
+                try:
                     if "file system" in line:
                         disk_fs = line
-            except:
-                pass
+                except:
+                    pass
             logandprint('File system: %s' % (disk_fs))
 
             # handle differently by file system
