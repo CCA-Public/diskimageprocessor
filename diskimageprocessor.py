@@ -211,11 +211,11 @@ def create_spreadsheet(files_only):
             try:
                 for line in open(disktype, 'r'):
                     if "file system" in line:
-                        disk_fs = line
+                        disk_fs = line.strip()
             except: # handle non-Unicode chars
                 for line in open(disktype, 'rb'):
                     if "file system" in line.decode('utf-8','ignore'):
-                        disk_fs = line.decode('utf-8','ignore')
+                        disk_fs = line.decode('utf-8','ignore').strip()
 
             # save tool used to carve files
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
@@ -395,11 +395,11 @@ for file in sorted(os.listdir(args.source)):
             try:
                 for line in open(disktype, 'r'):
                     if "file system" in line:
-                        disk_fs = line
+                        disk_fs = line.strip()
             except: # handle non-Unicode chars
                 for line in open(disktype, 'rb'):
                     if "file system" in line.decode('utf-8','ignore'):
-                        disk_fs = line.decode('utf-8','ignore')
+                        disk_fs = line.decode('utf-8','ignore').strip()
             logandprint('File system: %s' % (disk_fs))
 
             # handle differently by file system

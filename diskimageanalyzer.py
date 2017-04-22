@@ -190,11 +190,11 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
     try:
         for line in open(disktype, 'r'):
             if "file system" in line:
-                disk_fs = line
+                disk_fs = line.strip()
     except: # handle non-Unicode chars
         for line in open(disktype, 'rb'):
             if "file system" in line.decode('utf-8','ignore'):
-                disk_fs = line.decode('utf-8','ignore')
+                disk_fs = line.decode('utf-8','ignore').strip()
 
     # gather info from brunnhilde
     if extent == 'EMPTY':
@@ -305,11 +305,11 @@ for file in sorted(os.listdir(source)):
             try:
                 for line in open(disktype, 'r'):
                     if "file system" in line:
-                        disk_fs = line
+                        disk_fs = line.strip()
             except: # handle non-Unicode chars
                 for line in open(disktype, 'rb'):
                     if "file system" in line.decode('utf-8','ignore'):
-                        disk_fs = line.decode('utf-8','ignore')
+                        disk_fs = line.decode('utf-8','ignore').strip()
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
