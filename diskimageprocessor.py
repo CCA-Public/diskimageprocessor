@@ -387,8 +387,8 @@ for file in sorted(os.listdir(args.source)):
         if raw_image == True:
 
             # run disktype on disk image, save output to submissionDocumentation
-            disktype_txt = os.path.join(subdoc_dir, 'disktype.txt')
-            subprocess.call("disktype '%s' > '%s'" % (diskimage, disktype_txt), shell=True)
+            disktype = os.path.join(subdoc_dir, 'disktype.txt')
+            subprocess.call("disktype '%s' > '%s'" % (diskimage, disktype), shell=True)
 
             # pull filesystem info from disktype.txt
             disk_fs = ''
