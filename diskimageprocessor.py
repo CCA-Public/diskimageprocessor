@@ -77,191 +77,203 @@ def create_spreadsheet(files_only):
             else:
                 dfxml_file = os.path.abspath(os.path.join(current, 'metadata', 'submissionDocumentation', 'dfxml.xml'))
 
-            # gather info for each FileObject
-            for (event, obj) in Objects.iterparse(dfxml_file):
-                
-                # only work on FileObjects
-                if not isinstance(obj, Objects.FileObject):
-                    continue
-                
-                # gather info
-                number_files += 1
-
-                try:
-                    mtime = obj.mtime
-                    mtime = str(mtime)
-                    mtimes.append(mtime)
-                except:
-                    pass
-
-                try:
-                    atime = obj.atime
-                    atime = str(atime)
-                    atimes.append(atime)
-                except:
-                    pass
-
-                try:
-                    ctime = obj.ctime
-                    ctime = str(ctime)
-                    ctimes.append(ctime)
-                except:
-                    pass
-
-                try:
-                    crtime = obj.crtime
-                    crtime = str(crtime)
-                    crtimes.append(crtime)
-                except:
-                    pass
-        
-                total_bytes += obj.filesize
-
-            # filter 'None' values from date lists
-            for date_list in mtimes, atimes, ctimes, crtimes:
-                while 'None' in date_list:
-                    date_list.remove('None')
-
-            # build extent statement
-            size_readable = convert_size(total_bytes)
-            if number_files == 1:
-                extent = "1 digital file (%s)" % size_readable
-            elif number_files == 0:
-                extent = "EMPTY"
-            else:
-                extent = "%d digital files (%s)" % (number_files, size_readable)
-
-            # determine earliest and latest MAC dates from lists
-            date_earliest_m = ""
-            date_latest_m = ""
-            date_earliest_a = ""
-            date_latest_a = ""
-            date_earliest_c = ""
-            date_latest_c = ""
-            date_earliest_cr = ""
-            date_latest_cr = ""
-            date_statement = ""
-
-            if mtimes:
-                date_earliest_m = min(mtimes)
-                date_latest_m = max(mtimes)
-            if atimes:
-                date_earliest_a = min(atimes)
-                date_latest_a = max(atimes)
-            if ctimes:
-                date_earliest_c = min(ctimes)
-                date_latest_c = max(ctimes)
-            if crtimes:
-                date_earliest_cr = min(crtimes)
-                date_latest_cr = max(crtimes)
-
-            # determine which set of dates to use (logic: use set with earliest start date)
-            use_atimes = False
-            use_ctimes = False
-            use_crtimes = False
-
-            if not date_earliest_m:
-                date_earliest_m = "N/A"
-                date_latest_m = "N/A"
-            date_to_use = date_earliest_m # default to date modified
-
-            if date_earliest_a:
-                if date_earliest_a < date_to_use:
-                    date_to_use = date_earliest_a
-                    use_atimes = True
-            if date_earliest_c:
-                if date_earliest_c < date_to_use:
-                    date_to_use = date_earliest_c
-                    use_atimes = False
-                    use_ctimes = True
-            if date_earliest_cr:
-                if date_earliest_cr < date_to_use:
-                    date_to_use = date_earliest_cr
-                    use_atimes = False
-                    use_ctimes = False
-                    use_crtimes = True
-
-            # store date_earliest and date_latest values based on datetype used
-            if use_atimes == True:
-                date_earliest = date_earliest_a[:10]
-                date_latest = date_latest_a[:10] 
-            elif use_ctimes == True:
-                date_earliest = date_earliest_c[:10]
-                date_latest = date_latest_c[:10]
-            elif use_crtimes == True:
-                date_earliest = date_earliest_cr[:10]
-                date_latest = date_latest_cr[:10]
-            else:
-                date_earliest = date_earliest_m[:10]
-                date_latest = date_latest_m[:10]
-
-            # write date statement
-            if date_earliest == date_latest:
-                date_statement = '%s' % date_earliest[:4]
-            else:
-                date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
-
-            # gather file system info, discern tool used
-            if args.bagfiles == True:
-                disktype = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'disktype.txt')
-            else:
-                disktype = os.path.join(current, 'metadata', 'submissionDocumentation', 'disktype.txt')
-            # pull filesystem info from disktype.txt
-            disk_fs = ''
+            # try to read DFXML file
             try:
-                for line in open(disktype, 'r'):
-                    if "file system" in line:
-                        disk_fs = line.strip()
-            except: # handle non-Unicode chars
-                for line in open(disktype, 'rb'):
-                    if "file system" in line.decode('utf-8','ignore'):
-                        disk_fs = line.decode('utf-8','ignore').strip()
+                # gather info for each FileObject
+                for (event, obj) in Objects.iterparse(dfxml_file):
+                    
+                    # only work on FileObjects
+                    if not isinstance(obj, Objects.FileObject):
+                        continue
+                    
+                    # gather info
+                    number_files += 1
 
-            # save tool used to carve files
-            if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                tool = "using SleuthKit's tsk_recover"
-            elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
-                tool = "using the HFSExplorer command line utility unhfs"
-            elif ('udf' in disk_fs.lower()):
-                tool = "by mounting disk image and copying files with Python's shutil.copytree function"
-            else:
-                tool = "UNSUCCESSFULLY"
+                    try:
+                        mtime = obj.mtime
+                        mtime = str(mtime)
+                        mtimes.append(mtime)
+                    except:
+                        pass
 
-            # gather info from brunnhilde & write scope and content note
-            if extent == 'EMPTY':
-                scopecontent = ''
-                formatlist = ''
-            else:
-                fileformats = []
-                formatlist = ''
-                fileformat_csv = ''
-                if args.bagfiles == True:
-                    fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
-                else:
-                    fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
-                try: 
-                    with open(fileformat_csv, 'r') as f:
-                        reader = csv.reader(f)
-                        next(reader)
-                        for row in itertools.islice(reader, 5):
-                            fileformats.append(row[0])
-                except:
-                    fileformats.append("ERROR! No formats.csv file to pull formats from.")
-                fileformats = [element or 'Unidentified' for element in fileformats] # replace empty elements with 'Unidentified'
-                formatlist = ', '.join(fileformats) # format list of top file formats as human-readable
-                
-                
-                # create scope and content note
-                if files_only == True:
-                    scopecontent = 'File includes logical files carved from a disk image %s. Most common file formats: %s' % (tool, formatlist)
-                else:
-                    scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
+                    try:
+                        atime = obj.atime
+                        atime = str(atime)
+                        atimes.append(atime)
+                    except:
+                        pass
 
-            # write csv row
-            writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
-                scopecontent, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
+                    try:
+                        ctime = obj.ctime
+                        ctime = str(ctime)
+                        ctimes.append(ctime)
+                    except:
+                        pass
+
+                    try:
+                        crtime = obj.crtime
+                        crtime = str(crtime)
+                        crtimes.append(crtime)
+                    except:
+                        pass
             
-            logandprint('Described %s successfully.' % current)
+                    total_bytes += obj.filesize
+
+                # filter 'None' values from date lists
+                for date_list in mtimes, atimes, ctimes, crtimes:
+                    while 'None' in date_list:
+                        date_list.remove('None')
+
+                # build extent statement
+                size_readable = convert_size(total_bytes)
+                if number_files == 1:
+                    extent = "1 digital file (%s)" % size_readable
+                elif number_files == 0:
+                    extent = "EMPTY"
+                else:
+                    extent = "%d digital files (%s)" % (number_files, size_readable)
+
+                # determine earliest and latest MAC dates from lists
+                date_earliest_m = ""
+                date_latest_m = ""
+                date_earliest_a = ""
+                date_latest_a = ""
+                date_earliest_c = ""
+                date_latest_c = ""
+                date_earliest_cr = ""
+                date_latest_cr = ""
+                date_statement = ""
+
+                if mtimes:
+                    date_earliest_m = min(mtimes)
+                    date_latest_m = max(mtimes)
+                if atimes:
+                    date_earliest_a = min(atimes)
+                    date_latest_a = max(atimes)
+                if ctimes:
+                    date_earliest_c = min(ctimes)
+                    date_latest_c = max(ctimes)
+                if crtimes:
+                    date_earliest_cr = min(crtimes)
+                    date_latest_cr = max(crtimes)
+
+                # determine which set of dates to use (logic: use set with earliest start date)
+                use_atimes = False
+                use_ctimes = False
+                use_crtimes = False
+
+                if not date_earliest_m:
+                    date_earliest_m = "N/A"
+                    date_latest_m = "N/A"
+                date_to_use = date_earliest_m # default to date modified
+
+                if date_earliest_a:
+                    if date_earliest_a < date_to_use:
+                        date_to_use = date_earliest_a
+                        use_atimes = True
+                if date_earliest_c:
+                    if date_earliest_c < date_to_use:
+                        date_to_use = date_earliest_c
+                        use_atimes = False
+                        use_ctimes = True
+                if date_earliest_cr:
+                    if date_earliest_cr < date_to_use:
+                        date_to_use = date_earliest_cr
+                        use_atimes = False
+                        use_ctimes = False
+                        use_crtimes = True
+
+                # store date_earliest and date_latest values based on datetype used
+                if use_atimes == True:
+                    date_earliest = date_earliest_a[:10]
+                    date_latest = date_latest_a[:10] 
+                elif use_ctimes == True:
+                    date_earliest = date_earliest_c[:10]
+                    date_latest = date_latest_c[:10]
+                elif use_crtimes == True:
+                    date_earliest = date_earliest_cr[:10]
+                    date_latest = date_latest_cr[:10]
+                else:
+                    date_earliest = date_earliest_m[:10]
+                    date_latest = date_latest_m[:10]
+
+                # write date statement
+                if date_earliest == date_latest:
+                    date_statement = '%s' % date_earliest[:4]
+                else:
+                    date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
+
+                # gather file system info, discern tool used
+                if args.bagfiles == True:
+                    disktype = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'disktype.txt')
+                else:
+                    disktype = os.path.join(current, 'metadata', 'submissionDocumentation', 'disktype.txt')
+                # pull filesystem info from disktype.txt
+                disk_fs = ''
+                try:
+                    for line in open(disktype, 'r'):
+                        if "file system" in line:
+                            disk_fs = line.strip()
+                except: # handle non-Unicode chars
+                    for line in open(disktype, 'rb'):
+                        if "file system" in line.decode('utf-8','ignore'):
+                            disk_fs = line.decode('utf-8','ignore').strip()
+
+                # save tool used to carve files
+                if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
+                    tool = "using SleuthKit's tsk_recover"
+                elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
+                    tool = "using the HFSExplorer command line utility unhfs"
+                elif ('udf' in disk_fs.lower()):
+                    tool = "by mounting disk image and copying files with Python's shutil.copytree function"
+                else:
+                    tool = "UNSUCCESSFULLY"
+
+                # gather info from brunnhilde & write scope and content note
+                if extent == 'EMPTY':
+                    scopecontent = ''
+                    formatlist = ''
+                else:
+                    fileformats = []
+                    formatlist = ''
+                    fileformat_csv = ''
+                    if args.bagfiles == True:
+                        fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
+                    else:
+                        fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
+                    try: 
+                        with open(fileformat_csv, 'r') as f:
+                            reader = csv.reader(f)
+                            next(reader)
+                            for row in itertools.islice(reader, 5):
+                                fileformats.append(row[0])
+                    except:
+                        fileformats.append("ERROR! No formats.csv file to pull formats from.")
+                    fileformats = [element or 'Unidentified' for element in fileformats] # replace empty elements with 'Unidentified'
+                    formatlist = ', '.join(fileformats) # format list of top file formats as human-readable
+                    
+                    
+                    # create scope and content note
+                    if files_only == True:
+                        scopecontent = 'File includes logical files carved from a disk image %s. Most common file formats: %s' % (tool, formatlist)
+                    else:
+                        scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
+
+                # write csv row
+                writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
+                    scopecontent, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
+                
+                logandprint('Described %s successfully.' % (current)
+
+            # if error reading DFXML file, report that
+            except:
+                # write error to csv
+                writer.writerow(['', item, '', '', 'Error', 'Error', 'Error', 'File', 'Error', 
+                    'Error reading DFXML file.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
+
+                logandprint('ERROR: DFXML file for %s not well-formed.' % (current)
+
+
 
     logandprint('All SIPs described in spreadsheet. Process complete.')
 
