@@ -233,7 +233,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
     # if error reading DFXML, print that to spreadsheet
     except:
-        writer.writerow([os.path.basename(disk_result), disk_fs, 'Error', 'Error', 'Error', 'Error', 'Error', 'Error reading DFXML file.', ])
+        writer.writerow([os.path.basename(disk_result), 'Error', 'Error', 'Error', 'Error', 'Error', 'Error', 'Error reading DFXML file.', ])
 
     spreadsheet.close()
 
