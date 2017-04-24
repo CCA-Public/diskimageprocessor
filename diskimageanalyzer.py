@@ -346,6 +346,10 @@ for file in sorted(os.listdir(source)):
                 temp_dir = os.path.join(disk_dir, 'temp')
                 shutil.copytree('/mnt/diskid/', temp_dir, symlinks=False, ignore=None)
 
+                # change file permissions in temp_dir
+                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (temp_dir), shell=True)
+                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (temp_dir), shell=True)
+
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 

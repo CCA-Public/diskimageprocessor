@@ -500,6 +500,10 @@ for file in sorted(os.listdir(args.source)):
                 shutil.rmtree(files_dir) # delete to enable use of copytree
                 shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
 
+                # change file permissions in files dir
+                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (files_dir), shell=True)
+                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (files_dir), shell=True)
+
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
 
