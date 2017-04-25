@@ -221,11 +221,11 @@ def create_spreadsheet(files_only):
 
                 # save tool used to carve files
                 if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                    tool = "using SleuthKit's tsk_recover"
+                    tool = "carved from the disk image using SleuthKit's tsk_recover"
                 elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
-                    tool = "using the HFSExplorer command line utility unhfs"
+                    tool = "carved from the disk image using the HFSExplorer command line utility unhfs"
                 elif ('udf' in disk_fs.lower()):
-                    tool = "by mounting disk image and copying files with Python's shutil.copytree function"
+                    tool = "copied from the mounted image"
                 else:
                     tool = "UNSUCCESSFULLY"
 
@@ -257,7 +257,7 @@ def create_spreadsheet(files_only):
                     if files_only == True:
                         scopecontent = 'File includes logical files carved from a disk image %s. Most common file formats: %s' % (tool, formatlist)
                     else:
-                        scopecontent = 'File includes both a disk image and logical files carved from the disk image %s. Most common file formats: %s' % (tool, formatlist)
+                        scopecontent = 'File includes both a disk image and logical files %s. Most common file formats: %s' % (tool, formatlist)
 
                 # write csv row
                 writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
