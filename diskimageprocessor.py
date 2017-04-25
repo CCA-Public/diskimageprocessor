@@ -272,6 +272,9 @@ def create_spreadsheet(files_only):
                     'Error reading DFXML file.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
 
                 logandprint('ERROR: DFXML file for %s not well-formed.' % (current))
+        
+        else:
+            pass
 
 
 
