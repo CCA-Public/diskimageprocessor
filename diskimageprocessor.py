@@ -263,7 +263,7 @@ def create_spreadsheet(files_only):
                 writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
                     scopecontent, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
                 
-                logandprint('Described %s successfully.' % (current)
+                logandprint('Described %s successfully.' % (current))
 
             # if error reading DFXML file, report that
             except:
@@ -272,9 +272,6 @@ def create_spreadsheet(files_only):
                     'Error reading DFXML file.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
 
                 logandprint('ERROR: DFXML file for %s not well-formed.' % (current))
-        
-        else:
-            pass
 
 
 
