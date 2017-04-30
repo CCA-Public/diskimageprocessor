@@ -27,7 +27,7 @@ sys.path.append('/usr/share/dfxml/python')
 import Objects
 
 def convert_size(size):
-    # convert size to human-readable form
+    """convert size to human-readable form"""
     if (size == 0):
         return '0 bytes'
     size_name = ("bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
@@ -39,6 +39,7 @@ def convert_size(size):
     return '%s %s' % (s,size_name[i])
 
 def write_to_spreadsheet(disk_result, spreadsheet_path):
+    """append info for current disk to analysis CSV"""
 
     # open description spreadsheet
     spreadsheet = open(spreadsheet_path, 'a')
@@ -62,6 +63,10 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             
             # only work on FileObjects
             if not isinstance(obj, Objects.FileObject):
+                continue
+
+            # skip directories and links
+            if obj.name_type != "r":
                 continue
             
             # gather info
@@ -233,7 +238,8 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
     # if error reading DFXML, print that to spreadsheet
     except:
-        writer.writerow([os.path.basename(disk_result), 'Error', 'Error', 'Error', 'Error', 'Error', 'Error', 'Error', 'Error reading DFXML file.'])
+        writer.writerow([os.path.basename(disk_result), 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 
+            'N/A', 'N/A', 'Error reading DFXML file.'])
 
     spreadsheet.close()
 
@@ -330,9 +336,9 @@ for file in sorted(os.listdir(source)):
                 # mount disk image
                 subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
 
-                # use md5deep to make dfxml
+                # use walk_to_dfxml.py to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 
                 # run brunnhilde
                 subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
@@ -344,9 +350,9 @@ for file in sorted(os.listdir(source)):
                 # mount image
                 subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
 
-                # use fiwalk to create dfxml
+                # use walk_to_dfxml.py to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 
                 # write files to tempdir
                 temp_dir = os.path.join(disk_dir, 'temp')

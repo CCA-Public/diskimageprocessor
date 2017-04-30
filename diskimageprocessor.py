@@ -85,6 +85,10 @@ def create_spreadsheet(files_only):
                     # only work on FileObjects
                     if not isinstance(obj, Objects.FileObject):
                         continue
+
+                    # skip directories and links
+                    if obj.name_type != "r":
+                        continue
                     
                     # gather info
                     number_files += 1
@@ -460,9 +464,9 @@ for file in sorted(os.listdir(args.source)):
                 # mount disk image
                 subprocess.call("sudo mount -t hfs -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
 
-                # use md5deep to make dfxml
+                # use walk_to_dfxml.py to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
@@ -504,9 +508,9 @@ for file in sorted(os.listdir(args.source)):
                 # mount image
                 subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
 
-                # use fiwalk to create dfxml
+                # use walk_to_dfxml.py to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("md5deep -rd /mnt/diskid/ > '%s'" % (dfxml_file), shell=True)
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 
                 # copy files from disk image to files dir
                 shutil.rmtree(files_dir) # delete to enable use of copytree
