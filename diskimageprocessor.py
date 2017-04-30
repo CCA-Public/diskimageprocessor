@@ -85,6 +85,10 @@ def create_spreadsheet(files_only):
                     # only work on FileObjects
                     if not isinstance(obj, Objects.FileObject):
                         continue
+
+                    # skip directories and links
+                    if obj.name_type != "r":
+                        continue
                     
                     # gather info
                     number_files += 1

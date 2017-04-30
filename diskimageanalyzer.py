@@ -64,6 +64,10 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             # only work on FileObjects
             if not isinstance(obj, Objects.FileObject):
                 continue
+
+            # skip directories and links
+            if obj.name_type != "r":
+                continue
             
             # gather info
             number_files += 1
