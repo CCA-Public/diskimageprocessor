@@ -61,7 +61,7 @@ The utility compares dates created, modified, and accessed, and uses the set of 
 
 ## Installation
 
-This utility is designed for easy use in Bitcurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in Bitcurator.    
+This utility is designed for easy use in BitCurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in BitCurator.    
 
 ### Install as part of CCA Tools  
 
