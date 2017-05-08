@@ -23,7 +23,6 @@ import sys
 from time import localtime, strftime
 
 #import Objects.py from python dfxml tools
-sys.path.append('/usr/share/dfxml/python')
 import Objects
 
 def convert_size(size):
