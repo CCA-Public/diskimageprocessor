@@ -32,6 +32,20 @@ sudo mv icon.png /usr/share/ccatools/diskimageprocessor
 sudo mv LICENSE /usr/share/ccatools/diskimageprocessor
 sudo mv README.md /usr/share/ccatools/diskimageprocessor
 
+# Check for DFXML libraries
+if [ ! -f /usr/share/dfxml/python ]; then
+  git submodule update --init --recursive
+  sudo mv deps/ /usr/share/ccatools/diskimageprocessor
+  sudo mv dfxml.py /usr/share/ccatools/diskimageprocessor
+  sudo mv Objects.py /usr/share/ccatools/diskimageprocessor
+
+# Else use existing libraries
+else
+  sudo ln -s /usr/share/dfxml/python/dfxml.py /usr/share/ccatools/diskimageprocessor/dfxml.py
+  sudo ln -s /usr/share/dfxml/python/Objects.py /usr/share/ccatools/diskimageprocessor/Objects.py
+fi
+
+
 # Make "CCA Tools" folder on Desktop if doesn't already exist
 if [ ! -d "/home/bcadmin/Desktop/CCA Tools" ]; then
   sudo mkdir "/home/bcadmin/Desktop/CCA Tools"
