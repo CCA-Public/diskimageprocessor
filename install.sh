@@ -33,7 +33,7 @@ sudo mv LICENSE /usr/share/ccatools/diskimageprocessor
 sudo mv README.md /usr/share/ccatools/diskimageprocessor
 
 # Check for DFXML libraries
-if [ ! -f /usr/share/dfxml/python ]; then
+if [ ! -d /usr/share/dfxml/python ]; then
   git submodule update --init --recursive
   sudo mv deps/ /usr/share/ccatools/diskimageprocessor
   sudo mv dfxml.py /usr/share/ccatools/diskimageprocessor
