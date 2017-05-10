@@ -2,6 +2,9 @@
 
 ### Install script for CCA Disk Image Processor in Bitcurator
 
+# Install PyQt4
+sudo apt-get install python-qt4
+
 # Make /usr/share/ccatools if doesn't already exist
 if [ ! -d /usr/share/ccatools ]; then
   sudo mkdir /usr/share/ccatools
@@ -16,6 +19,7 @@ fi
 if [ ! -d /mnt/diskid ]; then
   sudo mkdir /mnt/diskid
 fi
+
 
 # Move files into /usr/share/ccatools/diskimageprocessor
 sudo mv diskimageprocessor.py /usr/share/ccatools/diskimageprocessor
