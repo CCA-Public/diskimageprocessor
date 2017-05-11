@@ -2,6 +2,9 @@
 
 ### Install script for CCA Disk Image Processor in Bitcurator
 
+# Install PyQt4
+sudo apt-get install python-qt4
+
 # Make /usr/share/ccatools if doesn't already exist
 if [ ! -d /usr/share/ccatools ]; then
   sudo mkdir /usr/share/ccatools
@@ -17,6 +20,7 @@ if [ ! -d /mnt/diskid ]; then
   sudo mkdir /mnt/diskid
 fi
 
+
 # Move files into /usr/share/ccatools/diskimageprocessor
 sudo mv diskimageprocessor.py /usr/share/ccatools/diskimageprocessor
 sudo mv diskimageanalyzer.py /usr/share/ccatools/diskimageprocessor
@@ -27,6 +31,20 @@ sudo mv design.ui /usr/share/ccatools/diskimageprocessor
 sudo mv icon.png /usr/share/ccatools/diskimageprocessor
 sudo mv LICENSE /usr/share/ccatools/diskimageprocessor
 sudo mv README.md /usr/share/ccatools/diskimageprocessor
+
+# Check for DFXML libraries
+if [ ! -d /usr/share/dfxml/python ]; then
+  git submodule update --init --recursive
+  sudo mv deps/ /usr/share/ccatools/diskimageprocessor
+  sudo mv dfxml.py /usr/share/ccatools/diskimageprocessor
+  sudo mv Objects.py /usr/share/ccatools/diskimageprocessor
+
+# Else use existing libraries
+else
+  sudo ln -s /usr/share/dfxml/python/dfxml.py /usr/share/ccatools/diskimageprocessor/dfxml.py
+  sudo ln -s /usr/share/dfxml/python/Objects.py /usr/share/ccatools/diskimageprocessor/Objects.py
+fi
+
 
 # Make "CCA Tools" folder on Desktop if doesn't already exist
 if [ ! -d "/home/bcadmin/Desktop/CCA Tools" ]; then
