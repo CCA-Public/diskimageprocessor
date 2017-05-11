@@ -416,9 +416,12 @@ for file in sorted(os.listdir(args.source)):
             logandprint('File system: %s' % (disk_fs))
 
             # handle differently by file system
-            if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
+            if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2', 'udf')):
                 # mount image
-                subprocess.call("sudo mount -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
+                if 'udf' in disk_fs.lower():
+                    subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
+                else:
+                    subprocess.call("sudo mount -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
 
                 # use walk_to_dfxml.py to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
@@ -485,46 +488,6 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
-                
-                # if user selected 'filesonly', remove disk image files and repackage
-                if args.filesonly == True:
-                    keep_logical_files_only(object_dir)
-
-                # write checksums
-                if args.bagfiles == True: # bag entire SIP
-                    subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
-                else: # write metadata/checksum.md5
-                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
-
-                # modify file permissions
-                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
-                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
-
-            elif 'udf' in disk_fs.lower():
-                # mount image
-                subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
-
-                # use walk_to_dfxml.py to create dfxml
-                dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
-                
-                # copy files from disk image to files dir
-                shutil.rmtree(files_dir) # delete to enable use of copytree
-                shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
-
-                # change file permissions in files dir
-                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (files_dir), shell=True)
-                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (files_dir), shell=True)
-
-                # unmount disk image
-                subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
-
-                # run brunnhilde and write to submissionDocumentation
-                files_abs = os.path.abspath(files_dir)
-                if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
-                else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
                 # if user selected 'filesonly', remove disk image files and repackage
                 if args.filesonly == True:
