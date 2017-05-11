@@ -419,24 +419,23 @@ for file in sorted(os.listdir(args.source)):
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                # use fiwalk to make dfxml
-                fiwalk_file = os.path.join(subdoc_dir, 'dfxml.xml')
-                try:
-                    subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
-                except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+                # mount image
+                subprocess.call("sudo mount -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
+
+                # use walk_to_dfxml.py to create dfxml
+                dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 
-                # carve images using tsk_recover
-                if args.exportall == True: # export all files
-                    try:
-                        subprocess.check_output(['tsk_recover', '-e', diskimage, files_dir])
-                    except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % (e.output))
-                else: # export only allocated files (default)
-                    try:
-                        subprocess.check_output(['tsk_recover', '-a', diskimage, files_dir])
-                    except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
+                # copy files from disk image to files dir
+                shutil.rmtree(files_dir) # delete to enable use of copytree
+                shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
+
+                # change file permissions in files dir
+                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (files_dir), shell=True)
+                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (files_dir), shell=True)
+
+                # unmount disk image
+                subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
 
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
@@ -444,7 +443,7 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
                     subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
-
+                
                 # if user selected 'filesonly', remove disk image files and repackage
                 if args.filesonly == True:
                     keep_logical_files_only(object_dir)
