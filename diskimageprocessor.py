@@ -224,9 +224,9 @@ def create_spreadsheet(files_only):
 
                 # save tool used to carve files
                 if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2', 'udf')):
-                    tool = "copied from the mounted image"
+                    tool = "copied from mounted disk image"
                 elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
-                    tool = "carved from the disk image using the HFSExplorer command line utility unhfs"
+                    tool = "carved from disk image using the HFSExplorer command line utility unhfs"
                 else:
                     tool = "UNSUCCESSFULLY"
 
@@ -256,7 +256,7 @@ def create_spreadsheet(files_only):
                     
                     # create scope and content note
                     if files_only == True:
-                        scopecontent = 'File includes logical files carved from a disk image %s. Most common file formats: %s' % (tool, formatlist)
+                        scopecontent = 'File includes logical files %s. Most common file formats: %s' % (tool, formatlist)
                     else:
                         scopecontent = 'File includes both a disk image and logical files %s. Most common file formats: %s' % (tool, formatlist)
 
