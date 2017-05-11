@@ -337,7 +337,7 @@ for file in sorted(os.listdir(source)):
 
                 # use walk_to_dfxml.py to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 
                 # run brunnhilde
                 subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
@@ -351,7 +351,7 @@ for file in sorted(os.listdir(source)):
 
                 # use walk_to_dfxml.py to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 
                 # write files to tempdir
                 temp_dir = os.path.join(disk_dir, 'temp')

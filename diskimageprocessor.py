@@ -465,7 +465,7 @@ for file in sorted(os.listdir(args.source)):
 
                 # use walk_to_dfxml.py to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
