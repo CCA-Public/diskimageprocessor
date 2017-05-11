@@ -223,12 +223,10 @@ def create_spreadsheet(files_only):
                             disk_fs = line.decode('utf-8','ignore').strip()
 
                 # save tool used to carve files
-                if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                    tool = "carved from the disk image using SleuthKit's tsk_recover"
+                if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2', 'udf')):
+                    tool = "copied from the mounted image"
                 elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                     tool = "carved from the disk image using the HFSExplorer command line utility unhfs"
-                elif ('udf' in disk_fs.lower()):
-                    tool = "copied from the mounted image"
                 else:
                     tool = "UNSUCCESSFULLY"
 
