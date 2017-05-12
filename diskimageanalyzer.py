@@ -162,6 +162,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
 # parse arguments
 parser = argparse.ArgumentParser()
+parser.add_argument("-f", "--forensic", help="Use fiwalk and tsk_recover", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
@@ -240,21 +241,34 @@ for file in sorted(os.listdir(source)):
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                # mount disk image
-                subprocess.call("sudo mount -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
+                # choose toolset based on user input
+                if args.forensic == True:
+                    # mount disk image
+                    subprocess.call("sudo mount -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
 
-                # use walk_to_dfxml.py to make dfxml
-                dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                try:
-                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
-                except:
-                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                    # use walk_to_dfxml.py to make dfxml
+                    dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
+                    try:
+                        subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                    except:
+                        logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
 
-                # run brunnhilde
-                subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
+                    # run brunnhilde
+                    subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
 
-                # unmount disk image
-                subprocess.call('sudo umount /mnt/diskid', shell=True)
+                    # unmount disk image
+                    subprocess.call('sudo umount /mnt/diskid', shell=True)
+                else:
+                    # use fiwalk to make dfxml
+                    fiwalk_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
+                    try:
+                        subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+
+                    # run brunnhilde
+                    subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
+
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
