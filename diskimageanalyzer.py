@@ -251,7 +251,7 @@ for file in sorted(os.listdir(source)):
                 # use walk_to_dfxml.py to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
                 try:
-                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 except:
                     logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
 
