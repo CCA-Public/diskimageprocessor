@@ -324,12 +324,21 @@ for file in sorted(os.listdir(source)):
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                # use fiwalk to make dfxml
-                fiwalk_file = os.path.join(disk_dir, 'dfxml.xml')
-                subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
+                # mount disk image
+                subprocess.call("sudo mount -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
+
+                # use walk_to_dfxml.py to make dfxml
+                dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
+                try:
+                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                except:
+                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
+                subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
+
+                # unmount disk image
+                subprocess.call('sudo umount /mnt/diskid', shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
@@ -338,7 +347,11 @@ for file in sorted(os.listdir(source)):
                 # use walk_to_dfxml.py to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
                 try:
+<<<<<<< dev-mountandcopy
+                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+=======
                     subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+>>>>>>> master
                 except:
                     logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
@@ -355,7 +368,11 @@ for file in sorted(os.listdir(source)):
                 # use walk_to_dfxml.py to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
                 try:
+<<<<<<< dev-mountandcopy
+                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+=======
                     subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+>>>>>>> master
                 except:
                     logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
