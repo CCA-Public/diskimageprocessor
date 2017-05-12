@@ -298,7 +298,6 @@ def keep_logical_files_only(objects_dir):
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing checksum.md5", action="store_true")
-parser.add_argument("-e", "--exportall", help="Export all files from disk images using tsk_recover", action="store_true")
 parser.add_argument("-f", "--filesonly", help="Include logical files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
 parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")

@@ -69,8 +69,6 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         if self.processingBtn.isChecked():
             if self.checkBox.isChecked():
                 call.append("-b")
-            if self.checkBox_2.isChecked():
-                call.append("-e")
             if self.checkBox_3.isChecked():
                 call.append("-p")
             if self.filesonlyBtn.isChecked():
