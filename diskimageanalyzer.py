@@ -185,7 +185,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             date_latest = date_latest_m[:10]
 
         # write date statement
-        if date_earliest == date_latest:
+        if date_earliest[:4] == date_latest[:4]:
             date_statement = '%s' % (date_earliest[:4])
         else:
             date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
