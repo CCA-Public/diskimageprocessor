@@ -227,7 +227,7 @@ def create_spreadsheet(files_only, sleuthkit):
                 # save tool used to carve files
                 if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
                     if sleuthkit == True:
-                        tool = "exported from the disk image using The Sleuth Kit's tsk_recover utility"
+                        tool = "carved from the disk image using the Sleuth Kit command line utility tsk_recover"
                     else:
                         tool = "copied from the mounted disk image"
                 elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
