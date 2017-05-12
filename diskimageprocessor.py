@@ -465,7 +465,10 @@ for file in sorted(os.listdir(args.source)):
 
                 # use walk_to_dfxml.py to make dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                try:
+                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                except:
+                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
@@ -509,7 +512,10 @@ for file in sorted(os.listdir(args.source)):
 
                 # use walk_to_dfxml.py to create dfxml
                 dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                try:
+                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                except:
+                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
                 # copy files from disk image to files dir
                 shutil.rmtree(files_dir) # delete to enable use of copytree
