@@ -55,7 +55,7 @@ def convert_size(size):
     s = s.replace('.0', '')
     return '%s %s' % (s,size_name[i])
 
-def create_spreadsheet(files_only):
+def create_spreadsheet(files_only, sleuthkit):
     # process each SIP
     for item in sorted(os.listdir(sips)):
         current = os.path.join(sips, item)
@@ -225,10 +225,15 @@ def create_spreadsheet(files_only):
                             disk_fs = line.decode('utf-8','ignore').strip()
 
                 # save tool used to carve files
-                if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2', 'udf')):
-                    tool = "copied from mounted disk image"
+                if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
+                    if sleuthkit == True:
+                        tool = "exported from the disk image using SleuthKit's tsk_recover"
+                    else:
+                        tool = "copied from the mounted disk image"
                 elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                     tool = "carved from disk image using the HFSExplorer command line utility unhfs"
+                elif 'udf' in disk_fs.lower():
+                    tool = "copied from the mounted disk image"
                 else:
                     tool = "UNSUCCESSFULLY"
 
@@ -606,7 +611,7 @@ else:
     logandprint('Processing complete. All disk images processed. Results in %s.' % (destination))
 
 # write description spreadsheet
-create_spreadsheet(args.filesonly)
+create_spreadsheet(args.filesonly, args.sleuthkit)
 
 # close files
 spreadsheet.close()
