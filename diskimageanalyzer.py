@@ -36,129 +36,9 @@ def convert_size(size):
     s = str(s)
     s = s.replace('.0', '')
     return '%s %s' % (s,size_name[i])
+    
 
 def write_to_spreadsheet(disk_result, spreadsheet_path):
-    """append info for current disk to analysis CSV"""
-
-    # open description spreadsheet
-    spreadsheet = open(spreadsheet_path, 'a')
-    writer = csv.writer(spreadsheet, quoting=csv.QUOTE_NONNUMERIC)
-
-    # intialize values
-    number_files = 0
-    total_bytes = 0
-    mtimes = []
-
-    # parse dfxml file
-    dfxml_file = os.path.join(disk_result, 'dfxml.xml')
-
-    # try to read DFXML file
-    try:
-        # gather info for each FileObject
-        for (event, obj) in Objects.iterparse(dfxml_file):
-            
-            # only work on FileObjects
-            if not isinstance(obj, Objects.FileObject):
-                continue
-
-            # skip directories and links
-            if obj.name_type != "r":
-                continue
-            
-            # gather info
-            number_files += 1
-
-            try:
-                mtime = obj.mtime
-                mtime = str(mtime)
-                mtimes.append(mtime)
-            except:
-                pass
-
-            total_bytes += obj.filesize
-
-        # build extent statement
-        size_readable = convert_size(total_bytes)
-        if number_files == 1:
-            extent = "1 digital file (%s)" % (size_readable)
-        elif number_files == 0:
-            extent = "EMPTY"
-        else:
-            extent = "%d digital files (%s)" % (number_files, size_readable)
-
-        # determine earliest and latest modified date
-        date_earliest = ""
-        date_latest = ""
-        
-        date_earliest = min(mtimes)
-        date_latest = max(mtimes)
-        if not date_earliest:
-            date_earliest = "N/A"
-            date_latest = "N/A"
-
-        date_earliest = date_earliest[:10]
-        date_latest = date_latest[:10]
-
-        # write date statement
-        if date_earliest == date_latest:
-            date_statement = '%s' % (date_earliest[:4])
-        else:
-            date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
-
-        # gather file system info, discern tool used
-        disktype = os.path.join(disk_result, 'disktype.txt')
-        # pull filesystem info from disktype.txt
-        disk_fs = ''
-        try:
-            for line in open(disktype, 'r'):
-                if "file system" in line:
-                    disk_fs = line.strip()
-        except: # handle non-Unicode chars
-            for line in open(disktype, 'rb'):
-                if "file system" in line.decode('utf-8','ignore'):
-                    disk_fs = line.decode('utf-8','ignore').strip()
-
-        # gather info from brunnhilde
-        if extent == 'EMPTY':
-            scopecontent = ''
-            formatlist = ''
-        else:
-            fileformats = []
-            formatlist = ''
-            fileformat_csv = ''
-            fileformat_csv = os.path.join(disk_result, 'brunnhilde', 'csv_reports', 'formats.csv')
-            try: 
-                with open(fileformat_csv, 'r') as f:
-                    reader = csv.reader(f)
-                    next(reader)
-                    for row in reader:
-                        fileformats.append(row[0])
-            except:
-                fileformats.append("ERROR! No formats.csv file to pull formats from.")
-            fileformats = [element or 'Unidentified' for element in fileformats] # replace empty elements with 'Unidentified'
-            formatlist = ', '.join(fileformats) # format list of top file formats as human-readable
-        
-        virus_found = False
-        virus_log = os.path.join(disk_result, 'brunnhilde', 'logs', 'viruscheck-log.txt')
-        try:
-            with open(virus_log, 'r') as virus:
-                first_line = virus.readline()
-                if "FOUND" in first_line:
-                    virus_found = True
-        except:
-            print("ERROR: Issue reading virus log for disk %s." % (os.path.basename(disk_result)))
-
-        # write csv row
-        writer.writerow([os.path.basename(disk_result), disk_fs, 'modified', date_statement, date_earliest, date_latest, extent, virus_found, formatlist])
-
-    # if error reading DFXML, print that to spreadsheet
-    except:
-        writer.writerow([os.path.basename(disk_result), 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 
-            'N/A', 'N/A', 'Error reading DFXML file.'])
-
-    spreadsheet.close()
-
-def write_to_spreadsheet_forensic(disk_result, spreadsheet_path):
     """append info for current disk to analysis CSV"""
 
     # open description spreadsheet
@@ -446,34 +326,15 @@ for file in sorted(os.listdir(source)):
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                # choose toolset based on user input
-                if args.forensic == True:
-                    # use fiwalk to make dfxml
-                    fiwalk_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                    try:
-                        subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
-                    except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+                # use fiwalk to make dfxml
+                fiwalk_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
+                try:
+                    subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
+                except subprocess.CalledProcessError as e:
+                    logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
 
-                    # run brunnhilde
-                    subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
-                else:
-                     # mount disk image
-                    subprocess.call("sudo mount -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
-
-                    # use walk_to_dfxml.py to make dfxml
-                    dfxml_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                    try:
-                        subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
-                    except:
-                        logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
-
-                    # run brunnhilde
-                    subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
-
-                    # unmount disk image
-                    subprocess.call('sudo umount /mnt/diskid', shell=True)
-
+                # run brunnhilde
+                subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
@@ -542,9 +403,6 @@ spreadsheet.close()
 # add info to description spreadsheet
 for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
-    if args.forensic == True:
-        write_to_spreadsheet_forensic(disk_result, spreadsheet_path)
-    else:
         write_to_spreadsheet(disk_result, spreadsheet_path)
 
 # write closing message
