@@ -3,7 +3,7 @@
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
 **NOTE: This tool is in dev and should not be considered production-ready without testing**  
-Version: 0.2.1 (alpha)
+Version: 0.2.2 (alpha)
 
 ## Usage
 
@@ -17,7 +17,6 @@ In Analysis mode, each disk image is scanned and reported on. When complete, an 
 
 * Disk image name  
 * File system  
-* Date type used (modified, accessed, or created -- the tool uses the date set with the earliest "Date begin" date found in the DFXML file)  
 * Date statement  
 * Date begin  
 * Date end  
@@ -54,9 +53,7 @@ The destination directory also contains a log file and a "SIPs" directory contai
 
 ### Dates
 
-CCA Disk Image Processor gathers dates from the DFXML files it generates, **not** from the file system. In practice, this means the dates reported in the CCA Disk Image Processor-generated spreadsheets and the dates shown in the file system for carved files may differ.
-
-The utility compares dates created, modified, and accessed, and uses the set of dates with the earliest start date to populate the analysis/description spreadsheets. In "Analysis" mode, which set of dates is being used to generate date statements is made explicit. In "Processing" mode, it is not. The same logic applies for dates in both modes, so if you want to verify which set of dates are being used, simply run the same set of disk images in "Analysis" mode and refer to the resulting analysis.csv file.
+CCA Disk Image Processor gathers dates from the DFXML files it generates, **not** from the file system. In practice, this means the dates reported in the CCA Disk Image Processor-generated spreadsheets and the dates shown in the file system for carved files may differ (for most disks, now that `tsk_recover` has been replaced with `walk_to_dfxml.py`, this should not be the case).
 
 ## Installation
 
