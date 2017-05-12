@@ -43,7 +43,7 @@ In Processing mode, each disk image is turned into a SIP, packaged as an ideal t
 * Extent  
 * Scope and content (containing information about the tool used to carve logical files and the most common file formats)
 
-The destination directory also contains a log file and a "SIPs" directory containing a SIP created from each input disk image. Each SIP directory contains a metadata/checksum.md5 manifest by default, but may optionally be bagged instead. By default, the "objects" directory in each SIP contains both a copy of a raw disk image (regardless of whether the input was raw or E01) and logical files carved from the image by tsk_recover, unhfs, or a mount-and-copy routine, depending on the disk's file system. The user can choose to instead have SIPs include only logical files. The "metadata/submissionDocumentation" directory in each SIP contains:  
+The destination directory also contains a log file and a "SIPs" directory containing a SIP created from each input disk image. Each SIP directory contains a metadata/checksum.md5 manifest by default, but may optionally be bagged instead. By default, the "objects" directory in each SIP contains both a copy of a raw disk image (regardless of whether the input was raw or E01) and logical files carved from the image by unhfs or a mount-and-copy routine, depending on the disk's file system. The user can choose to instead have SIPs include only logical files. The "metadata/submissionDocumentation" directory in each SIP contains:  
 
 * A DFXML file  
 * Text output from "disktype"  
