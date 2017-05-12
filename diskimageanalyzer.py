@@ -448,7 +448,17 @@ for file in sorted(os.listdir(source)):
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
                 # choose toolset based on user input
                 if args.forensic == True:
-                    # mount disk image
+                    # use fiwalk to make dfxml
+                    fiwalk_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
+                    try:
+                        subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+
+                    # run brunnhilde
+                    subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
+                else:
+                     # mount disk image
                     subprocess.call("sudo mount -o loop,ro,noexec '%s' /mnt/diskid/" % (diskimage), shell=True)
 
                     # use walk_to_dfxml.py to make dfxml
@@ -463,16 +473,6 @@ for file in sorted(os.listdir(source)):
 
                     # unmount disk image
                     subprocess.call('sudo umount /mnt/diskid', shell=True)
-                else:
-                    # use fiwalk to make dfxml
-                    fiwalk_file = os.path.abspath(os.path.join(disk_dir, 'dfxml.xml'))
-                    try:
-                        subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
-                    except subprocess.CalledProcessError as e:
-                        logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
-
-                    # run brunnhilde
-                    subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
 
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
