@@ -20,9 +20,6 @@ if [ ! -d /mnt/diskid ]; then
   sudo mkdir /mnt/diskid
 fi
 
-# Change ownership of /mnt/diskid
-sudo chown bcadmin:bcadmin /mnt/diskid
-
 
 # Move files into /usr/share/ccatools/diskimageprocessor
 sudo mv diskimageprocessor.py /usr/share/ccatools/diskimageprocessor
