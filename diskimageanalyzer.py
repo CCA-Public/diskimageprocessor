@@ -403,7 +403,7 @@ spreadsheet.close()
 # add info to description spreadsheet
 for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
-        write_to_spreadsheet(disk_result, spreadsheet_path)
+    write_to_spreadsheet(disk_result, spreadsheet_path)
 
 # write closing message
 if unanalyzed:
