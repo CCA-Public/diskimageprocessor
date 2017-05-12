@@ -3,7 +3,7 @@
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
 **NOTE: This tool is in dev and should not be considered production-ready without testing**  
-Version: 0.2.5 (alpha)
+Version: 0.3.0 (alpha)
 
 ## Usage
 
@@ -36,14 +36,27 @@ Because "Analysis" mode runs bulk_extractor against each disk, this process can 
 
 Underlying script: `diskimageprocessor.py`  
 
-In Processing mode, each disk image is turned into a SIP, packaged as an ideal transfer to Archivematica's Automation tools, and reported on. When complete a "description.csv" spreadsheet is created, containing some pre-populated archival description:  
+In Processing mode, each disk image is turned into a SIP, packaged as an ideal transfer to Archivematica's Automation tools, and reported on. There are two available toolsets for use with non-HFS, non-UDF disks in Processing mode:
+
+* **tsk_recover and fiwalk**: Uses SleuthKit's `tsk_recover` to carve files from disk images and `fiwalk` to generate DFXML.  
+* **mount-copy and walk_to_dfxml.py**: Uses a mount-and-copy routine to copy files from disk images and `walk_to_dfxml.py` (from DFXML Python bindings) to generate DFXML.
+
+Each toolset has its limitations. Tsk_recover and fiwalk are better able to handle some ISO9660 disks which may have difficulty mounting in BitCurator. Conversely, tsk_recover does not maintain file system dates, while the mount-and-copy routine will maintain last modified dates.
+
+Regardless of the toolset chosen, when complete, a "description.csv" spreadsheet is created, containing some pre-populated archival description:  
 * Date statement  
 * Date begin  
 * Date end  
 * Extent  
 * Scope and content (containing information about the tool used to carve logical files and the most common file formats)
 
-The destination directory also contains a log file and a "SIPs" directory containing a SIP created from each input disk image. Each SIP directory contains a metadata/checksum.md5 manifest by default, but may optionally be bagged instead. By default, the "objects" directory in each SIP contains both a copy of a raw disk image (regardless of whether the input was raw or E01) and logical files carved from the image by unhfs or a mount-and-copy routine, depending on the disk's file system. The user can choose to instead have SIPs include only logical files. The "metadata/submissionDocumentation" directory in each SIP contains:  
+The destination directory also contains a log file and a "SIPs" directory containing a SIP created from each input disk image. 
+
+Each SIP directory contains a metadata/checksum.md5 manifest by default, but may optionally be bagged instead. 
+
+By default, the "objects" directory in each SIP contains both a copy of a raw disk image (regardless of whether the input was raw or E01) and logical files carved from the image by unhfs or a mount-and-copy routine, depending on the disk's file system. The user can choose to instead have SIPs include only logical files.
+
+The "metadata/submissionDocumentation" directory in each SIP contains:  
 
 * A DFXML file  
 * Text output from "disktype"  
