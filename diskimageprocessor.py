@@ -177,9 +177,9 @@ def create_spreadsheet(files_only):
                     
                     # create scope and content note
                     if files_only == True:
-                        scopecontent = 'File includes logical files %s. Most common file formats: %s' % (tool, formatlist)
+                        scopecontent = 'File includes digital files %s. Most common file formats: %s' % (tool, formatlist)
                     else:
-                        scopecontent = 'File includes both a disk image and logical files %s. Most common file formats: %s' % (tool, formatlist)
+                        scopecontent = 'File includes both a disk image and digital files %s. Most common file formats: %s' % (tool, formatlist)
 
                 # write csv row
                 writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
@@ -219,7 +219,7 @@ def keep_logical_files_only(objects_dir):
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing checksum.md5", action="store_true")
-parser.add_argument("-f", "--filesonly", help="Include logical files only (not disk images) in SIPs", action="store_true")
+parser.add_argument("-f", "--filesonly", help="Include digital files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
 parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
