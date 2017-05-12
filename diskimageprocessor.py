@@ -66,6 +66,9 @@ def create_spreadsheet(files_only):
             number_files = 0
             total_bytes = 0
             mtimes = []
+            atimes = []
+            ctimes = []
+            crtimes = []
 
             # parse dfxml file
             if args.bagfiles == True:
@@ -83,8 +86,9 @@ def create_spreadsheet(files_only):
                         continue
 
                     # skip directories and links
-                    if obj.name_type != "r":
-                        continue
+                    if obj.name_type:
+                        if obj.name_type != "r":
+                            continue
                     
                     # gather info
                     number_files += 1
@@ -95,8 +99,34 @@ def create_spreadsheet(files_only):
                         mtimes.append(mtime)
                     except:
                         pass
+
+                    try:
+                        atime = obj.atime
+                        atime = str(atime)
+                        atimes.append(atime)
+                    except:
+                        pass
+
+                    try:
+                        ctime = obj.ctime
+                        ctime = str(ctime)
+                        ctimes.append(ctime)
+                    except:
+                        pass
+
+                    try:
+                        crtime = obj.crtime
+                        crtime = str(crtime)
+                        crtimes.append(crtime)
+                    except:
+                        pass
             
                     total_bytes += obj.filesize
+
+                # filter 'None' values from date lists
+                for date_list in mtimes, atimes, ctimes, crtimes:
+                    while 'None' in date_list:
+                        date_list.remove('None')
 
 
                 # build extent statement
@@ -108,18 +138,69 @@ def create_spreadsheet(files_only):
                 else:
                     extent = "%d digital files (%s)" % (number_files, size_readable)
 
-                # determine earliest and latest modified dates from list
-                date_earliest = ""
-                date_latest = ""
-                date_earliest = min(mtimes)
-                date_latest = max(mtimes)
+                # determine earliest and latest MAC dates from lists
+                date_earliest_m = ""
+                date_latest_m = ""
+                date_earliest_a = ""
+                date_latest_a = ""
+                date_earliest_c = ""
+                date_latest_c = ""
+                date_earliest_cr = ""
+                date_latest_cr = ""
+                date_statement = ""
 
-                if not date_earliest:
-                    date_earliest = "N/A"
-                    date_latest = "N/A"
+                if mtimes:
+                    date_earliest_m = min(mtimes)
+                    date_latest_m = max(mtimes)
+                if atimes:
+                    date_earliest_a = min(atimes)
+                    date_latest_a = max(atimes)
+                if ctimes:
+                    date_earliest_c = min(ctimes)
+                    date_latest_c = max(ctimes)
+                if crtimes:
+                    date_earliest_cr = min(crtimes)
+                    date_latest_cr = max(crtimes)
 
-                date_earliest = date_earliest[:10]
-                date_latest = date_latest[:10]
+                # determine which set of dates to use (logic: use set with earliest start date)
+                use_atimes = False
+                use_ctimes = False
+                use_crtimes = False
+
+                if not date_earliest_m:
+                    date_earliest_m = "N/A"
+                    date_latest_m = "N/A"
+                date_to_use = date_earliest_m # default to date modified
+
+                if date_earliest_a:
+                    if date_earliest_a < date_to_use:
+                        date_to_use = date_earliest_a
+                        use_atimes = True
+                if date_earliest_c:
+                    if date_earliest_c < date_to_use:
+                        date_to_use = date_earliest_c
+                        use_atimes = False
+                        use_ctimes = True
+                if date_earliest_cr:
+                    if date_earliest_cr < date_to_use:
+                        date_to_use = date_earliest_cr
+                        use_atimes = False
+                        use_ctimes = False
+                        use_crtimes = True
+
+                # store date_earliest and date_latest values based on datetype used
+                if use_atimes == True:
+                    date_earliest = date_earliest_a[:10]
+                    date_latest = date_latest_a[:10] 
+                elif use_ctimes == True:
+                    date_earliest = date_earliest_c[:10]
+                    date_latest = date_latest_c[:10]
+                elif use_crtimes == True:
+                    date_earliest = date_earliest_cr[:10]
+                    date_latest = date_latest_cr[:10]
+                else:
+                    date_earliest = date_earliest_m[:10]
+                    date_latest = date_latest_m[:10]
 
                 # write date statement
                 if date_earliest == date_latest:
@@ -222,6 +303,7 @@ parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing check
 parser.add_argument("-f", "--filesonly", help="Include digital files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
 parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
+parser.add_agument("--sleuthkit", help="Use tsk_recover and fiwalk toolset to process non-HFS, non-UDF disks", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
@@ -336,54 +418,88 @@ for file in sorted(os.listdir(args.source)):
             logandprint('File system: %s' % (disk_fs))
 
             # handle differently by file system
-            if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2', 'udf')):
-                # mount image
-                if 'udf' in disk_fs.lower():
-                    subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
+            if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
+                if args.sleuthkit == True:
+                    # use fiwalk to make dfxml
+                    fiwalk_file = os.path.join(subdoc_dir, 'dfxml.xml')
+                    try:
+                        subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+                    
+                    # carve images using tsk_recover
+                    if args.exportall == True: # export all files
+                        try:
+                            subprocess.check_output(['tsk_recover', '-e', diskimage, files_dir])
+                        except subprocess.CalledProcessError as e:
+                            logandprint('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % (e.output))
+                    else: # export only allocated files (default)
+                        try:
+                            subprocess.check_output(['tsk_recover', '-a', diskimage, files_dir])
+                        except subprocess.CalledProcessError as e:
+                            logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
+
+                    # run brunnhilde and write to submissionDocumentation
+                    files_abs = os.path.abspath(files_dir)
+                    if args.piiscan == True: # brunnhilde with bulk_extractor
+                        subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                    else: # brunnhilde without bulk_extractor
+                        subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+
+                    # if user selected 'filesonly', remove disk image files and repackage
+                    if args.filesonly == True:
+                        keep_logical_files_only(object_dir)
+
+                    # write checksums
+                    if args.bagfiles == True: # bag entire SIP
+                        subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
+                    else: # write metadata/checksum.md5
+                        subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
+
+                    # modify file permissions
+                    subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                    subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
                 else:
+                    # mount image
                     subprocess.call("sudo mount -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
 
-                # use walk_to_dfxml.py to create dfxml
-                dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
-                try:
-                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
-                except:
-                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
-                
-                # copy files from disk image to files dir
-                shutil.rmtree(files_dir) # delete to enable use of copytree
-                try:
-                    shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
-                except:
-                    logandprint("ERROR: shutil.copytree unable to copy files from disk %s" % (diskimage))
+                    # use walk_to_dfxml.py to create dfxml
+                    dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
+                    try:
+                        subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                    except:
+                        logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                    
+                    # copy files from disk image to files dir
+                    shutil.rmtree(files_dir) # delete to enable use of copytree
+                    try:
+                        shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
+                    except:
+                        logandprint("ERROR: shutil.copytree unable to copy files from disk %s" % (diskimage))
 
-                # change file permissions in files dir
-                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (files_dir), shell=True)
-                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (files_dir), shell=True)
+                    # unmount disk image
+                    subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
 
-                # unmount disk image
-                subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
+                    # run brunnhilde and write to submissionDocumentation
+                    files_abs = os.path.abspath(files_dir)
+                    if args.piiscan == True: # brunnhilde with bulk_extractor
+                        subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                    else: # brunnhilde without bulk_extractor
+                        subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                    
+                    # if user selected 'filesonly', remove disk image files and repackage
+                    if args.filesonly == True:
+                        keep_logical_files_only(object_dir)
 
-                # run brunnhilde and write to submissionDocumentation
-                files_abs = os.path.abspath(files_dir)
-                if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
-                else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
-                
-                # if user selected 'filesonly', remove disk image files and repackage
-                if args.filesonly == True:
-                    keep_logical_files_only(object_dir)
+                    # write checksums
+                    if args.bagfiles == True: # bag entire SIP
+                        subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
+                    else: # write metadata/checksum.md5
+                        subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
-                # write checksums
-                if args.bagfiles == True: # bag entire SIP
-                    subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
-                else: # write metadata/checksum.md5
-                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
-
-                # modify file permissions
-                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
-                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
+                    # modify file permissions
+                    subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                    subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
@@ -432,6 +548,48 @@ for file in sorted(os.listdir(args.source)):
                 subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
                 subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
             
+            elif 'udf' in disk_fs.lower():
+                # mount image
+                subprocess.call("sudo mount -t udf -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
+
+                # use walk_to_dfxml.py to create dfxml
+                dfxml_file = os.path.abspath(os.path.join(subdoc_dir, 'dfxml.xml'))
+                try:
+                    subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
+                except:
+                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                
+                # copy files from disk image to files dir
+                shutil.rmtree(files_dir) # delete to enable use of copytree
+                try:
+                    shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
+                except:
+                    logandprint("ERROR: shutil.copytree unable to copy files from disk %s" % (diskimage))
+
+                # unmount disk image
+                subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
+
+                # run brunnhilde and write to submissionDocumentation
+                files_abs = os.path.abspath(files_dir)
+                if args.piiscan == True: # brunnhilde with bulk_extractor
+                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                else: # brunnhilde without bulk_extractor
+                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                
+                # if user selected 'filesonly', remove disk image files and repackage
+                if args.filesonly == True:
+                    keep_logical_files_only(object_dir)
+
+                # write checksums
+                if args.bagfiles == True: # bag entire SIP
+                    subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
+                else: # write metadata/checksum.md5
+                    subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
+
+                # modify file permissions
+                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
+
             else:
                 logandprint('NOTICE: Skipping processing of unknown disk type.')
                 unprocessed.append(file)
