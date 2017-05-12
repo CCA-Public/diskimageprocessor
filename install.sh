@@ -38,11 +38,13 @@ if [ ! -d /usr/share/dfxml/python ]; then
   sudo mv deps/ /usr/share/ccatools/diskimageprocessor
   sudo mv dfxml.py /usr/share/ccatools/diskimageprocessor
   sudo mv Objects.py /usr/share/ccatools/diskimageprocessor
+  sudo mv walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor
 
 # Else use existing libraries
 else
   sudo ln -s /usr/share/dfxml/python/dfxml.py /usr/share/ccatools/diskimageprocessor/dfxml.py
   sudo ln -s /usr/share/dfxml/python/Objects.py /usr/share/ccatools/diskimageprocessor/Objects.py
+  sudo ln -s /usr/share/dfxml/python/walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py
 fi
 
 
