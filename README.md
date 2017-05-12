@@ -53,7 +53,7 @@ The destination directory also contains a log file and a "SIPs" directory contai
 
 ### Dates
 
-CCA Disk Image Processor gathers dates from the DFXML files it generates, **not** from the file system. In practice, this means the dates reported in the CCA Disk Image Processor-generated spreadsheets and the dates shown in the file system for carved files may differ (for most disks, now that `tsk_recover` has been replaced with `walk_to_dfxml.py`, this should not be the case).
+CCA Disk Image Processor gathers dates from the DFXML files it generates, **not** from the file system. In practice, this means the dates reported in the CCA Disk Image Processor-generated spreadsheets and the dates shown in the file system for carved files may differ (for most disks, now that `tsk_recover` has been replaced with a mount-and-copy routine, this should not be the case).
 
 ## Installation
 
