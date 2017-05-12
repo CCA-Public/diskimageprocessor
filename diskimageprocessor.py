@@ -303,7 +303,7 @@ parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing check
 parser.add_argument("-f", "--filesonly", help="Include digital files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
 parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
-parser.add_agument("--sleuthkit", help="Use tsk_recover and fiwalk toolset to process non-HFS, non-UDF disks", action="store_true")
+parser.add_argument("--sleuthkit", help="Use tsk_recover and fiwalk toolset to process non-HFS, non-UDF disks", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
