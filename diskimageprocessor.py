@@ -429,16 +429,10 @@ for file in sorted(os.listdir(args.source)):
                         logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
                     
                     # carve images using tsk_recover
-                    if args.exportall == True: # export all files
-                        try:
-                            subprocess.check_output(['tsk_recover', '-e', diskimage, files_dir])
-                        except subprocess.CalledProcessError as e:
-                            logandprint('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % (e.output))
-                    else: # export only allocated files (default)
-                        try:
-                            subprocess.check_output(['tsk_recover', '-a', diskimage, files_dir])
-                        except subprocess.CalledProcessError as e:
-                            logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
+                    try:
+                        subprocess.check_output(['tsk_recover', '-a', diskimage, files_dir])
+                    except subprocess.CalledProcessError as e:
+                        logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
 
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
