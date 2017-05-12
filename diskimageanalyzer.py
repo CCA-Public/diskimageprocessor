@@ -77,11 +77,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
             total_bytes += obj.filesize
 
-        # filter 'None' values from date lists
-        for date_list in mtimes, atimes, ctimes, crtimes:
-            while 'None' in date_list:
-                date_list.remove('None')
-
         # build extent statement
         size_readable = convert_size(total_bytes)
         if number_files == 1:
