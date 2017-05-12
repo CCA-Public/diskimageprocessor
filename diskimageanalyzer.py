@@ -48,9 +48,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
     number_files = 0
     total_bytes = 0
     mtimes = []
-    atimes = []
-    ctimes = []
-    crtimes = []
 
     # parse dfxml file
     dfxml_file = os.path.join(disk_result, 'dfxml.xml')
@@ -78,27 +75,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             except:
                 pass
 
-            try:
-                atime = obj.atime
-                atime = str(atime)
-                atimes.append(atime)
-            except:
-                pass
-
-            try:
-                ctime = obj.ctime
-                ctime = str(ctime)
-                ctimes.append(ctime)
-            except:
-                pass
-
-            try:
-                crtime = obj.crtime
-                crtime = str(crtime)
-                crtimes.append(crtime)
-            except:
-                pass
-
             total_bytes += obj.filesize
 
         # filter 'None' values from date lists
@@ -115,73 +91,18 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
         else:
             extent = "%d digital files (%s)" % (number_files, size_readable)
 
-        # determine earliest and latest MAC dates from lists
-        date_earliest_m = ""
-        date_latest_m = ""
-        date_earliest_a = ""
-        date_latest_a = ""
-        date_earliest_c = ""
-        date_latest_c = ""
-        date_earliest_cr = ""
-        date_latest_cr = ""
-        date_statement = ""
+        # determine earliest and latest modified date
+        date_earliest = ""
+        date_latest = ""
+        
+        date_earliest = min(mtimes)
+        date_latest = max(mtimes)
+        if not date_earliest:
+            date_earliest = "N/A"
+            date_latest = "N/A"
 
-        if mtimes:
-            date_earliest_m = min(mtimes)
-            date_latest_m = max(mtimes)
-        if atimes:
-            date_earliest_a = min(atimes)
-            date_latest_a = max(atimes)
-        if ctimes:
-            date_earliest_c = min(ctimes)
-            date_latest_c = max(ctimes)
-        if crtimes:
-            date_earliest_cr = min(crtimes)
-            date_latest_cr = max(crtimes)
-
-        # determine which set of dates to use (logic: use set with earliest start date)
-        use_atimes = False
-        use_ctimes = False
-        use_crtimes = False
-
-        if not date_earliest_m:
-            date_earliest_m = "N/A"
-            date_latest_m = "N/A"
-        date_to_use = date_earliest_m # default to date modified
-
-        if date_earliest_a:
-            if date_earliest_a < date_to_use:
-                date_to_use = date_earliest_a
-                use_atimes = True
-        if date_earliest_c:
-            if date_earliest_c < date_to_use:
-                date_to_use = date_earliest_c
-                use_atimes = False
-                use_ctimes = True
-        if date_earliest_cr:
-            if date_earliest_cr < date_to_use:
-                date_to_use = date_earliest_cr
-                use_atimes = False
-                use_ctimes = False
-                use_crtimes = True
-
-        # store date_earliest and date_latest values based on datetype & record datetype
-        date_type = 'Modified'
-        if use_atimes == True:
-            date_earliest = date_earliest_a[:10]
-            date_latest = date_latest_a[:10] 
-            date_type = 'Accessed'
-        elif use_ctimes == True:
-            date_earliest = date_earliest_c[:10]
-            date_latest = date_latest_c[:10]
-            date_type = 'Created'
-        elif use_crtimes == True:
-            date_earliest = date_earliest_cr[:10]
-            date_latest = date_latest_cr[:10]
-            date_type = 'Created'
-        else:
-            date_earliest = date_earliest_m[:10]
-            date_latest = date_latest_m[:10]
+        date_earliest = date_earliest[:10]
+        date_latest = date_latest[:10]
 
         # write date statement
         if date_earliest == date_latest:
@@ -233,11 +154,11 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             print("ERROR: Issue reading virus log for disk %s." % (os.path.basename(disk_result)))
 
         # write csv row
-        writer.writerow([os.path.basename(disk_result), disk_fs, date_type, date_statement, date_earliest, date_latest, extent, virus_found, formatlist])
+        writer.writerow([os.path.basename(disk_result), disk_fs, date_statement, date_earliest, date_latest, extent, virus_found, formatlist])
 
     # if error reading DFXML, print that to spreadsheet
     except:
-        writer.writerow([os.path.basename(disk_result), 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 
+        writer.writerow([os.path.basename(disk_result), 'N/A', 'N/A', 'N/A', 'N/A', 
             'N/A', 'N/A', 'Error reading DFXML file.'])
 
     spreadsheet.close()
@@ -398,7 +319,7 @@ spreadsheet_path = os.path.join(destination, 'analysis.csv')
 # open description spreadsheet
 spreadsheet = open(spreadsheet_path, 'w')
 writer = csv.writer(spreadsheet, quoting=csv.QUOTE_NONNUMERIC)
-header_list = ['Disk image', 'File system', 'Date type', 'Date statement', 'Date begin', 'Date end', 'Extent', 'Virus found', 'File formats']
+header_list = ['Disk image', 'File system', 'Date statement', 'Date begin', 'Date end', 'Extent', 'Virus found', 'File formats']
 writer.writerow(header_list)
 
 # close description spreadsheet
