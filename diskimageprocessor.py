@@ -419,6 +419,7 @@ for file in sorted(os.listdir(args.source)):
 
             # handle differently by file system
             if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
+                # select toolset based on user input
                 if args.sleuthkit == True:
                     # use fiwalk to make dfxml
                     fiwalk_file = os.path.join(subdoc_dir, 'dfxml.xml')
