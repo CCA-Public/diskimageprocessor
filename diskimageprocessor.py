@@ -114,9 +114,9 @@ def create_spreadsheet(files_only):
                 date_earliest = min(mtimes)
                 date_latest = max(mtimes)
 
-                if not date_earliest_:
-                    date_earliest_ = "N/A"
-                    date_latest_ = "N/A"
+                if not date_earliest:
+                    date_earliest = "N/A"
+                    date_latest = "N/A"
 
                 date_earliest = date_earliest[:10]
                 date_latest = date_latest[:10]
