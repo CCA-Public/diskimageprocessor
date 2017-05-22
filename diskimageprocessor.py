@@ -357,7 +357,7 @@ for file in sorted(os.listdir(args.source)):
     logandprint('>>> NEW FILE: %s' % (file))
     
     # determine if disk image
-    if file.endswith(".E01") or file.endswith(".000") or file.endswith(".raw") or file.endswith(".img") or file.endswith(".dd") or file.endswith(".iso"):
+    if file.endswith(".E01") or file.endswith(".000") or file.endswith(".001") or file.endswith(".raw") or file.endswith(".img") or file.endswith(".dd") or file.endswith(".iso"):
 
         # save info about file
         image_path = os.path.join(args.source, file)
