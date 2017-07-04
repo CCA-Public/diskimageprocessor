@@ -439,6 +439,10 @@ for file in sorted(os.listdir(args.source)):
                     except subprocess.CalledProcessError as e:
                         logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
 
+                    # modify file permissions
+                    subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                    subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
+
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
                     if args.piiscan == True: # brunnhilde with bulk_extractor
@@ -456,9 +460,6 @@ for file in sorted(os.listdir(args.source)):
                     else: # write metadata/checksum.md5
                         subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
-                    # modify file permissions
-                    subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
-                    subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
                 else:
                     # mount image
                     subprocess.call("sudo mount -o loop '%s' /mnt/diskid/" % (diskimage), shell=True)
@@ -480,6 +481,10 @@ for file in sorted(os.listdir(args.source)):
                     # unmount disk image
                     subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
 
+                    # modify file permissions
+                    subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                    subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
+
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
                     if args.piiscan == True: # brunnhilde with bulk_extractor
@@ -496,10 +501,6 @@ for file in sorted(os.listdir(args.source)):
                         subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
                     else: # write metadata/checksum.md5
                         subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
-
-                    # modify file permissions
-                    subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
-                    subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
@@ -527,6 +528,10 @@ for file in sorted(os.listdir(args.source)):
                     except subprocess.CalledProcessError as e:
                         logandprint('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output)) 
 
+                # modify file permissions
+                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
+
                 # run brunnhilde and write to reports directory
                 files_abs = os.path.abspath(files_dir)
                 if args.piiscan == True: # brunnhilde with bulk_extractor
@@ -543,10 +548,6 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
                 else: # write metadata/checksum.md5
                     subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
-
-                # modify file permissions
-                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
-                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
             
             elif 'udf' in disk_fs.lower():
                 # mount image
@@ -569,6 +570,10 @@ for file in sorted(os.listdir(args.source)):
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
 
+                # modify file permissions
+                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
+                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
+
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
                 if args.piiscan == True: # brunnhilde with bulk_extractor
@@ -585,10 +590,6 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("bagit.py --processes 4 '%s'" % (sip_dir), shell=True)
                 else: # write metadata/checksum.md5
                     subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
-
-                # modify file permissions
-                subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
-                subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
             else:
                 logandprint('NOTICE: Skipping processing of unknown disk type.')
