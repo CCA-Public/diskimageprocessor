@@ -43,7 +43,9 @@ In Processing mode, each disk image is turned into a SIP, packaged as an ideal t
 
 Each toolset has its limitations. Tsk_recover and fiwalk are better able to handle some ISO9660 disks which may have difficulty mounting in BitCurator. Conversely, tsk_recover does not maintain file system dates, while the mount-and-copy routine will maintain last modified dates.
 
-Regardless of the toolset chosen, when complete, a "description.csv" spreadsheet is created, containing some pre-populated archival description:  
+For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer. For UDF disks, files are copied from the mounted disk image. For both HFS and UDF disks, the `walk_to_dfxml.py` script from DFXML Python bindings is used to generate DFXML.
+
+When complete, a "description.csv" spreadsheet is created containing some pre-populated archival description:  
 * Date statement  
 * Date begin  
 * Date end  
