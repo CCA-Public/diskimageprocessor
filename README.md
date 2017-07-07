@@ -43,7 +43,7 @@ In Processing mode, each disk image is turned into a SIP, packaged as an ideal t
 * **tsk_recover and fiwalk**: Uses SleuthKit's `tsk_recover` to carve files from disk images and `fiwalk` to generate DFXML.  
 * **mount-copy and walk_to_dfxml.py**: Uses a mount-and-copy routine to copy files from disk images and `walk_to_dfxml.py` (from DFXML Python bindings) to generate DFXML.
 
-Each toolset has its limitations. Tsk_recover and fiwalk are better able to handle some ISO9660 disks which may have difficulty mounting in BitCurator. Conversely, tsk_recover does not maintain file system dates, while the mount-and-copy routine will maintain last modified dates.
+Each toolset has its limitations. Tsk_recover and fiwalk are better able to handle some ISO9660 disks which may have difficulty mounting in BitCurator without the file system offset specified. Conversely, tsk_recover does not maintain file system dates, while the mount-and-copy routine will maintain last modified dates.
 
 For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer. For UDF disks, files are copied from the mounted disk image. For both HFS and UDF disks, the `walk_to_dfxml.py` script from DFXML Python bindings is used to generate DFXML.
 
