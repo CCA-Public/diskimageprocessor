@@ -66,12 +66,6 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and, optionally, bulk_extractor)  
 
-## Details
-
-### Dates
-
-CCA Disk Image Processor gathers dates from the DFXML files it generates, **not** from the file system. In practice, this means the dates reported in the CCA Disk Image Processor-generated spreadsheets and the dates shown in the file system for carved files may differ, particularly when using the "tsk_recover and fiwalk" toolset.
-
 ## Installation
 
 This utility is designed for easy use in BitCurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in BitCurator.    
