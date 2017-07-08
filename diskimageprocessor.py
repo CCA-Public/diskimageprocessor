@@ -34,13 +34,13 @@ import os
 import shutil
 import subprocess
 import sys
-from time import localtime, strftime
+import time
 
 #import Objects.py from python dfxml tools
 import Objects
 
 def logandprint(message):
-    log.write('\n' + (strftime("%H:%M:%S %b %d, %Y - ", localtime())) + message)
+    log.write('\n' + (time.strftime("%H:%M:%S %b %d, %Y - ", time.localtime())) + message)
     print(message)
 
 def convert_size(size):
@@ -447,8 +447,7 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
                     subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
-                    # rewrite last modified dates based on input from DFXML
-                    # gather info for each FileObject
+                    # rewrite last modified dates of files based on values in DFXML
                     for (event, obj) in Objects.iterparse(fiwalk_file):
                         
                         # only work on FileObjects
@@ -478,17 +477,19 @@ for file in sorted(os.listdir(args.source)):
                             pass
 
                         # fallback to created date if last modified doesn't exist
-                        if mtime:
+                        if mtime and (mtime != 'None'):
                             mtime = time_to_int(mtime)
                             dfxml_filedate = mtime
-                        elif crtime:
+                        elif crtime and (crtime != 'None'):
                             crtime = time_to_int(crtime)
                             dfxml_filedate = crtime
+                        else:
+                            continue
 
-                    # compare FileObject paths to files in objects/files and rewrite dates with os.utime
-                    exported_filepath = os.path.join(file_dir, dfxml_filename)
-                    if os.isfile(exported_filepath):
-                        os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
+                        # rewrite last modified date of corresponding file in objects/files
+                        exported_filepath = os.path.join(files_dir, dfxml_filename)
+                        if os.path.isfile(exported_filepath):
+                            os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
