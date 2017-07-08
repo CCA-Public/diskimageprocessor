@@ -32,7 +32,7 @@ The destination directory also contains a "reports" directory containing a sub-d
 
 Because "Analysis" mode runs bulk_extractor against each disk, this process can take a while.  
 
-Note: For disks with NTFS, FAT, EXT, ISO9660, HFS+, UFS, RAW, SWAP, or YAFFS2 file systems, the dates reported by Brunnhilde and those reported in the DFXML/analysis CSV will likely differ. This is because tsk_recover is used to carve files from these disk images, and tsk_recover does not retain original file system dates. In these cases, the date stamps recorded in the DFXML file and reported in the analysis CSV should be considered the proper date values for the disk.
+*Note: For disks with NTFS, FAT, EXT, ISO9660, HFS+, UFS, RAW, SWAP, or YAFFS2 file systems, the dates reported by Brunnhilde and those reported in the DFXML/analysis CSV will likely differ. This is because tsk_recover is used to carve files from these disk images, and tsk_recover does not retain original file system dates. In these cases, the date stamps recorded in the DFXML file and reported in the analysis CSV should be considered the proper date values for the disk.*
 
 ### Processing
 
