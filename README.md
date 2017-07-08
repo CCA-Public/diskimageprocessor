@@ -85,7 +85,7 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 * raw (dd, iso, img, etc.)  
 * EnCase/EWF (E01)  
 
-*Note: EnCase disk images are converted to raw disk images for processing using [libewf](https://github.com/libyal/libewf)'s `ewf_export` utility. In Processing mode, the converted raw image is retained in the SIP unless the user selects to retain only logical files.
+*Note: EnCase disk images are converted to raw disk images for processing using [libewf](https://github.com/libyal/libewf)'s `ewf_export` utility. In Processing mode, the converted raw image is retained in the SIP unless the user selects to retain only logical files.*
 
 ## Installation
 
