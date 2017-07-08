@@ -80,6 +80,13 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 * SWAP  
 * YAFFS2  
 
+## Supported disk image types  
+
+* raw (dd, iso, img, etc.)  
+* EnCase/EWF (E01)  
+
+*Note: EnCase disk images are converted to raw disk images for processing using [libewf](https://github.com/libyal/libewf)'s `ewf_export` utility. In Processing mode, the converted raw image is retained in the SIP unless the user selects to retain only logical files.
+
 ## Installation
 
 This utility is designed for easy use in BitCurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in BitCurator.    
