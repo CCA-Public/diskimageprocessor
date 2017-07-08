@@ -448,8 +448,6 @@ for file in sorted(os.listdir(args.source)):
                     subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
                     # rewrite last modified dates based on input from DFXML
-                    # make list of dicts for parsing DFXML
-                    dfxml_fileobjects = []
                     # gather info for each FileObject
                     for (event, obj) in Objects.iterparse(fiwalk_file):
                         
@@ -462,11 +460,9 @@ for file in sorted(os.listdir(args.source)):
                             if obj.name_type != "r":
                                 continue
 
-                        # create dict for FileObject
-                        dfxml_fileobject = {}
-
                         # record filename
-                        dfxml_fileobject['filename'] = obj.filename
+                        dfxml_filename = obj.filename
+                        dfxml_filedate = int(time.time()) # default to current time
 
                         # record last modified or last created date
                         try:
@@ -484,13 +480,15 @@ for file in sorted(os.listdir(args.source)):
                         # fallback to created date if last modified doesn't exist
                         if mtime:
                             mtime = time_to_int(mtime)
-                            dfxml_fileobject['date'] = mtime
+                            dfxml_filedate = mtime
                         elif crtime:
                             crtime = time_to_int(crtime)
-                            dfxml_fileobject['date'] = crtime
+                            dfxml_filedate = crtime
 
                     # compare FileObject paths to files in objects/files and rewrite dates with os.utime
-                    
+                    exported_filepath = os.path.join(file_dir, dfxml_filename)
+                    if os.isfile(exported_filepath):
+                        os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
