@@ -478,10 +478,10 @@ for file in sorted(os.listdir(args.source)):
 
                         # fallback to created date if last modified doesn't exist
                         if mtime and (mtime != 'None'):
-                            mtime = time_to_int(mtime[:20])
+                            mtime = time_to_int(mtime[:19])
                             dfxml_filedate = mtime
                         elif crtime and (crtime != 'None'):
-                            crtime = time_to_int(crtime[:20])
+                            crtime = time_to_int(crtime[:19])
                             dfxml_filedate = crtime
                         else:
                             continue
