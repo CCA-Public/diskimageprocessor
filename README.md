@@ -66,6 +66,20 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and, optionally, bulk_extractor)  
 
+## Supported file systems
+
+* NTFS  
+* FAT  
+* ext2/3  
+* ISO9660  
+* UDF
+* HFS  
+* HFS+  
+* UFS  
+* RAW  
+* SWAP  
+* YAFFS2  
+
 ## Installation
 
 This utility is designed for easy use in BitCurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in BitCurator.    
