@@ -56,7 +56,7 @@ def convert_size(size):
     return '%s %s' % (s,size_name[i])
 
 def time_to_int(str_time):
-    dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%SZ").timetuple())
+    dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
 def create_spreadsheet(files_only, sleuthkit):
@@ -478,10 +478,10 @@ for file in sorted(os.listdir(args.source)):
 
                         # fallback to created date if last modified doesn't exist
                         if mtime and (mtime != 'None'):
-                            mtime = time_to_int(mtime)
+                            mtime = time_to_int(mtime[:20])
                             dfxml_filedate = mtime
                         elif crtime and (crtime != 'None'):
-                            crtime = time_to_int(crtime)
+                            crtime = time_to_int(crtime[:20])
                             dfxml_filedate = crtime
                         else:
                             continue
