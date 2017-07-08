@@ -34,13 +34,13 @@ import os
 import shutil
 import subprocess
 import sys
-from time import localtime, strftime
+import time
 
 #import Objects.py from python dfxml tools
 import Objects
 
 def logandprint(message):
-    log.write('\n' + (strftime("%H:%M:%S %b %d, %Y - ", localtime())) + message)
+    log.write('\n' + (time.strftime("%H:%M:%S %b %d, %Y - ", time.localtime())) + message)
     print(message)
 
 def convert_size(size):
@@ -54,6 +54,10 @@ def convert_size(size):
     s = str(s)
     s = s.replace('.0', '')
     return '%s %s' % (s,size_name[i])
+
+def time_to_int(str_time):
+    dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%SZ").timetuple())
+    return dt
 
 def create_spreadsheet(files_only, sleuthkit):
     # process each SIP
@@ -442,6 +446,50 @@ for file in sorted(os.listdir(args.source)):
                     # modify file permissions
                     subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
                     subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
+
+                    # rewrite last modified dates of files based on values in DFXML
+                    for (event, obj) in Objects.iterparse(fiwalk_file):
+                        
+                        # only work on FileObjects
+                        if not isinstance(obj, Objects.FileObject):
+                            continue
+
+                        # skip directories and links
+                        if obj.name_type:
+                            if obj.name_type != "r":
+                                continue
+
+                        # record filename
+                        dfxml_filename = obj.filename
+                        dfxml_filedate = int(time.time()) # default to current time
+
+                        # record last modified or last created date
+                        try:
+                            mtime = obj.mtime
+                            mtime = str(mtime)
+                        except:
+                            pass
+
+                        try:
+                            crtime = obj.crtime
+                            crtime = str(crtime)
+                        except:
+                            pass
+
+                        # fallback to created date if last modified doesn't exist
+                        if mtime and (mtime != 'None'):
+                            mtime = time_to_int(mtime)
+                            dfxml_filedate = mtime
+                        elif crtime and (crtime != 'None'):
+                            crtime = time_to_int(crtime)
+                            dfxml_filedate = crtime
+                        else:
+                            continue
+
+                        # rewrite last modified date of corresponding file in objects/files
+                        exported_filepath = os.path.join(files_dir, dfxml_filename)
+                        if os.path.isfile(exported_filepath):
+                            os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
