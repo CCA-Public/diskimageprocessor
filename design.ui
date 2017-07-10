@@ -70,7 +70,7 @@
        <string>Analysis</string>
       </property>
       <property name="checked">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -80,47 +80,14 @@
        <string>Processing</string>
       </property>
       <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Processing toolset (for non-HFS, non-UDF disks)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="sleuthkit">
-      <property name="text">
-       <string>tsk_recover and fiwalk</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-      <property name="autoRepeat">
        <bool>false</bool>
       </property>
-      <attribute name="buttonGroup">
-       <string notr="true">buttonGroup_2</string>
-      </attribute>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="mountcopy">
-      <property name="text">
-       <string>mount-copy and walk_to_dfxml.py</string>
-      </property>
-      <attribute name="buttonGroup">
-       <string notr="true">buttonGroup_2</string>
-      </attribute>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Processing options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Processing Mode options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -134,7 +101,14 @@
     <item>
      <widget class="QCheckBox" name="filesonlyBtn">
       <property name="text">
-       <string>Make SIPs from logical files only (do not include disk image)</string>
+       <string>Make SIPs from logical files only (no disk images)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="resforksBtn">
+      <property name="text">
+       <string>Export AppleDouble resource forks from HFS-formatted disks</string>
       </property>
      </widget>
     </item>
@@ -142,13 +116,6 @@
      <widget class="QCheckBox" name="checkBox_3">
       <property name="text">
        <string>Run bulk_extractor</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="resforksBtn">
-      <property name="text">
-       <string>unhfs: Export AppleDouble resource forks</string>
       </property>
      </widget>
     </item>
@@ -184,7 +151,4 @@
  </widget>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
- </buttongroups>
 </ui>
