@@ -488,9 +488,9 @@ for file in sorted(os.listdir(args.source)):
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
                 if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                    subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                    subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
 
                 # if user selected 'filesonly', remove disk image files and repackage
                 if args.filesonly == True:
@@ -579,9 +579,9 @@ for file in sorted(os.listdir(args.source)):
                 # run brunnhilde and write to submissionDocumentation
                 files_abs = os.path.abspath(files_dir)
                 if args.piiscan == True: # brunnhilde with bulk_extractor
-                    subprocess.call("brunnhilde.py -zbw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                    subprocess.call("brunnhilde.py -zb '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 else: # brunnhilde without bulk_extractor
-                    subprocess.call("brunnhilde.py -zw '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
+                    subprocess.call("brunnhilde.py -z '%s' '%s' '%s'" % (files_abs, subdoc_dir, 'brunnhilde'), shell=True)
                 
                 # if user selected 'filesonly', remove disk image files and repackage
                 if args.filesonly == True:
