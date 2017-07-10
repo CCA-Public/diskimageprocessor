@@ -75,8 +75,6 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
                 call.append("-f")
             if self.resforksBtn.isChecked():
                 call.append("-r")
-            if self.sleuthkit.isChecked():
-                call.append("--sleuthkit")
         call.append(self.source1.text())
         call.append(self.destination1.text())
 
