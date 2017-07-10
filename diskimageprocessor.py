@@ -59,7 +59,7 @@ def time_to_int(str_time):
     dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def create_spreadsheet(files_only, sleuthkit):
+def create_spreadsheet(files_only):
     # process each SIP
     for item in sorted(os.listdir(sips)):
         current = os.path.join(sips, item)
@@ -230,12 +230,9 @@ def create_spreadsheet(files_only, sleuthkit):
 
                 # save tool used to carve files
                 if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                    if sleuthkit == True:
-                        tool = "carved from the disk image using the Sleuth Kit command line utility tsk_recover"
-                    else:
-                        tool = "copied from the mounted disk image"
+                    tool = "carved from the disk image using the Sleuth Kit command line utility tsk_recover"
                 elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
-                    tool = "carved from disk image using the HFSExplorer command line utility unhfs"
+                    tool = "carved from disk image using the HFSExplorer command line utility"
                 elif 'udf' in disk_fs.lower():
                     tool = "copied from the mounted disk image"
                 else:
@@ -616,7 +613,7 @@ else:
     logandprint('Processing complete. All disk images processed. Results in %s.' % (destination))
 
 # write description spreadsheet
-create_spreadsheet(args.filesonly, args.sleuthkit)
+create_spreadsheet(args.filesonly)
 
 # close files
 spreadsheet.close()
