@@ -273,7 +273,7 @@ unanalyzed = []
 for file in sorted(os.listdir(source)):
     
     # determine if disk image
-    if file.endswith(".E01") or file.endswith(".000") or file.endswith(".001") or file.endswith(".raw") or file.endswith(".img") or file.endswith(".dd") or file.endswith(".iso"):
+    if file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso")):
 
         # save info about file
         image_path = os.path.join(source, file)
