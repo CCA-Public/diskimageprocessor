@@ -333,8 +333,64 @@ for file in sorted(os.listdir(source)):
                 except subprocess.CalledProcessError as e:
                     logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
 
+                # carve files
+                tmp_carvedfiles = os.path.join(diskimage_dir, "%s_tmpfiles" % (file))
+                if not os.path.exists(diskimage_tmpfiles):
+                    os.makedirs(diskimage_tmpfiles)
+                try:
+                    subprocess.check_output(['tsk_recover', '-a', diskimage, diskimage_tmpfiles])
+                except subprocess.CalledProcessError as e:
+                    logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
+
+                # rewrite last modified dates of carved files based on values in DFXML
+                for (event, obj) in Objects.iterparse(fiwalk_file):
+                    
+                    # only work on FileObjects
+                    if not isinstance(obj, Objects.FileObject):
+                        continue
+
+                    # skip directories and links
+                    if obj.name_type:
+                        if obj.name_type != "r":
+                            continue
+
+                    # record filename
+                    dfxml_filename = obj.filename
+                    dfxml_filedate = int(time.time()) # default to current time
+
+                    # record last modified or last created date
+                    try:
+                        mtime = obj.mtime
+                        mtime = str(mtime)
+                    except:
+                        pass
+
+                    try:
+                        crtime = obj.crtime
+                        crtime = str(crtime)
+                    except:
+                        pass
+
+                    # fallback to created date if last modified doesn't exist
+                    if mtime and (mtime != 'None'):
+                        mtime = time_to_int(mtime[:19])
+                        dfxml_filedate = mtime
+                    elif crtime and (crtime != 'None'):
+                        crtime = time_to_int(crtime[:19])
+                        dfxml_filedate = crtime
+                    else:
+                        continue
+
+                    # rewrite last modified date of corresponding file in objects/files
+                    exported_filepath = os.path.join(tmp_carvedfiles, dfxml_filename)
+                    if os.path.isfile(exported_filepath):
+                        os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
+
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwbdr '%s' '%s' brunnhilde" % (diskimage, disk_dir), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (tmp_carvedfiles, disk_dir), shell=True)
+
+                # remove tmpdir
+                shutil.rmtree(tmp_carvedfiles)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
