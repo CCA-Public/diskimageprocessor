@@ -20,6 +20,12 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         # build start functionality
         self.process.clicked.connect(self.start_processing)
 
+        self.actionAbout.triggered.connect(self.about_dialog)
+
+    def about_dialog(self):
+        QMessageBox.information(self, "About Disk Image Processor", 
+            "Disk Image Processor\n(c) Tim Walsh 2017\nMIT License\nhttps://github.com/timothyryanwalsh/cca-diskimageprocessor")
+
     @pyqtSlot()
     def readStdOutput(self):
         self.textEdit.append(QString(self.proc.readAllStandardOutput()))
