@@ -98,7 +98,7 @@ Disk Image Processor recognizes which files are disk images by their file extens
 
 *To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 369 of `diskimageprocessor.py` and/or line 276 of `diskimageanalyzer.py`.*
 
-## Installation
+## Installation and dependencies
 
 This utility is designed for easy use in BitCurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in BitCurator.    
 
@@ -112,6 +112,10 @@ Install all of the CCA Tools (and PyQT4) together using the install bash script 
 `chmod u+x install.sh` 
 * Run the install script with sudo privileges:  
 `sudo ./install.sh`  
+
+### Brunnhilde version  
+
+Disk Image Processor will work with all versions of [Brunnhilde](https://github.com/timothyryanwalsh/brunnhilde); however, changes to Brunnhilde 1.5.1's default pattern matching for SSNs with bulk_extractor help in minimizing the number of false positives reported and keeping the Brunnhilde HTML report size reasonable and in. For best results, it is recommended to upgrade the version of Brunnhilde on your machine to 1.5.1+.  
 
 ## Credit  
 
