@@ -40,7 +40,8 @@ import time
 import Objects
 
 def logandprint(message):
-    log.write('\n' + (time.strftime("%H:%M:%S %b %d, %Y - ", time.localtime())) + message)
+    log.write('\n' + (time.strftime("%H:%M:%S %b %d, %Y - ", 
+        time.localtime())) + message)
     print(message)
 
 def convert_size(size):
@@ -56,7 +57,8 @@ def convert_size(size):
     return '%s %s' % (s,size_name[i])
 
 def time_to_int(str_time):
-    dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple())
+    dt = time.mktime(datetime.datetime.strptime(str_time, 
+        "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
 def create_spreadsheet(files_only):
@@ -76,9 +78,11 @@ def create_spreadsheet(files_only):
 
             # parse dfxml file
             if args.bagfiles == True:
-                dfxml_file = os.path.abspath(os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'dfxml.xml'))
+                dfxml_file = os.path.abspath(os.path.join(current, 
+                    'data', 'metadata', 'submissionDocumentation', 'dfxml.xml'))
             else:
-                dfxml_file = os.path.abspath(os.path.join(current, 'metadata', 'submissionDocumentation', 'dfxml.xml'))
+                dfxml_file = os.path.abspath(os.path.join(current, 
+                    'metadata', 'submissionDocumentation', 'dfxml.xml'))
 
             # try to read DFXML file
             try:
@@ -214,9 +218,11 @@ def create_spreadsheet(files_only):
 
                 # gather file system info, discern tool used
                 if args.bagfiles == True:
-                    disktype = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'disktype.txt')
+                    disktype = os.path.join(current, 'data', 'metadata', 
+                        'submissionDocumentation', 'disktype.txt')
                 else:
-                    disktype = os.path.join(current, 'metadata', 'submissionDocumentation', 'disktype.txt')
+                    disktype = os.path.join(current, 'metadata', 
+                        'submissionDocumentation', 'disktype.txt')
                 # pull filesystem info from disktype.txt
                 disk_fs = ''
                 try:
@@ -247,9 +253,11 @@ def create_spreadsheet(files_only):
                     formatlist = ''
                     fileformat_csv = ''
                     if args.bagfiles == True:
-                        fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
+                        fileformat_csv = os.path.join(current, 'data', 'metadata', 'submissionDocumentation', 
+                            'brunnhilde', 'csv_reports', 'formats.csv')
                     else:
-                        fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 'brunnhilde', 'csv_reports', 'formats.csv')
+                        fileformat_csv = os.path.join(current, 'metadata', 'submissionDocumentation', 
+                            'brunnhilde', 'csv_reports', 'formats.csv')
                     try: 
                         with open(fileformat_csv, 'r') as f:
                             reader = csv.reader(f)
@@ -258,8 +266,9 @@ def create_spreadsheet(files_only):
                                 fileformats.append(row[0])
                     except:
                         fileformats.append("ERROR! No formats.csv file to pull formats from.")
-                    fileformats = [element or 'Unidentified' for element in fileformats] # replace empty elements with 'Unidentified'
-                    formatlist = ', '.join(fileformats) # format list of top file formats as human-readable
+                    # replace empty elements with 'Unidentified
+                    fileformats = [element or 'Unidentified' for element in fileformats]
+                    formatlist = ', '.join(fileformats)
                     
                     
                     # create scope and content note
@@ -357,7 +366,7 @@ for file in sorted(os.listdir(args.source)):
     logandprint('>>> NEW FILE: %s' % (file))
     
     # determine if disk image
-    if file.endswith(".E01") or file.endswith(".000") or file.endswith(".001") or file.endswith(".raw") or file.endswith(".img") or file.endswith(".dd") or file.endswith(".iso"):
+    if file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso")):
 
         # save info about file
         image_path = os.path.join(args.source, file)

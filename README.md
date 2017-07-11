@@ -3,7 +3,7 @@
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
 **NOTE: This tool is in dev and should not be considered production-ready without testing**  
-Version: 0.5.0 (alpha)
+Version: 0.5.1 (alpha)
 
 ## Usage
 
@@ -32,17 +32,17 @@ The destination directory also contains a "reports" directory containing a sub-d
 
 Because "Analysis" mode runs bulk_extractor against each disk, this process can take a while.  
 
-*Note: For disks with NTFS, FAT, EXT, ISO9660, HFS+, UFS, RAW, SWAP, or YAFFS2 file systems, the dates reported by Brunnhilde and those reported in the DFXML/analysis CSV will likely differ. This is because tsk_recover is used to carve files from these disk images, and tsk_recover does not retain original file system dates. In these cases, the date stamps recorded in the DFXML file and reported in the analysis CSV should be considered the proper date values for the disk.*
-
 ### Processing
 
 Underlying script: `diskimageprocessor.py`  
 
 In Processing mode, each disk image is turned into a SIP, packaged as an ideal transfer to Archivematica's Automation tools, and reported on.
 
-For disks with most file systems, `fiwalk` is used to generate DFXML and The Sleuth Kit's `tsk_recover` utility is used to carve allocated files from each disk image. Because tsk_recover does not retain file system timestamps, the program then rewrites the modified dates of files in the newly-created SIP based on the values recorded in the DFXML file.
+For disks with most file systems, `fiwalk` is used to generate DFXML and The Sleuth Kit's `tsk_recover` utility is used to carve allocated files from each disk image. Modified dates for the carved files are then restored from their recorded values in the fiwalk-generated DFXML file.
 
-For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer. For UDF disks, files are copied from the mounted disk image. For both HFS and UDF disks, the `walk_to_dfxml.py` script from DFXML Python bindings is used to generate DFXML.
+For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer and DFXML is generated using the `walk_to_dfxml.py` script from the DFXML Python bindings.
+
+For disks with a UDF file system, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
 
 When complete, a "description.csv" spreadsheet is created containing some pre-populated archival description:  
 * Date statement  
@@ -84,7 +84,21 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 
 *Note: EnCase disk images are converted to raw disk images for processing using [libewf](https://github.com/libyal/libewf)'s `ewf_export` utility. In Processing mode, the converted raw image is retained in the SIP unless the user selects to retain only logical files.*
 
-## Installation
+## Disk image extensions recognized
+
+Disk Image Processor recognizes which files are disk images by their file extensions. Currently, it looks for the following extensions:  
+
+* .E01  
+* .000  
+* .001  
+* .raw  
+* .img  
+* .dd  
+* .iso  
+
+*To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 369 of `diskimageprocessor.py` and/or line 276 of `diskimageanalyzer.py`.*
+
+## Installation and dependencies
 
 This utility is designed for easy use in BitCurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in BitCurator.    
 
@@ -98,6 +112,10 @@ Install all of the CCA Tools (and PyQT4) together using the install bash script 
 `chmod u+x install.sh` 
 * Run the install script with sudo privileges:  
 `sudo ./install.sh`  
+
+### Brunnhilde version  
+
+Disk Image Processor will work with all versions of [Brunnhilde](https://github.com/timothyryanwalsh/brunnhilde); however, changes to Brunnhilde 1.5.1's default pattern matching for SSNs with bulk_extractor help in minimizing the number of false positives reported and keeping the Brunnhilde HTML report size reasonable. For best results, it is recommended to upgrade the version of Brunnhilde on your machine to 1.5.1+.  
 
 ## Credit  
 
