@@ -43,8 +43,8 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
             self.destination1.setText(directory)
 
     def on_finished(self):
-    	QMessageBox.information(self, "Done!", "Process complete.")
         self.lineEdit.setText('Finished')
+        QMessageBox.information(self, "Done!", "Process complete.")
         self.process.setEnabled(True)
 
     def start_processing(self):
