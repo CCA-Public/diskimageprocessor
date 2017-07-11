@@ -23,8 +23,8 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         self.actionAbout.triggered.connect(self.about_dialog)
 
     def about_dialog(self):
-        QMessageBox.information(self, "About Disk Image Processor", 
-            "Disk Image Processor v0.5.1\n(c) Tim Walsh 2017\nMIT License\nhttps://github.com/timothyryanwalsh/cca-diskimageprocessor")
+        QMessageBox.information(self, "About", 
+            "Disk Image Processor v0.5.1\nTim Walsh, 2017\nMIT License\nhttps://github.com/timothyryanwalsh/cca-diskimageprocessor")
 
     @pyqtSlot()
     def readStdOutput(self):
