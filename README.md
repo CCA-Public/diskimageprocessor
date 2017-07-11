@@ -3,7 +3,7 @@
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
 **NOTE: This tool is in dev and should not be considered production-ready without testing**  
-Version: 0.5.1 (alpha)
+Version: 0.5.1 (beta)
 
 ## Usage
 
