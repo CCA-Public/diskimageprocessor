@@ -334,7 +334,7 @@ for file in sorted(os.listdir(source)):
                     logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
 
                 # carve files
-                tmp_carvedfiles = os.path.join(diskimage_dir, "%s_tmpfiles" % (file))
+                tmp_carvedfiles = os.path.join(disk_dir, "%s_tmpfiles" % (file))
                 if not os.path.exists(diskimage_tmpfiles):
                     os.makedirs(diskimage_tmpfiles)
                 try:
