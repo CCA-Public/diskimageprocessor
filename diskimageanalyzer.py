@@ -337,11 +337,11 @@ for file in sorted(os.listdir(source)):
                     logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
 
                 # carve files
-                tmp_carvedfiles = os.path.join(disk_dir, "%s_tmpfiles" % (file))
-                if not os.path.exists(tmp_carvedfiles):
-                    os.makedirs(tmp_carvedfiles)
+                temp_dir = os.path.join(disk_dir, 'temp')
+                if not os.path.exists(temp_dir):
+                    os.makedirs(temp_dir)
                 try:
-                    subprocess.check_output(['tsk_recover', '-a', diskimage, tmp_carvedfiles])
+                    subprocess.check_output(['tsk_recover', '-a', diskimage, temp_dir])
                 except subprocess.CalledProcessError as e:
                     logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
 
@@ -385,15 +385,15 @@ for file in sorted(os.listdir(source)):
                         continue
 
                     # rewrite last modified date of corresponding file in objects/files
-                    exported_filepath = os.path.join(tmp_carvedfiles, dfxml_filename)
+                    exported_filepath = os.path.join(temp_dir, dfxml_filename)
                     if os.path.isfile(exported_filepath):
                         os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (tmp_carvedfiles, disk_dir), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (temp_dir, disk_dir), shell=True)
 
                 # remove tmpdir
-                shutil.rmtree(tmp_carvedfiles)
+                shutil.rmtree(temp_dir)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
