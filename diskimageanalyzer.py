@@ -20,7 +20,7 @@ import os
 import shutil
 import subprocess
 import sys
-from time import localtime, strftime
+import time
 
 #import Objects.py from python dfxml tools
 import Objects
@@ -36,7 +36,10 @@ def convert_size(size):
     s = str(s)
     s = s.replace('.0', '')
     return '%s %s' % (s,size_name[i])
-    
+
+def time_to_int(str_time):
+    dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple())
+    return dt
 
 def write_to_spreadsheet(disk_result, spreadsheet_path):
     """append info for current disk to analysis CSV"""
