@@ -335,10 +335,10 @@ for file in sorted(os.listdir(source)):
 
                 # carve files
                 tmp_carvedfiles = os.path.join(disk_dir, "%s_tmpfiles" % (file))
-                if not os.path.exists(diskimage_tmpfiles):
-                    os.makedirs(diskimage_tmpfiles)
+                if not os.path.exists(tmp_carvedfiles):
+                    os.makedirs(tmp_carvedfiles)
                 try:
-                    subprocess.check_output(['tsk_recover', '-a', diskimage, diskimage_tmpfiles])
+                    subprocess.check_output(['tsk_recover', '-a', diskimage, tmp_carvedfiles])
                 except subprocess.CalledProcessError as e:
                     logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
 
