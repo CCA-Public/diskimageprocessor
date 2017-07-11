@@ -38,11 +38,11 @@ Underlying script: `diskimageprocessor.py`
 
 In Processing mode, each disk image is turned into a SIP, packaged as an ideal transfer to Archivematica's Automation tools, and reported on.
 
-For disks with most file systems, `fiwalk` is used to generate DFXML and The Sleuth Kit's `tsk_recover` utility is used to carve allocated files from each disk image. Because tsk_recover does not retain file system timestamps, the program then rewrites the modified dates of files in the newly-created SIP based on the values recorded in the DFXML file.
+For disks with most file systems, `fiwalk` is used to generate DFXML and The Sleuth Kit's `tsk_recover` utility is used to carve allocated files from each disk image. Modified dates for the carved files are then restored from their recorded values in the fiwalk-generated DFXML file.
 
 For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer and DFXML is generated using the `walk_to_dfxml.py` script from the DFXML Python bindings.
 
-For isks with a UDF file system, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
+For disks with a UDF file system, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
 
 When complete, a "description.csv" spreadsheet is created containing some pre-populated archival description:  
 * Date statement  
