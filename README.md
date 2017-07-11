@@ -3,7 +3,7 @@
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
 **NOTE: This tool is in dev and should not be considered production-ready without testing**  
-Version: 0.5.0 (alpha)
+Version: 0.5.1 (alpha)
 
 ## Usage
 
@@ -32,8 +32,6 @@ The destination directory also contains a "reports" directory containing a sub-d
 
 Because "Analysis" mode runs bulk_extractor against each disk, this process can take a while.  
 
-*Note: For disks with NTFS, FAT, EXT, ISO9660, HFS+, UFS, RAW, SWAP, or YAFFS2 file systems, the dates reported by Brunnhilde and those reported in the DFXML/analysis CSV will likely differ. This is because tsk_recover is used to carve files from these disk images, and tsk_recover does not retain original file system dates. In these cases, the date stamps recorded in the DFXML file and reported in the analysis CSV should be considered the proper date values for the disk.*
-
 ### Processing
 
 Underlying script: `diskimageprocessor.py`  
@@ -42,7 +40,9 @@ In Processing mode, each disk image is turned into a SIP, packaged as an ideal t
 
 For disks with most file systems, `fiwalk` is used to generate DFXML and The Sleuth Kit's `tsk_recover` utility is used to carve allocated files from each disk image. Because tsk_recover does not retain file system timestamps, the program then rewrites the modified dates of files in the newly-created SIP based on the values recorded in the DFXML file.
 
-For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer. For UDF disks, files are copied from the mounted disk image. For both HFS and UDF disks, the `walk_to_dfxml.py` script from DFXML Python bindings is used to generate DFXML.
+For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer and DFXML is generated using the `walk_to_dfxml.py` script from the DFXML Python bindings.
+
+For isks with a UDF file system, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
 
 When complete, a "description.csv" spreadsheet is created containing some pre-populated archival description:  
 * Date statement  
