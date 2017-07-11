@@ -67,7 +67,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         self.proc = QProcess()
 
         # acknowledge process has started
-        self.lineEdit.setText('Started')
+        self.lineEdit.setText('In progress')
         self.process.setEnabled(False)
 
         # build QStringList
