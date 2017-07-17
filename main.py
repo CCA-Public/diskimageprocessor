@@ -76,7 +76,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         if self.processingBtn.isChecked():
             if self.checkBox.isChecked():
                 call.append("-b")
-            if self.exportAllBtn.ischecked():
+            if self.exportAllBtn.isChecked():
                 call.append("-e")
             if self.checkBox_3.isChecked():
                 call.append("-p")
