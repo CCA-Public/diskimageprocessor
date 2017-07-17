@@ -315,6 +315,7 @@ def keep_logical_files_only(objects_dir):
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing checksum.md5", action="store_true")
+parser.add_argument("-e", "--exportall", help="Export all (not only allocated) with tsk_recover", action="store_true")
 parser.add_argument("-f", "--filesonly", help="Include digital files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
 parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
@@ -441,8 +442,11 @@ for file in sorted(os.listdir(args.source)):
                     logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
                 
                 # carve images using tsk_recover
+                carve_flag = '-a' # default to exporting allocated files
+                if args.exportall == True:
+                    carve_flag = '-e'
                 try:
-                    subprocess.check_output(['tsk_recover', '-a', diskimage, files_dir])
+                    subprocess.check_output(['tsk_recover', carve_flag, diskimage, files_dir])
                 except subprocess.CalledProcessError as e:
                     logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
 
