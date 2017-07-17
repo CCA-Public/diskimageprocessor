@@ -106,6 +106,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QCheckBox" name="exportAllBtn">
+      <property name="text">
+       <string>Export all files (not only allocated) with tsk_recover</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QCheckBox" name="resforksBtn">
       <property name="text">
        <string>Export AppleDouble resource forks from HFS-formatted disks</string>
