@@ -120,7 +120,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Processing Mode options</span></p></body></html>", None))
         self.checkBox.setText(_translate("MainWindow", "Bag SIPs", None))
         self.filesonlyBtn.setText(_translate("MainWindow", "Make SIPs from logical files only (no disk images)", None))
-        self.exportAllBtn.setText(_translate("MainWindow", "Export all files (not only allocated) with tsk_recover", None))
+        self.exportAllBtn.setText(_translate("MainWindow", "Export all files with tsk_recover (not only allocated)", None))
         self.resforksBtn.setText(_translate("MainWindow", "Export AppleDouble resource forks from HFS-formatted disks", None))
         self.checkBox_3.setText(_translate("MainWindow", "Run bulk_extractor", None))
         self.label_7.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Detailed output</span></p></body></html>", None))

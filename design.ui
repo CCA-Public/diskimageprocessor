@@ -108,7 +108,7 @@
     <item>
      <widget class="QCheckBox" name="exportAllBtn">
       <property name="text">
-       <string>Export all files (not only allocated) with tsk_recover</string>
+       <string>Export all files with tsk_recover (not only allocated)</string>
       </property>
      </widget>
     </item>
