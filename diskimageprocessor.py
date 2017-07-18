@@ -101,7 +101,7 @@ def create_spreadsheet(files_only, exportall):
                     # skip unallocated if args.exportall is False
                     if exportall == False:
                         if obj.unalloc:
-                            if obj.unalloc == "1":
+                            if obj.unalloc == 1:
                                 continue
                     
                     # gather info
