@@ -61,7 +61,7 @@ def time_to_int(str_time):
         "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def create_spreadsheet(files_only):
+def create_spreadsheet(files_only, exportall):
     # process each SIP
     for item in sorted(os.listdir(sips)):
         current = os.path.join(sips, item)
@@ -97,6 +97,12 @@ def create_spreadsheet(files_only):
                     if obj.name_type:
                         if obj.name_type != "r":
                             continue
+
+                    # skip unallocated if args.exportall is False
+                    if exportall == False:
+                        if obj.unalloc:
+                            if obj.unalloc == "1":
+                                continue
                     
                     # gather info
                     number_files += 1
@@ -627,7 +633,7 @@ else:
     logandprint('Processing complete. All disk images processed. Results in %s.' % (destination))
 
 # write description spreadsheet
-create_spreadsheet(args.filesonly)
+create_spreadsheet(args.filesonly, args.exportall)
 
 # close files
 spreadsheet.close()
