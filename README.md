@@ -1,4 +1,4 @@
-# CCA Disk Image Processor  
+# Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
