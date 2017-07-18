@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>602</width>
-    <height>689</height>
+    <width>603</width>
+    <height>742</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -87,7 +87,7 @@
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Processing Mode options&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;General options (Processing mode)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -106,6 +106,20 @@
      </widget>
     </item>
     <item>
+     <widget class="QCheckBox" name="checkBox_3">
+      <property name="text">
+       <string>Run bulk_extractor</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;File export options (Processing mode)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QCheckBox" name="exportAllBtn">
       <property name="text">
        <string>Export all files with tsk_recover (not only allocated)</string>
@@ -116,13 +130,6 @@
      <widget class="QCheckBox" name="resforksBtn">
       <property name="text">
        <string>Export AppleDouble resource forks from HFS-formatted disks</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="checkBox_3">
-      <property name="text">
-       <string>Run bulk_extractor</string>
       </property>
      </widget>
     </item>
