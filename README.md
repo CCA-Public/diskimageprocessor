@@ -96,7 +96,7 @@ Disk Image Processor recognizes which files are disk images by their file extens
 * .dd  
 * .iso  
 
-*To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 369 of `diskimageprocessor.py` and/or line 276 of `diskimageanalyzer.py`.*
+*To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 353 of `diskimageprocessor.py` and/or line 261 of `diskimageanalyzer.py`.*
 
 ## Installation and dependencies
 
