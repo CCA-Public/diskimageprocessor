@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 0.6.0 (beta)
+Version: 0.6.1 (beta)
 
 ## Usage
 
@@ -27,6 +27,8 @@ The destination directory also contains a "reports" directory containing a sub-d
 * A DFXML file  
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and bulk_extractor)  
+
+Optionally, the destination directory may also contain a "files" directory, containing exported logical files from each recognized disk image in the source.
 
 Because "Analysis" mode runs bulk_extractor against each disk, this process can take a while.  
 

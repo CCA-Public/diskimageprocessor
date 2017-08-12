@@ -250,7 +250,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
 # parse arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--forensic", help="Use fiwalk and tsk_recover", action="store_true")
+parser.add_argument("-k", "--keepfiles", help="Retain exported logical files from each disk", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
@@ -262,8 +262,9 @@ destination = args.destination
 if not os.path.exists(destination):
     os.makedirs(destination)
 diskimages_dir = os.path.join(destination, 'diskimages')
+files_dir = os.path.join(destination, 'files')
 results_dir = os.path.join(destination, 'reports')
-for new_dir in diskimages_dir, results_dir:
+for new_dir in diskimages_dir, files_dir, results_dir:
     os.makedirs(new_dir)
     
 # make list for unanalyzed disks
@@ -334,16 +335,16 @@ for file in sorted(os.listdir(source)):
                 try:
                     subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
                 except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+                    print('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
 
                 # carve files
-                temp_dir = os.path.join(disk_dir, 'temp')
-                if not os.path.exists(temp_dir):
-                    os.makedirs(temp_dir)
+                disk_files_dir = os.path.join(files_dir, file)
+                if not os.path.exists(disk_files_dir):
+                    os.makedirs(disk_files_dir)
                 try:
-                    subprocess.check_output(['tsk_recover', '-a', diskimage, temp_dir])
+                    subprocess.check_output(['tsk_recover', '-a', diskimage, disk_files_dir])
                 except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
+                    print('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
 
                 # rewrite last modified dates of carved files based on values in DFXML
                 for (event, obj) in Objects.iterparse(fiwalk_file):
@@ -385,15 +386,16 @@ for file in sorted(os.listdir(source)):
                         continue
 
                     # rewrite last modified date of corresponding file in objects/files
-                    exported_filepath = os.path.join(temp_dir, dfxml_filename)
+                    exported_filepath = os.path.join(disk_files_dir, dfxml_filename)
                     if os.path.isfile(exported_filepath):
                         os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (temp_dir, disk_dir), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (disk_files_dir, disk_dir), shell=True)
 
-                # remove tmpdir
-                shutil.rmtree(temp_dir)
+                # remove disk_files_dir unless keepfiles option selected
+                if args.keepfiles == False:
+                    shutil.rmtree(disk_files_dir)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
@@ -404,13 +406,24 @@ for file in sorted(os.listdir(source)):
                 try:
                     subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 except:
-                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                    print('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
                 # run brunnhilde
                 subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
+
+                # export files to disk_files_dir if keepfiles selected
+                if args.keepfiles == True:
+                    disk_files_dir = os.path.join(files_dir, file)
+                    if not os.path.exists(disk_files_dir):
+                        os.makedirs(disk_files_dir)
+                    try:
+                        subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', disk_files_dir, diskimage])
+                    except subprocess.CalledProcessError as e:
+                        print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+
 
             elif 'udf' in disk_fs.lower():
                 # mount image
@@ -421,32 +434,34 @@ for file in sorted(os.listdir(source)):
                 try:
                     subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 except:
-                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                    print('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
                 # write files to tempdir
-                temp_dir = os.path.join(disk_dir, 'temp')
-                shutil.copytree('/mnt/diskid/', temp_dir, symlinks=False, ignore=None)
+                disk_files_dir = os.path.join(disk_dir, 'temp')
+                shutil.copytree('/mnt/diskid/', disk_files_dir, symlinks=False, ignore=None)
 
-                # change file permissions in temp_dir
-                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (temp_dir), shell=True)
-                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (temp_dir), shell=True)
+                # change file permissions in disk_files_dir
+                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (disk_files_dir), shell=True)
+                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (disk_files_dir), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (temp_dir, disk_dir), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (disk_files_dir, disk_dir), shell=True)
                 
-                # delete tempdir
-                shutil.rmtree(temp_dir)
+                # remove disk_files_dir unless keepfiles option selected
+                if args.keepfiles == False:
+                    shutil.rmtree(disk_files_dir)
             
             else:
                 # add disk to unanalyzed list
-                unanalyzed.append(diskimage)
-                
+                unanalyzed.append(diskimage)          
 
-# delete disk images
+# delete temp directories
 shutil.rmtree(diskimages_dir)
+if args.keepfiles == False:
+    shutil.rmtree(files_dir)
 
 # create analysis spreadsheet
 spreadsheet_path = os.path.join(destination, 'analysis.csv')
