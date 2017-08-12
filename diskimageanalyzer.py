@@ -52,7 +52,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
     number_files = 0
     total_bytes = 0
     mtimes = []
-    atimes = []
     ctimes = []
     crtimes = []
 
@@ -89,13 +88,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
                 pass
 
             try:
-                atime = obj.atime
-                atime = str(atime)
-                atimes.append(atime)
-            except:
-                pass
-
-            try:
                 ctime = obj.ctime
                 ctime = str(ctime)
                 ctimes.append(ctime)
@@ -112,7 +104,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
             total_bytes += obj.filesize
 
         # filter 'None' values from date lists
-        for date_list in mtimes, atimes, ctimes, crtimes:
+        for date_list in mtimes, ctimes, crtimes:
             while 'None' in date_list:
                 date_list.remove('None')
 
@@ -128,8 +120,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
         # determine earliest and latest MAC dates from lists
         date_earliest_m = ""
         date_latest_m = ""
-        date_earliest_a = ""
-        date_latest_a = ""
         date_earliest_c = ""
         date_latest_c = ""
         date_earliest_cr = ""
@@ -139,9 +129,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
         if mtimes:
             date_earliest_m = min(mtimes)
             date_latest_m = max(mtimes)
-        if atimes:
-            date_earliest_a = min(atimes)
-            date_latest_a = max(atimes)
         if ctimes:
             date_earliest_c = min(ctimes)
             date_latest_c = max(ctimes)
@@ -150,7 +137,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
             date_latest_cr = max(crtimes)
 
         # determine which set of dates to use (logic: use set with earliest start date)
-        use_atimes = False
         use_ctimes = False
         use_crtimes = False
 
@@ -159,28 +145,18 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
             date_latest_m = "N/A"
         date_to_use = date_earliest_m # default to date modified
 
-        if date_earliest_a:
-            if date_earliest_a < date_to_use:
-                date_to_use = date_earliest_a
-                use_atimes = True
         if date_earliest_c:
             if date_earliest_c < date_to_use:
                 date_to_use = date_earliest_c
-                use_atimes = False
                 use_ctimes = True
         if date_earliest_cr:
             if date_earliest_cr < date_to_use:
                 date_to_use = date_earliest_cr
-                use_atimes = False
                 use_ctimes = False
                 use_crtimes = True
 
         # store date_earliest and date_latest values based on datetype & record datetype
         date_type = 'Modified'
-        if use_atimes == True:
-            date_earliest = date_earliest_a[:10]
-            date_latest = date_latest_a[:10] 
-            date_type = 'Accessed'
         elif use_ctimes == True:
             date_earliest = date_earliest_c[:10]
             date_latest = date_latest_c[:10]
