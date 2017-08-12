@@ -84,6 +84,9 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
                 call.append("-f")
             if self.resforksBtn.isChecked():
                 call.append("-r")
+        else:
+            if self.checkBox_2.isChecked():
+                call.append("-k")
         call.append(self.source1.text())
         call.append(self.destination1.text())
 
