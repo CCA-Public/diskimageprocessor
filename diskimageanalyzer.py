@@ -250,7 +250,9 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
 # parse arguments
 parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--exportall", help="Export all (not only allocated) with tsk_recover", action="store_true")
 parser.add_argument("-k", "--keepfiles", help="Retain exported logical files from each disk", action="store_true")
+parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
@@ -341,10 +343,17 @@ for file in sorted(os.listdir(source)):
                 disk_files_dir = os.path.join(files_dir, file)
                 if not os.path.exists(disk_files_dir):
                     os.makedirs(disk_files_dir)
-                try:
-                    subprocess.check_output(['tsk_recover', '-a', diskimage, disk_files_dir])
-                except subprocess.CalledProcessError as e:
-                    print('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
+                # carve allocated or all files depending on option selected
+                if args.exportall == True:
+                    try:
+                        subprocess.check_output(['tsk_recover', '-e', diskimage, disk_files_dir])
+                    except subprocess.CalledProcessError as e:
+                        print('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % (e.output))
+                else:
+                    try:
+                        subprocess.check_output(['tsk_recover', '-a', diskimage, disk_files_dir])
+                    except subprocess.CalledProcessError as e:
+                        print('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
 
                 # rewrite last modified dates of carved files based on values in DFXML
                 for (event, obj) in Objects.iterparse(fiwalk_file):
@@ -419,10 +428,17 @@ for file in sorted(os.listdir(source)):
                     disk_files_dir = os.path.join(files_dir, file)
                     if not os.path.exists(disk_files_dir):
                         os.makedirs(disk_files_dir)
-                    try:
-                        subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', disk_files_dir, diskimage])
-                    except subprocess.CalledProcessError as e:
-                        print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+                    # carve with or without resource forks depending on option selected
+                    if args.resforks == True:
+                        try:
+                            subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', disk_files_dir, diskimage])
+                        except subprocess.CalledProcessError as e:
+                            print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+                    else:
+                        try:
+                            subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', disk_files_dir, diskimage])
+                        except subprocess.CalledProcessError as e:
+                            print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
 
 
             elif 'udf' in disk_fs.lower():
