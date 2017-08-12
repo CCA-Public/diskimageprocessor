@@ -157,7 +157,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
 
         # store date_earliest and date_latest values based on datetype & record datetype
         date_type = 'Modified'
-        elif use_ctimes == True:
+        if use_ctimes == True:
             date_earliest = date_earliest_c[:10]
             date_latest = date_latest_c[:10]
             date_type = 'Created'
