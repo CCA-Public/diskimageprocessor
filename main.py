@@ -87,6 +87,10 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
         else:
             if self.checkBox_2.isChecked():
                 call.append("-k")
+            if self.exportAllBtn.isChecked():
+                call.append("-e")
+            if self.resforksBtn.isChecked():
+                call.append("-r")
         call.append(self.source1.text())
         call.append(self.destination1.text())
 
