@@ -41,7 +41,7 @@ def time_to_int(str_time):
     dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def write_to_spreadsheet(disk_result, spreadsheet_path):
+def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
     """append info for current disk to analysis CSV"""
 
     # open description spreadsheet
@@ -71,6 +71,12 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             # skip directories and links
             if obj.name_type != "r":
                 continue
+
+            # skip unallocated if args.exportall is False
+            if exportall == False:
+                if obj.unalloc:
+                    if obj.unalloc == 1:
+                        continue
             
             # gather info
             number_files += 1
@@ -493,7 +499,7 @@ spreadsheet.close()
 # add info to description spreadsheet
 for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
-    write_to_spreadsheet(disk_result, spreadsheet_path)
+    write_to_spreadsheet(disk_result, spreadsheet_path, args.exportall)
 
 # write closing message
 if unanalyzed:
