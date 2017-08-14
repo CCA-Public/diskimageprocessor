@@ -435,7 +435,7 @@ for file in sorted(os.listdir(source)):
                     print('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
                 # write files to tempdir
-                disk_files_dir = os.path.join(disk_dir, 'temp')
+                disk_files_dir = os.path.join(files_dir, file)
                 shutil.copytree('/mnt/diskid/', disk_files_dir, symlinks=False, ignore=None)
 
                 # change file permissions in disk_files_dir
