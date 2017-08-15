@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 0.6.0 (beta)
+Version: 0.6.1 (beta)
 
 ## Usage
 
@@ -27,6 +27,8 @@ The destination directory also contains a "reports" directory containing a sub-d
 * A DFXML file  
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and bulk_extractor)  
+
+Optionally, the destination directory may also contain a "files" directory, containing exported logical files from each recognized disk image in the source.
 
 Because "Analysis" mode runs bulk_extractor against each disk, this process can take a while.  
 
@@ -94,7 +96,7 @@ Disk Image Processor recognizes which files are disk images by their file extens
 * .dd  
 * .iso  
 
-*To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 369 of `diskimageprocessor.py` and/or line 276 of `diskimageanalyzer.py`.*
+*To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 353 of `diskimageprocessor.py` and/or line 261 of `diskimageanalyzer.py`.*
 
 ## Installation and dependencies
 

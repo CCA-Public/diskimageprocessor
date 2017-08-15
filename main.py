@@ -24,7 +24,7 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
 
     def about_dialog(self):
         QMessageBox.information(self, "About", 
-            "Disk Image Processor v0.6.0\nTim Walsh, 2017\nMIT License\nhttps://github.com/timothyryanwalsh/cca-diskimageprocessor")
+            "Disk Image Processor v0.6.1\nTim Walsh, 2017\nMIT License\nhttps://github.com/timothyryanwalsh/cca-diskimageprocessor")
 
     @pyqtSlot()
     def readStdOutput(self):
@@ -82,6 +82,13 @@ class ProcessorApp(QMainWindow, design.Ui_MainWindow):
                 call.append("-p")
             if self.filesonlyBtn.isChecked():
                 call.append("-f")
+            if self.resforksBtn.isChecked():
+                call.append("-r")
+        else:
+            if self.checkBox_2.isChecked():
+                call.append("-k")
+            if self.exportAllBtn.isChecked():
+                call.append("-e")
             if self.resforksBtn.isChecked():
                 call.append("-r")
         call.append(self.source1.text())

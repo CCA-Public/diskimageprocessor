@@ -72,7 +72,6 @@ def create_spreadsheet(files_only, exportall):
             number_files = 0
             total_bytes = 0
             mtimes = []
-            atimes = []
             ctimes = []
             crtimes = []
 
@@ -115,13 +114,6 @@ def create_spreadsheet(files_only, exportall):
                         pass
 
                     try:
-                        atime = obj.atime
-                        atime = str(atime)
-                        atimes.append(atime)
-                    except:
-                        pass
-
-                    try:
                         ctime = obj.ctime
                         ctime = str(ctime)
                         ctimes.append(ctime)
@@ -138,7 +130,7 @@ def create_spreadsheet(files_only, exportall):
                     total_bytes += obj.filesize
 
                 # filter 'None' values from date lists
-                for date_list in mtimes, atimes, ctimes, crtimes:
+                for date_list in mtimes, ctimes, crtimes:
                     while 'None' in date_list:
                         date_list.remove('None')
 
@@ -155,8 +147,6 @@ def create_spreadsheet(files_only, exportall):
                 # determine earliest and latest MAC dates from lists
                 date_earliest_m = ""
                 date_latest_m = ""
-                date_earliest_a = ""
-                date_latest_a = ""
                 date_earliest_c = ""
                 date_latest_c = ""
                 date_earliest_cr = ""
@@ -166,9 +156,6 @@ def create_spreadsheet(files_only, exportall):
                 if mtimes:
                     date_earliest_m = min(mtimes)
                     date_latest_m = max(mtimes)
-                if atimes:
-                    date_earliest_a = min(atimes)
-                    date_latest_a = max(atimes)
                 if ctimes:
                     date_earliest_c = min(ctimes)
                     date_latest_c = max(ctimes)
@@ -177,7 +164,6 @@ def create_spreadsheet(files_only, exportall):
                     date_latest_cr = max(crtimes)
 
                 # determine which set of dates to use (logic: use set with earliest start date)
-                use_atimes = False
                 use_ctimes = False
                 use_crtimes = False
 
@@ -186,27 +172,18 @@ def create_spreadsheet(files_only, exportall):
                     date_latest_m = "N/A"
                 date_to_use = date_earliest_m # default to date modified
 
-                if date_earliest_a:
-                    if date_earliest_a < date_to_use:
-                        date_to_use = date_earliest_a
-                        use_atimes = True
                 if date_earliest_c:
                     if date_earliest_c < date_to_use:
                         date_to_use = date_earliest_c
-                        use_atimes = False
                         use_ctimes = True
                 if date_earliest_cr:
                     if date_earliest_cr < date_to_use:
                         date_to_use = date_earliest_cr
-                        use_atimes = False
                         use_ctimes = False
                         use_crtimes = True
 
                 # store date_earliest and date_latest values based on datetype used
-                if use_atimes == True:
-                    date_earliest = date_earliest_a[:10]
-                    date_latest = date_latest_a[:10] 
-                elif use_ctimes == True:
+                if use_ctimes == True:
                     date_earliest = date_earliest_c[:10]
                     date_latest = date_latest_c[:10]
                 elif use_crtimes == True:

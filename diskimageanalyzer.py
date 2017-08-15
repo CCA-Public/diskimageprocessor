@@ -41,7 +41,7 @@ def time_to_int(str_time):
     dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def write_to_spreadsheet(disk_result, spreadsheet_path):
+def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
     """append info for current disk to analysis CSV"""
 
     # open description spreadsheet
@@ -52,7 +52,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
     number_files = 0
     total_bytes = 0
     mtimes = []
-    atimes = []
     ctimes = []
     crtimes = []
 
@@ -71,6 +70,12 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             # skip directories and links
             if obj.name_type != "r":
                 continue
+
+            # skip unallocated if args.exportall is False
+            if exportall == False:
+                if obj.unalloc:
+                    if obj.unalloc == 1:
+                        continue
             
             # gather info
             number_files += 1
@@ -79,13 +84,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
                 mtime = obj.mtime
                 mtime = str(mtime)
                 mtimes.append(mtime)
-            except:
-                pass
-
-            try:
-                atime = obj.atime
-                atime = str(atime)
-                atimes.append(atime)
             except:
                 pass
 
@@ -106,7 +104,7 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             total_bytes += obj.filesize
 
         # filter 'None' values from date lists
-        for date_list in mtimes, atimes, ctimes, crtimes:
+        for date_list in mtimes, ctimes, crtimes:
             while 'None' in date_list:
                 date_list.remove('None')
 
@@ -122,8 +120,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
         # determine earliest and latest MAC dates from lists
         date_earliest_m = ""
         date_latest_m = ""
-        date_earliest_a = ""
-        date_latest_a = ""
         date_earliest_c = ""
         date_latest_c = ""
         date_earliest_cr = ""
@@ -133,9 +129,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
         if mtimes:
             date_earliest_m = min(mtimes)
             date_latest_m = max(mtimes)
-        if atimes:
-            date_earliest_a = min(atimes)
-            date_latest_a = max(atimes)
         if ctimes:
             date_earliest_c = min(ctimes)
             date_latest_c = max(ctimes)
@@ -144,7 +137,6 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             date_latest_cr = max(crtimes)
 
         # determine which set of dates to use (logic: use set with earliest start date)
-        use_atimes = False
         use_ctimes = False
         use_crtimes = False
 
@@ -153,29 +145,19 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
             date_latest_m = "N/A"
         date_to_use = date_earliest_m # default to date modified
 
-        if date_earliest_a:
-            if date_earliest_a < date_to_use:
-                date_to_use = date_earliest_a
-                use_atimes = True
         if date_earliest_c:
             if date_earliest_c < date_to_use:
                 date_to_use = date_earliest_c
-                use_atimes = False
                 use_ctimes = True
         if date_earliest_cr:
             if date_earliest_cr < date_to_use:
                 date_to_use = date_earliest_cr
-                use_atimes = False
                 use_ctimes = False
                 use_crtimes = True
 
         # store date_earliest and date_latest values based on datetype & record datetype
         date_type = 'Modified'
-        if use_atimes == True:
-            date_earliest = date_earliest_a[:10]
-            date_latest = date_latest_a[:10] 
-            date_type = 'Accessed'
-        elif use_ctimes == True:
+        if use_ctimes == True:
             date_earliest = date_earliest_c[:10]
             date_latest = date_latest_c[:10]
             date_type = 'Created'
@@ -250,7 +232,9 @@ def write_to_spreadsheet(disk_result, spreadsheet_path):
 
 # parse arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--forensic", help="Use fiwalk and tsk_recover", action="store_true")
+parser.add_argument("-e", "--exportall", help="Export all (not only allocated) with tsk_recover", action="store_true")
+parser.add_argument("-k", "--keepfiles", help="Retain exported logical files from each disk", action="store_true")
+parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
 parser.add_argument("source", help="Path to folder containing disk images")
 parser.add_argument("destination", help="Output destination")
 args = parser.parse_args()
@@ -262,8 +246,9 @@ destination = args.destination
 if not os.path.exists(destination):
     os.makedirs(destination)
 diskimages_dir = os.path.join(destination, 'diskimages')
+files_dir = os.path.join(destination, 'files')
 results_dir = os.path.join(destination, 'reports')
-for new_dir in diskimages_dir, results_dir:
+for new_dir in diskimages_dir, files_dir, results_dir:
     os.makedirs(new_dir)
     
 # make list for unanalyzed disks
@@ -334,16 +319,23 @@ for file in sorted(os.listdir(source)):
                 try:
                     subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
                 except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+                    print('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
 
                 # carve files
-                temp_dir = os.path.join(disk_dir, 'temp')
-                if not os.path.exists(temp_dir):
-                    os.makedirs(temp_dir)
-                try:
-                    subprocess.check_output(['tsk_recover', '-a', diskimage, temp_dir])
-                except subprocess.CalledProcessError as e:
-                    logandprint('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
+                disk_files_dir = os.path.join(files_dir, file)
+                if not os.path.exists(disk_files_dir):
+                    os.makedirs(disk_files_dir)
+                # carve allocated or all files depending on option selected
+                if args.exportall == True:
+                    try:
+                        subprocess.check_output(['tsk_recover', '-e', diskimage, disk_files_dir])
+                    except subprocess.CalledProcessError as e:
+                        print('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % (e.output))
+                else:
+                    try:
+                        subprocess.check_output(['tsk_recover', '-a', diskimage, disk_files_dir])
+                    except subprocess.CalledProcessError as e:
+                        print('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
 
                 # rewrite last modified dates of carved files based on values in DFXML
                 for (event, obj) in Objects.iterparse(fiwalk_file):
@@ -385,15 +377,16 @@ for file in sorted(os.listdir(source)):
                         continue
 
                     # rewrite last modified date of corresponding file in objects/files
-                    exported_filepath = os.path.join(temp_dir, dfxml_filename)
+                    exported_filepath = os.path.join(disk_files_dir, dfxml_filename)
                     if os.path.isfile(exported_filepath):
                         os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (temp_dir, disk_dir), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (disk_files_dir, disk_dir), shell=True)
 
-                # remove tmpdir
-                shutil.rmtree(temp_dir)
+                # remove disk_files_dir unless keepfiles option selected
+                if args.keepfiles == False:
+                    shutil.rmtree(disk_files_dir)
 
             elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
                 # mount disk image
@@ -404,13 +397,31 @@ for file in sorted(os.listdir(source)):
                 try:
                     subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 except:
-                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                    print('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
                 # run brunnhilde
                 subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
+
+                # export files to disk_files_dir if keepfiles selected
+                if args.keepfiles == True:
+                    disk_files_dir = os.path.join(files_dir, file)
+                    if not os.path.exists(disk_files_dir):
+                        os.makedirs(disk_files_dir)
+                    # carve with or without resource forks depending on option selected
+                    if args.resforks == True:
+                        try:
+                            subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', disk_files_dir, diskimage])
+                        except subprocess.CalledProcessError as e:
+                            print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+                    else:
+                        try:
+                            subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', disk_files_dir, diskimage])
+                        except subprocess.CalledProcessError as e:
+                            print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+
 
             elif 'udf' in disk_fs.lower():
                 # mount image
@@ -421,32 +432,34 @@ for file in sorted(os.listdir(source)):
                 try:
                     subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                 except:
-                    logandprint('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                    print('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                 
                 # write files to tempdir
-                temp_dir = os.path.join(disk_dir, 'temp')
-                shutil.copytree('/mnt/diskid/', temp_dir, symlinks=False, ignore=None)
+                disk_files_dir = os.path.join(files_dir, file)
+                shutil.copytree('/mnt/diskid/', disk_files_dir, symlinks=False, ignore=None)
 
-                # change file permissions in temp_dir
-                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (temp_dir), shell=True)
-                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (temp_dir), shell=True)
+                # change file permissions in disk_files_dir
+                subprocess.call("find '%s' -type d -exec chmod 755 {} \;" % (disk_files_dir), shell=True)
+                subprocess.call("find '%s' -type f -exec chmod 644 {} \;" % (disk_files_dir), shell=True)
 
                 # unmount disk image
                 subprocess.call('sudo umount /mnt/diskid', shell=True)
 
                 # run brunnhilde
-                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (temp_dir, disk_dir), shell=True)
+                subprocess.call("brunnhilde.py -zwb '%s' '%s' brunnhilde" % (disk_files_dir, disk_dir), shell=True)
                 
-                # delete tempdir
-                shutil.rmtree(temp_dir)
+                # remove disk_files_dir unless keepfiles option selected
+                if args.keepfiles == False:
+                    shutil.rmtree(disk_files_dir)
             
             else:
                 # add disk to unanalyzed list
-                unanalyzed.append(diskimage)
-                
+                unanalyzed.append(diskimage)          
 
-# delete disk images
+# delete temp directories
 shutil.rmtree(diskimages_dir)
+if args.keepfiles == False:
+    shutil.rmtree(files_dir)
 
 # create analysis spreadsheet
 spreadsheet_path = os.path.join(destination, 'analysis.csv')
@@ -462,7 +475,7 @@ spreadsheet.close()
 # add info to description spreadsheet
 for item in sorted(os.listdir(results_dir)):
     disk_result = os.path.join(results_dir, item)
-    write_to_spreadsheet(disk_result, spreadsheet_path)
+    write_to_spreadsheet(disk_result, spreadsheet_path, args.exportall)
 
 # write closing message
 if unanalyzed:
