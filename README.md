@@ -113,9 +113,21 @@ Install all of the CCA Tools (and PyQT4) together using the install bash script 
 * Run the install script with sudo privileges:  
 `sudo ./install.sh`  
 
-### Brunnhilde version  
+### Dependency and verison issues
+
+#### Brunnhilde
 
 Disk Image Processor will work with all versions of [Brunnhilde](https://github.com/timothyryanwalsh/brunnhilde); however, changes to Brunnhilde 1.5.1's default pattern matching for SSNs with bulk_extractor help in minimizing the number of false positives reported and keeping the Brunnhilde HTML report size reasonable. For best results, it is recommended to upgrade the version of Brunnhilde on your machine to 1.5.1+.  
+
+#### HFS Explorer
+
+unhfs, the command-line version of HFSExplorer, until recently had a bug that caused failures when attempting to extract AppleDouble resource forks alongside files. To avoid this issue, be sure that you have the [latest version](https://sourceforge.net/projects/catacombae/files/HFSExplorer/0.23.1%20%28snapshot%202016-09-02%29/) of HFSExplorer installed. In BitCurator 1.7.106+ and 1.8.0+, the patched version of HFS Explorer is already installed. 
+
+In this patched release, unhfs.sh is renamed to unhfs (without a file extension). If file /usr/share/hfsexplorer/bin/unhfs.sh (with file extension) exists in your system, you must update HFSExplorer with the version linked above (recommended) or rename the unhfs.sh file to remove the file extension.
+
+In BitCurator versions before 1.7.106, installation of the latest release of HFSEexplorer must be done manually by replacing the contents of /usr/share/hfsexplorer with the downloaded and extracted source. In order to continue using the HFSExplorer GUI in BitCurator versions before 1.7.106 after updating HFSExplorer, right-click on the HFS Explorer icon in "Additional Tools", select "Properties", and amend the text in "Command" to:  
+
+`/usr/share/hfsexplorer/bin/./hfsexplorer %F`   
 
 ## Credit  
 
