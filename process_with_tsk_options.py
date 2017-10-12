@@ -26,6 +26,9 @@ import subprocess
 import sys
 import time
 
+#import Objects.py from python dfxml tools
+import Objects
+
 def convert_size(size):
     # convert size to human-readable form
     if (size == 0):
