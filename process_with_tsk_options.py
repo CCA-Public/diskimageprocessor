@@ -444,4 +444,3 @@ for file in sorted(os.listdir(args.source)):
 
 # close files
 spreadsheet.close()
-log.close()
