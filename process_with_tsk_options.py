@@ -46,7 +46,7 @@ def time_to_int(str_time):
         "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def create_spreadsheet(files_only, exportall, sip_dir):
+def create_spreadsheet(files_only, exportall, sip_dir, filename):
     # process each SIP
     current = os.path.abspath(sip_dir)
     # test if entry if directory
@@ -245,7 +245,7 @@ def create_spreadsheet(files_only, exportall, sip_dir):
                     scopecontent = 'File includes both a disk image and digital files %s. Most common file formats: %s' % (tool, formatlist)
 
             # write csv row
-            writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
+            writer.writerow(['', filename, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
                 scopecontent, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
             
             print('Described %s successfully.' % (current))
@@ -253,7 +253,7 @@ def create_spreadsheet(files_only, exportall, sip_dir):
         # if error reading DFXML file, report that
         except:
             # write error to csv
-            writer.writerow(['', item, '', '', 'Error', 'Error', 'Error', 'File', 'Error', 
+            writer.writerow(['', filename, '', '', 'Error', 'Error', 'Error', 'File', 'Error', 
                 'Error reading DFXML file.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
 
             print('ERROR: DFXML file for %s not well-formed.' % (current))
@@ -460,7 +460,7 @@ for file in sorted(os.listdir(args.source)):
                 subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
             # write description spreadsheet
-            create_spreadsheet(args.filesonly, args.exportall, sip_dir)
+            create_spreadsheet(args.filesonly, args.exportall, sip_dir, file)
 
         # no raw disk image
         else:
