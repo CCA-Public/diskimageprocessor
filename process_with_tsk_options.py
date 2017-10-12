@@ -280,7 +280,6 @@ parser.add_argument("-b", "--bagfiles", help="Bag files instead of writing check
 parser.add_argument("-e", "--exportall", help="Export all (not only allocated) with tsk_recover", action="store_true")
 parser.add_argument("-f", "--filesonly", help="Include digital files only (not disk images) in SIPs", action="store_true")
 parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
-parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
 parser.add_argument("--imgtype", help="Disk image type (see tsk_recover man page for values)", action="store")
 parser.add_argument("--fstype", help="File system type (see tsk_recover man page for values)", action="store")
 parser.add_argument("--sector_offset", help="Sector offset of partition to parse (see tsk-recover man page for details)", action="store")
