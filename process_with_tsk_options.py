@@ -183,34 +183,6 @@ def create_spreadsheet(files_only, exportall, sip_dir, filename):
             else:
                 date_statement = '%s - %s' % (date_earliest[:4], date_latest[:4])
 
-            # gather file system info, discern tool used
-            if args.bagfiles == True:
-                disktype = os.path.join(current, 'data', 'metadata', 
-                    'submissionDocumentation', 'disktype.txt')
-            else:
-                disktype = os.path.join(current, 'metadata', 
-                    'submissionDocumentation', 'disktype.txt')
-            # pull filesystem info from disktype.txt
-            disk_fs = ''
-            try:
-                for line in open(disktype, 'r'):
-                    if "file system" in line:
-                        disk_fs = line.strip()
-            except: # handle non-Unicode chars
-                for line in open(disktype, 'rb'):
-                    if "file system" in line.decode('utf-8','ignore'):
-                        disk_fs = line.decode('utf-8','ignore').strip()
-
-            # save tool used to carve files
-            if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
-                tool = "carved from the disk image using the Sleuth Kit command line utility tsk_recover"
-            elif ('hfs' in disk_fs.lower()) and ('hfs+' not in disk_fs.lower()):
-                tool = "carved from disk image using the HFSExplorer command line utility"
-            elif 'udf' in disk_fs.lower():
-                tool = "copied from the mounted disk image"
-            else:
-                tool = "UNSUCCESSFULLY"
-
             # gather info from brunnhilde & write scope and content note
             if extent == 'EMPTY':
                 scopecontent = ''
@@ -240,9 +212,9 @@ def create_spreadsheet(files_only, exportall, sip_dir, filename):
                 
                 # create scope and content note
                 if files_only == True:
-                    scopecontent = 'File includes digital files %s. Most common file formats: %s' % (tool, formatlist)
+                    scopecontent = 'File includes digital files carved from a disk image using tsk_recover. Most common file formats: %s' % (formatlist)
                 else:
-                    scopecontent = 'File includes both a disk image and digital files %s. Most common file formats: %s' % (tool, formatlist)
+                    scopecontent = 'File includes both a disk image and digital files carved from the disk image using tsk_recover. Most common file formats: %s' % (formatlist)
 
             # write csv row
             writer.writerow(['', filename, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
