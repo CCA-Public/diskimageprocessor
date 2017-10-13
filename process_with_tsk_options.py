@@ -46,9 +46,10 @@ def time_to_int(str_time):
         "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def create_spreadsheet(files_only, exportall, destination, sip_dir, filename):
+def create_spreadsheet(args, destination, sip_dir, filename):
     # open description spreadsheet and write header
     with open(os.path.join(destination,'description.csv'), 'w') as spreadsheet:
+        
         writer = csv.writer(spreadsheet, quoting=csv.QUOTE_NONNUMERIC)
         header_list = ['Parent ID', 'Identifier', 'Title', 'Archive Creator', 'Date expression', 'Date start', 'Date end', 
             'Level of description', 'Extent and medium', 'Scope and content', 'Arrangement (optional)', 'Accession number', 
@@ -95,7 +96,7 @@ def create_spreadsheet(files_only, exportall, destination, sip_dir, filename):
                             continue
 
                     # skip unallocated if args.exportall is False
-                    if exportall == False:
+                    if args.exportall == False:
                         if obj.unalloc:
                             if obj.unalloc == 1:
                                 continue
@@ -224,7 +225,7 @@ def create_spreadsheet(files_only, exportall, destination, sip_dir, filename):
                     
                     
                     # create scope and content note
-                    if files_only == True:
+                    if args.filesonly == True:
                         scopecontent = 'File includes digital files carved from a disk image using tsk_recover. Most common file formats: %s' % (formatlist)
                     else:
                         scopecontent = 'File includes both a disk image and digital files carved from the disk image using tsk_recover. Most common file formats: %s' % (formatlist)
@@ -434,7 +435,7 @@ def main():
 
                 # write description spreadsheet
                 print('Generating description spreadsheet for file %s...' % (file))
-                create_spreadsheet(args.filesonly, args.exportall, destination, sip_dir, file)
+                create_spreadsheet(args, destination, sip_dir, file)
 
             # no raw disk image
             else:
