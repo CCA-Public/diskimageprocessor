@@ -433,7 +433,7 @@ def main():
                     subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
                 # write description spreadsheet
-                populate_spreadsheet(args.filesonly, args.exportall, destination sip_dir, file)
+                populate_spreadsheet(args.filesonly, args.exportall, destination, sip_dir, file)
 
             # no raw disk image
             else:
