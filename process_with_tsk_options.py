@@ -274,7 +274,7 @@ def _make_parser():
 
 def main():
     # parse args
-    parser = _make_parser(brunnhilde_version)
+    parser = _make_parser()
     args = parser.parse_args()
     source = os.path.abspath(args.source)
     destination = os.path.abspath(args.destination)
