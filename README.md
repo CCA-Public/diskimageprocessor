@@ -81,6 +81,8 @@ Also included is a Python 3 script `process_with_tsk_options.py`. This script al
 * SWAP  
 * YAFFS2  
 
+For disks with exfat file systems you may need to use the `process_with_tsk_options.py` script and explicitly specify the file system type. This is due to disktype's inability to recognize exfat file systems.
+
 ## Supported disk image types  
 
 * raw (dd, iso, img, etc.)  
