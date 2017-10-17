@@ -616,7 +616,7 @@ def main():
         logandprint(log, 'Processing complete. All disk images processed. Results in %s.' % (destination))
 
     # write description spreadsheet
-    create_spreadsheet(args, sip_dir, log)
+    create_spreadsheet(args, sips, log)
 
     # close log
     log.close()
