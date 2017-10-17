@@ -63,7 +63,7 @@ def time_to_int(str_time):
         "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def create_spreadsheet(args):
+def create_spreadsheet(args, sips):
     """ Create csv describing created SIPs """
 
     # open description spreadsheet
@@ -616,7 +616,7 @@ def main():
         logandprint(log, 'Processing complete. All disk images processed. Results in %s.' % (destination))
 
     # write description spreadsheet
-    create_spreadsheet(args)
+    create_spreadsheet(args, sip_dir)
 
     # close log
     log.close()
