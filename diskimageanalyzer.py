@@ -238,6 +238,8 @@ def _make_parser():
     parser.add_argument("source", help="Path to folder containing disk images")
     parser.add_argument("destination", help="Output destination")
 
+    return parser
+
 def main():
 
     parser = _make_parser()
