@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 0.6.1 (beta)
+Version: 0.7.0 (beta)
 
 ## Usage
 
@@ -62,6 +62,10 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 * A DFXML file  
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and, optionally, bulk_extractor)  
+
+### Process a single disk image, providing options to tsk_recover (CLI only)  
+
+Also included is a Python 3 script `process_with_tsk_options.py`. This script allows the user to create a SIP and corresponding description for a single disk image (and accompanying files) while specifying the file system type, image type, and sector offset as needed for `tsk_recover`. This script may be useful for certain disks for which tsk_recover is unable to extract files using its autodetection methods.
 
 ## Supported file systems
 
