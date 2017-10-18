@@ -81,6 +81,8 @@ Also included is a Python 3 script `process_with_tsk_options.py`. This script al
 * SWAP  
 * YAFFS2  
 
+For disks with exfat file systems you may need to use the `process_with_tsk_options.py` script and explicitly specify the file system type. This is due to disktype's inability to recognize exfat file systems.
+
 ## Supported disk image types  
 
 * raw (dd, iso, img, etc.)  
@@ -90,17 +92,15 @@ Also included is a Python 3 script `process_with_tsk_options.py`. This script al
 
 ## Disk image extensions recognized
 
-Disk Image Processor recognizes which files are disk images by their file extensions. Currently, it looks for the following extensions:  
+Disk Image Processor recognizes which files are disk images by their file extensions. Currently, it looks for the following extensions (case-insensitive):  
 
-* .E01  
+* .e01  
 * .000  
 * .001  
 * .raw  
 * .img  
 * .dd  
 * .iso  
-
-*To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 353 of `diskimageprocessor.py` and/or line 261 of `diskimageanalyzer.py`.*
 
 ## Installation and dependencies
 
