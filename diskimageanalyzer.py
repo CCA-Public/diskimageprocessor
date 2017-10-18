@@ -477,7 +477,7 @@ def main():
     # add info to analysis csv for each SIP
     for item in sorted(os.listdir(results_dir)):
         disk_result = os.path.join(results_dir, item)
-        write_to_spreadsheet(disk_result, spreadsheet_path, args.exportall)
+        write_to_spreadsheet(disk_result, os.path.join(destination, 'analysis.csv'), args.exportall)
 
     # write closing message
     if unanalyzed:
