@@ -44,7 +44,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
 
     def test_integration_outputs_created_tsk(self):
         out_dir = j(self.dest_tmpdir, 'test')
-        subprocess.call('python diskimageprocessor.py ./test-data/tsk/practical.floppy.dd {}'.format(out_dir), 
+        subprocess.call('python ./diskimageprocessor.py ./test-data/tsk/practical.floppy.dd {}'.format(out_dir), 
             shell=True)
 
         # outputs
