@@ -48,7 +48,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         out_dir = j(self.dest_tmpdir, 'test')
         command = ['python', 
         '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py', 
-        './test-data/tsk/practical.floppy.dd', out_dir]
+        './test-data/tsk', out_dir]
         subprocess.check_output(command)
 
         # outputs
