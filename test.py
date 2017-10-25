@@ -37,6 +37,7 @@ class SelfCleaningTestCase(unittest.TestCase):
 
         super(SelfCleaningTestCase, self).tearDown()
 
+
 class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
     """
     Integration tests for diskimageprocessor.py.
@@ -45,7 +46,8 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
     def test_integration_outputs_created_tsk(self):
         # run diskimageprocessor.py
         out_dir = j(self.dest_tmpdir, 'test')
-        command = ['python', 'diskimageprocessor.py', 
+        command = ['python', 
+        '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py', 
         './test-data/tsk/practical.floppy.dd', out_dir]
         subprocess.check_output(command)
 
