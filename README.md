@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 0.6.1 (beta)
+Version: 0.7.0 (beta)
 
 ## Usage
 
@@ -63,6 +63,10 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 * Text output from "disktype"  
 * Brunnhilde reports (including logs and reports from clamAV and, optionally, bulk_extractor)  
 
+### Process a single disk image, providing options to tsk_recover (CLI only)  
+
+Also included is a Python 3 script `process_with_tsk_options.py`. This script allows the user to create a SIP and corresponding description for a single disk image (and accompanying files) while specifying the file system type, image type, and sector offset as needed for `tsk_recover`. This script may be useful for certain disks for which tsk_recover is unable to extract files using its autodetection methods.
+
 ## Supported file systems
 
 * NTFS  
@@ -77,6 +81,8 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 * SWAP  
 * YAFFS2  
 
+For disks with exfat file systems you may need to use the `process_with_tsk_options.py` script and explicitly specify the file system type. This is due to disktype's inability to recognize exfat file systems.
+
 ## Supported disk image types  
 
 * raw (dd, iso, img, etc.)  
@@ -86,17 +92,15 @@ The "metadata/submissionDocumentation" directory in each SIP contains:
 
 ## Disk image extensions recognized
 
-Disk Image Processor recognizes which files are disk images by their file extensions. Currently, it looks for the following extensions:  
+Disk Image Processor recognizes which files are disk images by their file extensions. Currently, it looks for the following extensions (case-insensitive):  
 
-* .E01  
+* .e01  
 * .000  
 * .001  
 * .raw  
 * .img  
 * .dd  
 * .iso  
-
-*To add extensions to this list, add them as elements in the tuple inside `file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso"))` on line 353 of `diskimageprocessor.py` and/or line 261 of `diskimageanalyzer.py`.*
 
 ## Installation and dependencies
 
