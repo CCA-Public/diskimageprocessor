@@ -45,11 +45,11 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
 
     def test_integration_outputs_created_tsk(self):
         # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py'
+        img_source = './test-data/tsk'
         out_dir = j(self.dest_tmpdir, 'test')
-        command = ['python', 
-        '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py', 
-        './test-data/tsk', out_dir]
-        subprocess.check_output(command)
+        subprocess.call("python {} {} {}".format(script, img_source, out_dir), 
+            shell=True)
 
         # outputs
         self.assertTrue(is_non_zero_file(j(out_dir, 
