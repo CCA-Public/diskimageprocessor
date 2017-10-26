@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 0.7.0 (beta)
+Version: 0.7.1 (beta)
 
 [![Build Status](https://travis-ci.org/timothyryanwalsh/cca-diskimageprocessor.svg?branch=master)](https://travis-ci.org/timothyryanwalsh/cca-diskimageprocessor)
 
