@@ -488,8 +488,8 @@ def main():
                             if os.path.isfile(exported_filepath):
                                 os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
-                    except ValueError as e:
-                        logandprint(log, "ERROR: Could not rewrite modified dates: %s" % (e.output))
+                    except ValueError:
+                        logandprint(log, "ERROR: Could not rewrite modified dates due to Objects.py ValueError")
 
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
