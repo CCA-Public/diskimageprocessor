@@ -444,48 +444,52 @@ def main():
                     subprocess.call("sudo find '%s' -type f -exec chmod 644 {} \;" % (sip_dir), shell=True)
 
                     # rewrite last modified dates of files based on values in DFXML
-                    for (event, obj) in Objects.iterparse(fiwalk_file):
-                        
-                        # only work on FileObjects
-                        if not isinstance(obj, Objects.FileObject):
-                            continue
-
-                        # skip directories and links
-                        if obj.name_type:
-                            if obj.name_type != "r":
+                    try:
+                        for (event, obj) in Objects.iterparse(fiwalk_file):
+                            
+                            # only work on FileObjects
+                            if not isinstance(obj, Objects.FileObject):
                                 continue
 
-                        # record filename
-                        dfxml_filename = obj.filename
-                        dfxml_filedate = int(time.time()) # default to current time
+                            # skip directories and links
+                            if obj.name_type:
+                                if obj.name_type != "r":
+                                    continue
 
-                        # record last modified or last created date
-                        try:
-                            mtime = obj.mtime
-                            mtime = str(mtime)
-                        except:
-                            pass
+                            # record filename
+                            dfxml_filename = obj.filename
+                            dfxml_filedate = int(time.time()) # default to current time
 
-                        try:
-                            crtime = obj.crtime
-                            crtime = str(crtime)
-                        except:
-                            pass
+                            # record last modified or last created date
+                            try:
+                                mtime = obj.mtime
+                                mtime = str(mtime)
+                            except:
+                                pass
 
-                        # fallback to created date if last modified doesn't exist
-                        if mtime and (mtime != 'None'):
-                            mtime = time_to_int(mtime[:19])
-                            dfxml_filedate = mtime
-                        elif crtime and (crtime != 'None'):
-                            crtime = time_to_int(crtime[:19])
-                            dfxml_filedate = crtime
-                        else:
-                            continue
+                            try:
+                                crtime = obj.crtime
+                                crtime = str(crtime)
+                            except:
+                                pass
 
-                        # rewrite last modified date of corresponding file in objects/files
-                        exported_filepath = os.path.join(files_dir, dfxml_filename)
-                        if os.path.isfile(exported_filepath):
-                            os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
+                            # fallback to created date if last modified doesn't exist
+                            if mtime and (mtime != 'None'):
+                                mtime = time_to_int(mtime[:19])
+                                dfxml_filedate = mtime
+                            elif crtime and (crtime != 'None'):
+                                crtime = time_to_int(crtime[:19])
+                                dfxml_filedate = crtime
+                            else:
+                                continue
+
+                            # rewrite last modified date of corresponding file in objects/files
+                            exported_filepath = os.path.join(files_dir, dfxml_filename)
+                            if os.path.isfile(exported_filepath):
+                                os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
+
+                    except ValueError as e:
+                        logandprint(log, "ERROR: Could not rewrite modified dates: %s" % (e.output))
 
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
