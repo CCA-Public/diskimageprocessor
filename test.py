@@ -115,6 +115,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         bag = bagit.Bag(j(out_dir, 'SIPs', 'practical.floppy.dd'))
         self.assertTrue(self.validate(bag))
 
+    """
     def test_integration_processing_bulk_extractor(self):
         # run diskimageprocessor.py
         script = '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py'
@@ -132,6 +133,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
             'practical.floppy.dd', 'metadata', 
             'submissionDocumentation', 'brunnhilde', 
             'bulk_extractor', 'report.xml')))
+    """
 
     def test_integration_processing_filesonly(self):
         # run diskimageprocessor.py
@@ -162,6 +164,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
             'practical.floppy.dd', 'objects', 'files', 
             'Docs', 'Private', 'ReyHalif.doc')))
 
+    """
     def test_integration_analysis_tsk(self):
         # run diskimageprocessor.py
         script = '/usr/share/ccatools/diskimageprocessor/diskimageanalyzer.py'
@@ -223,6 +226,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         self.assertTrue(is_non_zero_file(j(out_dir, 'files', 
             'practical.floppy.dd', 'objects', 'files', 
             'Docs', 'Private', 'ReyHalif.doc')))
+    """
 
 
 if __name__ == '__main__':
