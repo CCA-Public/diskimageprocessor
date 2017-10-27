@@ -15,16 +15,8 @@ before_install:
   # dfxml
   - git clone git://github.com/simsong/dfxml.git && sudo mv dfxml /usr/share
   # bulk_extractor
-  - sudo apt-get -y install gcc g++ flex libewf-dev libssl-dev
-  - wget http://digitalcorpora.org/downloads/bulk_extractor/bulk_extractor-1.5.5.tar.gz
-  - gunzip bulk_extractor-1.5.5.tar.gz
-  - tar -xvf bulk_extractor-1.5.5.tar
-  - cd bulk_extractor-1.5.5
-  - wget http://digitalcorpora.org/downloads/hashdb/hashdb-3.1.0.tar.gz
-  - gunzip hashdb-3.1.0.tar.gz
-  - tar -xvf hashdb-3.1.0.tar
-  - cd hashdb-3.1.0 && ./configure && make && sudo make install && cd ..
-  - ./configure && make && sudo make install && cd ..
+  - git clone --recursive https://github.com/simsong/bulk_extractor
+  - cd bulk_extractor && ./configure && make && sudo make install && cd ..
   # sleuthkit
   - git clone git://github.com/sleuthkit/sleuthkit.git
   - cd sleuthkit && ./bootstrap && ./configure && make && sudo make install && sudo ldconfig && cd ..
