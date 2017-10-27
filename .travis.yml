@@ -17,10 +17,10 @@ before_install:
   # bulk_extractor
   - sudo apt-get -y install gcc g++ flex libewf-dev libssl-dev
   - git clone --recursive git://github.com/simsong/bulk_extractor.git
-  - cd bulk_extractor && ./configure && make && sudo make install && cd ..
+  - cd bulk_extractor && sudo bash bootstrap.sh && sudo ./configure && make && sudo make install && cd ..
   # sleuthkit
   - git clone git://github.com/sleuthkit/sleuthkit.git
-  - cd sleuthkit && sudo bash boostrap.sh && ./configure && make && sudo make install && sudo ldconfig && cd ..
+  - cd sleuthkit && ./bootstrap && ./configure && make && sudo make install && sudo ldconfig && cd ..
   # install script
   - sudo bash test-install.sh
 install:
