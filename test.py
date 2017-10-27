@@ -183,7 +183,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
             'practical.floppy.dd', 'dfxml.xml')))
         self.assertTrue(is_non_zero_file(j(out_dir, 'reports', 
             'practical.floppy.dd', 'disktype.txt')))
-        self.assertTrue(is_dir(j(out_dir, 'reports', 
+        self.assertTrue(isdir(j(out_dir, 'reports', 
             'practical.floppy.dd', 'brunnhilde')))
         self.assertTrue(is_non_zero_file(j(out_dir, 'reports', 
             'practical.floppy.dd', 'brunnhilde', 'brunnhilde.html')))
