@@ -179,14 +179,14 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         self.assertFalse(os.path.isdir(j(out_dir, 'files')))
 
         # reports
-        self.assertTrue(is_non_zero_file(j(out_dir, 'diskimages', 
+        self.assertTrue(is_non_zero_file(j(out_dir, 'reports', 
             'practical.floppy.dd', 'dfxml.xml')))
-        self.assertTrue(is_non_zero_file(j(out_dir, 'diskimages', 
+        self.assertTrue(is_non_zero_file(j(out_dir, 'reports', 
             'practical.floppy.dd', 'disktype.txt')))
-        self.assertTrue(is_dir(j(out_dir, 'diskimages', 
+        self.assertTrue(is_dir(j(out_dir, 'reports', 
             'practical.floppy.dd', 'brunnhilde')))
-        self.assertTrue(is_non_zero_file(j(out_dir, 'diskimages', 
-            'practical.floppy.dd', 'brunnhilde', 'practical.floppy.dd.html')))
+        self.assertTrue(is_non_zero_file(j(out_dir, 'reports', 
+            'practical.floppy.dd', 'brunnhilde', 'brunnhilde.html')))
 
     def test_integration_analysis_keepfiles(self):
         # run diskimageprocessor.py
@@ -199,7 +199,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         # outputs
         self.assertTrue(os.path.isdir(j(out_dir, 'files')))
         self.assertTrue(is_non_zero_file(j(out_dir, 'files', 
-            'practical.floppy.dd', 'objects', 'ARP.EXE')))
+            'practical.floppy.dd', 'ARP.EXE')))
 
         # verify deleted file not exported
         self.assertFalse(is_non_zero_file(j(out_dir, 'files', 
