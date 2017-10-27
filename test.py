@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+import bagit
 import datetime
 import logging
 import os
@@ -43,7 +44,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
     Integration tests for diskimageprocessor.py.
     """
 
-    def test_integration_outputs_created_tsk(self):
+    def test_integration_processing_tsk(self):
         # run diskimageprocessor.py
         script = '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py'
         img_source = './test-data/tsk'
@@ -75,9 +76,16 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
             'practical.floppy.dd', 'objects', 'files', 'ARP.EXE')))
 
+        # verify deleted file not exported
+        self.assertFalse(is_non_zero_file(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'objects', 'files', 
+            'Docs', 'Private', 'ReyHalif.doc')))
+
         # metadata
         self.assertTrue(os.path.isdir(j(out_dir, 'SIPs', 
             'practical.floppy.dd', 'metadata')))
+        self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'metadata', 'checksum.md5')))
         self.assertTrue(os.path.isdir(j(out_dir, 'SIPs', 
             'practical.floppy.dd', 'metadata', 
             'submissionDocumentation')))
@@ -86,10 +94,135 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
             'submissionDocumentation', 'brunnhilde')))
         self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
             'practical.floppy.dd', 'metadata', 
+            'submissionDocumentation', 'brunnhilde', 
+            'practical.floppy.dd.html')))
+        self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'metadata', 
             'submissionDocumentation', 'dfxml.xml')))
         self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
             'practical.floppy.dd', 'metadata', 
             'submissionDocumentation', 'disktype.txt')))
+
+    def test_integration_processing_bag(self):
+        # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py'
+        img_source = './test-data/tsk'
+        out_dir = j(self.dest_tmpdir, 'test')
+        subprocess.call("python {} -b {} {}".format(script, img_source, out_dir), 
+            shell=True)
+
+        # validate bag
+        bag = bagit.Bag(j(out_dir, 'SIPs', 'practical.floppy.dd'))
+        self.assertTrue(self.validate(bag))
+
+    def test_integration_processing_bulk_extractor(self):
+        # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py'
+        img_source = './test-data/tsk'
+        out_dir = j(self.dest_tmpdir, 'test')
+        subprocess.call("python {} -p {} {}".format(script, img_source, out_dir), 
+            shell=True)
+
+        # check for bulk_extractor outputs
+        self.assertTrue(os.path.isdir(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'metadata', 
+            'submissionDocumentation', 'brunnhilde', 
+            'bulk_extractor')))
+        self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'metadata', 
+            'submissionDocumentation', 'brunnhilde', 
+            'bulk_extractor', 'report.xml')))
+
+    def test_integration_processing_filesonly(self):
+        # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py'
+        img_source = './test-data/tsk'
+        out_dir = j(self.dest_tmpdir, 'test')
+        subprocess.call("python {} -f {} {}".format(script, img_source, out_dir), 
+            shell=True)
+
+        # verify diskimage dir doesn't exist
+        self.assertFalse(os.path.isdir(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'objects', 'diskimage')))
+
+        # verify files exist in objects dir
+        self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'objects', 'ARP.EXE')))
+
+    def test_integration_processing_exportall(self):
+        # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py'
+        img_source = './test-data/tsk'
+        out_dir = j(self.dest_tmpdir, 'test')
+        subprocess.call("python {} -e {} {}".format(script, img_source, out_dir), 
+            shell=True)
+
+        # verify deleted file exported from disk image
+        self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
+            'practical.floppy.dd', 'objects', 'files', 
+            'Docs', 'Private', 'ReyHalif.doc')))
+
+    def test_integration_analysis_tsk(self):
+        # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageanalyzer.py'
+        img_source = './test-data/tsk'
+        out_dir = j(self.dest_tmpdir, 'test')
+        subprocess.call("python {} {} {}".format(script, img_source, out_dir), 
+            shell=True)
+
+        # analysis csv
+        self.assertTrue(is_non_zero_file(j(out_dir, 
+            'analysis.csv')))
+        
+        # directories
+        self.assertTrue(os.path.isdir(j(out_dir, 'diskimages')))
+        self.assertTrue(os.path.isdir(j(out_dir, 'reports')))
+        self.assertFalse(os.path.isdir(j(out_dir, 'files')))
+
+        # diskimages
+        self.assertTrue(os.path.isdir(j(out_dir, 'diskimages', 
+            'practical.floppy.dd')))
+
+        # reports
+        self.assertTrue(is_non_zero_file(j(out_dir, 'diskimages', 
+            'practical.floppy.dd', 'dfxml.xml')))
+        self.assertTrue(is_non_zero_file(j(out_dir, 'diskimages', 
+            'practical.floppy.dd', 'disktype.txt')))
+        self.assertTrue(is_dir(j(out_dir, 'diskimages', 
+            'practical.floppy.dd', 'brunnhilde')))
+        self.assertTrue(is_non_zero_file(j(out_dir, 'diskimages', 
+            'practical.floppy.dd', 'brunnhilde', 'practical.floppy.dd.html')))
+
+    def test_integration_analysis_keepfiles(self):
+        # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageanalyzer.py'
+        img_source = './test-data/tsk'
+        out_dir = j(self.dest_tmpdir, 'test')
+        subprocess.call("python {} -k {} {}".format(script, img_source, out_dir), 
+            shell=True)
+
+        # outputs
+        self.assertTrue(os.path.isdir(j(out_dir, 'files')))
+        self.assertTrue(is_non_zero_file(j(out_dir, 'files', 
+            'practical.floppy.dd', 'objects', 'ARP.EXE')))
+
+        # verify deleted file not exported
+        self.assertFalse(is_non_zero_file(j(out_dir, 'files', 
+            'practical.floppy.dd', 'objects', 'files', 
+            'Docs', 'Private', 'ReyHalif.doc')))
+
+    def test_integration_analysis_exportall(self):
+        # run diskimageprocessor.py
+        script = '/usr/share/ccatools/diskimageprocessor/diskimageanalyzer.py'
+        img_source = './test-data/tsk'
+        out_dir = j(self.dest_tmpdir, 'test')
+        subprocess.call("python {} -ek {} {}".format(script, img_source, out_dir), 
+            shell=True)
+
+        # verify deleted file exported
+        self.assertTrue(is_non_zero_file(j(out_dir, 'files', 
+            'practical.floppy.dd', 'objects', 'files', 
+            'Docs', 'Private', 'ReyHalif.doc')))
 
 
 if __name__ == '__main__':
