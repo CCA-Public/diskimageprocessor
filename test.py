@@ -175,13 +175,8 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
             'analysis.csv')))
         
         # directories
-        self.assertTrue(os.path.isdir(j(out_dir, 'diskimages')))
         self.assertTrue(os.path.isdir(j(out_dir, 'reports')))
         self.assertFalse(os.path.isdir(j(out_dir, 'files')))
-
-        # diskimages
-        self.assertTrue(os.path.isdir(j(out_dir, 'diskimages', 
-            'practical.floppy.dd')))
 
         # reports
         self.assertTrue(is_non_zero_file(j(out_dir, 'diskimages', 
@@ -208,8 +203,8 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
 
         # verify deleted file not exported
         self.assertFalse(is_non_zero_file(j(out_dir, 'files', 
-            'practical.floppy.dd', 'objects', 'files', 
-            'Docs', 'Private', 'ReyHalif.doc')))
+            'practical.floppy.dd', 'Docs', 'Private', 
+            'ReyHalif.doc')))
 
     def test_integration_analysis_exportall(self):
         # run diskimageprocessor.py
@@ -221,8 +216,8 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
 
         # verify deleted file exported
         self.assertTrue(is_non_zero_file(j(out_dir, 'files', 
-            'practical.floppy.dd', 'objects', 'files', 
-            'Docs', 'Private', 'ReyHalif.doc')))
+            'practical.floppy.dd', 'Docs', 'Private', 
+            'ReyHalif.doc')))
 
 
 if __name__ == '__main__':
