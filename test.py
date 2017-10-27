@@ -95,7 +95,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
             'practical.floppy.dd', 'metadata', 
             'submissionDocumentation', 'brunnhilde', 
-            'practical.floppy.dd.html')))
+            'brunnhilde.html')))
         self.assertTrue(is_non_zero_file(j(out_dir, 'SIPs', 
             'practical.floppy.dd', 'metadata', 
             'submissionDocumentation', 'dfxml.xml')))
@@ -113,7 +113,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
 
         # validate bag
         bag = bagit.Bag(j(out_dir, 'SIPs', 'practical.floppy.dd'))
-        self.assertTrue(self.validate(bag))
+        self.assertTrue(bag.validate())
 
     """
     def test_integration_processing_bulk_extractor(self):
