@@ -18,7 +18,9 @@ before_install:
   - sudo apt-get -y install gcc g++ flex libewf-dev libssl-dev
   - wget http://digitalcorpora.org/downloads/bulk_extractor/bulk_extractor-1.5.5.tar.gz
   - gunzip bulk_extractor-1.5.5.tar.gz && tar -xvf bulk_extractor-1.5.5.tar
-  - cd bulk_extractor-1.5.5 && sudo ./bootstrap.sh && sudo ./configure && make && sudo make install && cd ..
+  - cd bulk_extractor-1.5.5 && 
+  - sudo chmod u+x bootstrap.sh && ./bootstrap.sh
+  - sudo ./configure && make && sudo make install && cd ..
   # sleuthkit
   - git clone git://github.com/sleuthkit/sleuthkit.git
   - cd sleuthkit && ./bootstrap && ./configure && make && sudo make install && sudo ldconfig && cd ..
