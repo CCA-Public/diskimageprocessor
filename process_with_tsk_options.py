@@ -10,9 +10,8 @@ able to be parsed by TSK.
 
 Python 3
 
-MIT License
-(c) Tim Walsh 2017
-http://bitarchivist.net
+Tim Walsh
+https://bitarchivist.net
 """
 
 import argparse

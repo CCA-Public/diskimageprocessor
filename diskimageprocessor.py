@@ -20,9 +20,8 @@ For processing HFS and UDF disk images, make sure /mnt/diskid/ exists prior to u
 
 Python 3
 
-MIT License
-(c) Tim Walsh 2016
-http://bitarchivist.net
+Tim Walsh
+https://bitarchivist.net
 """
 
 import argparse

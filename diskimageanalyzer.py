@@ -3,12 +3,14 @@
 
 """
 Disk Image Analyzer
-Called from "Analysis" mode in CCA Disk Image Processor.
-Can also be run as separate script.
+
+Call from "Analysis" mode in CCA Disk Image Processor
+or run as separate script.
+
 Python 3
 
-Tim Walsh 2017
-MIT License
+Tim Walsh
+https://bitarchivist.net
 """
 
 import argparse
