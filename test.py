@@ -56,7 +56,7 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         self.assertTrue(is_non_zero_file(j(out_dir, 
             'description.csv')))
         self.assertTrue(is_non_zero_file(j(out_dir, 
-            'diskimageprocessor-log.txt')))
+            'diskimageprocessor.log')))
         
         # SIP dir
         self.assertTrue(os.path.isdir(j(out_dir, 'SIPs')))

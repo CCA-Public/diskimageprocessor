@@ -29,6 +29,7 @@ import argparse
 import csv
 import datetime
 import itertools
+import logging
 import math
 import os
 import shutil
@@ -38,12 +39,6 @@ import time
 
 #import Objects.py from python dfxml tools
 import Objects
-
-def logandprint(log, message):
-    """ Print to log and terminal """
-    log.write('\n' + (time.strftime("%H:%M:%S %b %d, %Y - ", 
-        time.localtime())) + message)
-    print(message)
 
 def convert_size(size):
     """ Convert size to human-readable form """
@@ -63,7 +58,7 @@ def time_to_int(str_time):
         "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def create_spreadsheet(args, sips, log):
+def create_spreadsheet(args, sips, LOGGER):
     """ Create csv describing created SIPs """
 
     # open description spreadsheet
@@ -284,7 +279,7 @@ def create_spreadsheet(args, sips, log):
                     writer.writerow(['', item, '', '', date_statement, date_earliest, date_latest, 'File', extent, 
                         scopecontent, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
                     
-                    logandprint(log, 'Described %s successfully.' % (current))
+                    LOGGER.info('Described %s successfully.' % (current))
 
                 # if error reading DFXML file, report that
                 except:
@@ -292,9 +287,9 @@ def create_spreadsheet(args, sips, log):
                     writer.writerow(['', item, '', '', 'Error', 'Error', 'Error', 'File', 'Error', 
                         'Error reading DFXML file.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''])
 
-                    logandprint(log, 'ERROR: DFXML file for %s not well-formed.' % (current))
+                    LOGGER.error('DFXML file for %s not well-formed.' % (current))
 
-    logandprint(log, 'Description CSV created.')
+    LOGGER.info('Description CSV created.')
 
 def keep_logical_files_only(objects_dir):
     """ Remove disk image from SIP and repackage """
@@ -319,32 +314,41 @@ def _make_parser():
     parser.add_argument("-f", "--filesonly", help="Include digital files only (not disk images) in SIPs", action="store_true")
     parser.add_argument("-p", "--piiscan", help="Run bulk_extractor in Brunnhilde scan", action="store_true")
     parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
+    parser.add_argument("--quiet", action="store_true", help="Write only errors to log")
     parser.add_argument("source", help="Source directory containing disk images (and related files)")
     parser.add_argument("destination", help="Output destination")
 
     return parser
 
+def _configure_logging(args, log):
+    log_format = "%(asctime)s - %(levelname)s - %(message)s"
+    if args.quiet:
+        level = logging.ERROR
+    else:
+        level = logging.INFO
+    logging.basicConfig(filename=log, level=level, format=log_format)
+
 def main():
 
+    # parse args
     parser = _make_parser()
     args = parser.parse_args()
 
-    destination = os.path.abspath(args.destination)
-
     # create output directories
+    destination = os.path.abspath(args.destination)
     if not os.path.exists(destination):
+        os.makedirs(destination)
+    else: # delete and replace if exists
+        shutil.rmtree(destination)
         os.makedirs(destination)
 
     sips = os.path.join(destination, 'SIPs')
     os.makedirs(sips)
 
     # open log file
-    log_file = os.path.join(destination, 'diskimageprocessor-log.txt')
-    try:
-        log = open(log_file, 'w')   # open the log file
-        logandprint(log, 'Source of disk images: %s' % (args.source))
-    except:
-        logandprint(log, 'There was an error creating the log file.')
+    LOGGER = logging.getLogger()
+    log_file = os.path.join(destination, 'diskimageprocessor.log')
+    _configure_logging(args, log_file)
 
     # make list for unprocessed disks
     unprocessed = []
@@ -353,7 +357,7 @@ def main():
     for file in sorted(os.listdir(args.source)):
 
         # record filename in log
-        logandprint(log, '>>> NEW FILE: %s' % (file))
+        LOGGER.info('NEW FILE: %s' % (file))
         
         # determine if disk image
         if file.lower().endswith((".e01", ".000", ".001", ".raw", ".img", ".dd", ".iso")):
@@ -388,7 +392,7 @@ def main():
                     os.rename(os.path.join(diskimage_dir, '%s.raw.info' % (image_id)), os.path.join(diskimage_dir, '%s.img.info' % image_id)) # rename sidecar md5 file
                     diskimage = os.path.join(diskimage_dir, '%s.img' % (image_id)) # use raw disk image in objects/diskimage moving forward
                 except subprocess.CalledProcessError:
-                    logandprint(log, 'ERROR: Disk image could not be converted to raw image format. Skipping disk.')
+                    LOGGER.error('Disk image %s could not be converted to raw image format. Skipping disk.' % (file))
 
             else:
                 raw_image = True
@@ -399,7 +403,7 @@ def main():
                         try:
                             shutil.copyfile(os.path.join(args.source, movefile), os.path.join(diskimage_dir, movefile))
                         except:
-                            logandprint(log, 'ERROR: File %s not successfully copied to %s' % (movefile, diskimage_dir))
+                            LOGGER.error('ERROR: File %s not successfully copied to %s' % (movefile, diskimage_dir))
                 diskimage = os.path.join(diskimage_dir, file) # use disk image in objects/diskimage moving forward
 
             # raw disk image
@@ -419,7 +423,7 @@ def main():
                     for line in open(disktype, 'rb'):
                         if "file system" in line.decode('utf-8','ignore'):
                             disk_fs = line.decode('utf-8','ignore').strip()
-                logandprint(log, 'File system: %s' % (disk_fs))
+                LOGGER.info('File system: %s' % (disk_fs))
 
                 # handle differently by file system
                 if any(x in disk_fs.lower() for x in ('ntfs', 'fat', 'ext', 'iso9660', 'hfs+', 'ufs', 'raw', 'swap', 'yaffs2')):
@@ -428,7 +432,7 @@ def main():
                     try:
                         subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
                     except subprocess.CalledProcessError as e:
-                        logandprint(log, 'ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+                        LOGGER.error('Fiwalk could not create DFXML for disk %s. STDERR: %s' % (diskimage, e.output))
                     
                     # carve images using tsk_recover
                     carve_flag = '-a' # default to exporting allocated files
@@ -437,7 +441,7 @@ def main():
                     try:
                         subprocess.check_output(['tsk_recover', carve_flag, diskimage, files_dir])
                     except subprocess.CalledProcessError as e:
-                        logandprint(log, 'ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))    
+                        LOGGER.error('tsk_recover could not carve allocated files from disk %s. STDERR: %s' % (diskimage, e.output))    
 
                     # modify file permissions
                     subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
@@ -489,7 +493,7 @@ def main():
                                 os.utime(exported_filepath, (dfxml_filedate, dfxml_filedate))
 
                     except ValueError:
-                        logandprint(log, "ERROR: Could not rewrite modified dates due to Objects.py ValueError")
+                        LOGGER.error("Could not rewrite modified dates for disk %s due to Objects.py ValueError" % (diskimage))
 
                     # run brunnhilde and write to submissionDocumentation
                     files_abs = os.path.abspath(files_dir)
@@ -518,7 +522,7 @@ def main():
                     try:
                         subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                     except:
-                        logandprint(log, 'ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                        LOGGER.error('walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
 
                     # unmount disk image
                     subprocess.call('sudo umount /mnt/diskid', shell=True)
@@ -528,12 +532,12 @@ def main():
                         try:
                             subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', files_dir, diskimage])
                         except subprocess.CalledProcessError as e:
-                            logandprint(log, 'ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+                            LOGGER.error('HFS Explorer could not carve the following files from disk %s. Error output: %s' % (diskimage, e.output))
                     else:
                         try:
                             subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', files_dir, diskimage])
                         except subprocess.CalledProcessError as e:
-                            logandprint(log, 'ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output)) 
+                            LOGGER.error('HFS Explorer could not carve the following files from disk %s. Error output: %s' % (diskimage, e.output)) 
 
                     # modify file permissions
                     subprocess.call("sudo find '%s' -type d -exec chmod 755 {} \;" % (sip_dir), shell=True)
@@ -566,14 +570,14 @@ def main():
                     try:
                         subprocess.call("cd /mnt/diskid/ && python3 /usr/share/dfxml/python/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                     except:
-                        logandprint(log, 'ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                        LOGGER.error('walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                     
                     # copy files from disk image to files dir
                     shutil.rmtree(files_dir) # delete to enable use of copytree
                     try:
                         shutil.copytree('/mnt/diskid/', files_dir, symlinks=False, ignore=None)
                     except:
-                        logandprint(log, "ERROR: shutil.copytree unable to copy files from disk %s" % (diskimage))
+                        LOGGER.error("shutil.copytree unable to copy files from disk %s" % (diskimage))
 
                     # unmount disk image
                     subprocess.call('sudo umount /mnt/diskid', shell=True) # unmount
@@ -600,30 +604,27 @@ def main():
                         subprocess.call("cd '%s' && md5deep -rl ../objects > checksum.md5" % (metadata_dir), shell=True)
 
                 else:
-                    logandprint(log, 'NOTICE: Skipping processing of unknown disk type.')
+                    LOGGER.info('Skipping processing of unknown disk type.')
                     unprocessed.append(file)
 
             # no raw disk image
             else:
-                logandprint(log, 'NOTICE: No raw disk image. Skipping disk.')
+                LOGGER.info('No raw disk image. Skipping disk.')
                 unprocessed.append(file)
 
         else:
             # write skipped file to log
-            logandprint(log, 'NOTICE: File is not a disk image. Skipping file.')
+            LOGGER.info('File is not a disk image. Skipping file.')
+
+    # write description CSV
+    create_spreadsheet(args, sips, LOGGER)
 
     # print unprocessed list
     if unprocessed:
         skipped_disks = ', '.join(unprocessed)
-        logandprint(log, 'Processing complete. Skipped disks: %s' % (skipped_disks))
+        LOGGER.info('Processing complete. Skipped disks: %s' % (skipped_disks))
     else:
-        logandprint(log, 'Processing complete. All disk images processed. Results in %s.' % (destination))
-
-    # write description spreadsheet
-    create_spreadsheet(args, sips, log)
-
-    # close log
-    log.close()
+        LOGGER.info('Processing complete. All disk images processed. Results in %s.' % (destination))
 
 if __name__ == '__main__':
     main()

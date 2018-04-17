@@ -15,6 +15,7 @@ import argparse
 import csv
 import datetime
 import itertools
+import logging
 import math
 import os
 import shutil
@@ -42,7 +43,7 @@ def time_to_int(str_time):
     dt = time.mktime(datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple())
     return dt
 
-def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
+def write_to_spreadsheet(disk_result, spreadsheet_path, exportall, LOGGER):
     """ Append info for current disk to analysis CSV """
 
     # open description spreadsheet
@@ -217,15 +218,17 @@ def write_to_spreadsheet(disk_result, spreadsheet_path, exportall):
                 if "FOUND" in first_line:
                     virus_found = True
         except:
-            print("ERROR: Issue reading virus log for disk %s." % (os.path.basename(disk_result)))
+           LOGGER.error("Issue reading virus log for disk %s." % (os.path.basename(disk_result)))
 
         # write csv row
         writer.writerow([os.path.basename(disk_result), disk_fs, date_type, date_statement, date_earliest, date_latest, extent, virus_found, formatlist])
+        LOGGER.info('Described %s successfully.' % (os.path.basename(disk_result)))
 
-    # if error reading DFXML, print that to spreadsheet
+    # if error reading DFXML,LOGGER.error that to spreadsheet
     except:
         writer.writerow([os.path.basename(disk_result), 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 
             'N/A', 'N/A', 'Error reading DFXML file.'])
+        LOGGER.error('DFXML file for %s not well-formed.' % (os.path.basename(disk_result)))
 
     spreadsheet.close()
 
@@ -235,10 +238,19 @@ def _make_parser():
     parser.add_argument("-e", "--exportall", help="Export all (not only allocated) with tsk_recover", action="store_true")
     parser.add_argument("-k", "--keepfiles", help="Retain exported logical files from each disk", action="store_true")
     parser.add_argument("-r", "--resforks", help="Export AppleDouble resource forks from HFS-formatted disks", action="store_true")
+    parser.add_argument("--quiet", action="store_true", help="Write only errors to log")
     parser.add_argument("source", help="Path to folder containing disk images")
     parser.add_argument("destination", help="Output destination")
 
     return parser
+
+def _configure_logging(args, log):
+    log_format = "%(asctime)s - %(levelname)s - %(message)s"
+    if args.quiet:
+        level = logging.ERROR
+    else:
+        level = logging.INFO
+    logging.basicConfig(filename=log, level=level, format=log_format)
 
 def main():
 
@@ -248,14 +260,22 @@ def main():
     source = os.path.abspath(args.source)
     destination = os.path.abspath(args.destination)
 
-    # make outdir disks
+    # make output directories
     if not os.path.exists(destination):
+        os.makedirs(destination)
+    else: # delete and replace if exists
+        shutil.rmtree(destination)
         os.makedirs(destination)
     diskimages_dir = os.path.join(destination, 'diskimages')
     files_dir = os.path.join(destination, 'files')
     results_dir = os.path.join(destination, 'reports')
     for new_dir in diskimages_dir, files_dir, results_dir:
         os.makedirs(new_dir)
+
+    # open log file
+    LOGGER = logging.getLogger()
+    log_file = os.path.join(destination, 'diskimageanalyzer.log')
+    _configure_logging(args, log_file)
         
     # make list for unanalyzed disks
     unanalyzed = []
@@ -263,6 +283,9 @@ def main():
     # process each disk image
     for file in sorted(os.listdir(source)):
         
+        # record filename in log
+        LOGGER.info('NEW FILE: %s' % (file))
+
         # determine if disk image
         if file.lower().endswith((".e01", ".000", ".001", ".raw", ".img", ".dd", ".iso")):
 
@@ -289,7 +312,7 @@ def main():
                     os.rename(os.path.join(diskimages_dir, '%s.raw.info' % image_id), os.path.join(diskimages_dir, '%s.img.info' % image_id)) # rename sidecar md5 file
                     diskimage = os.path.join(diskimages_dir, '%s.img' % image_id) # use raw disk image in diskimages_dir moving forward
                 except subprocess.CalledProcessError:
-                    print('ERROR: Disk image could not be converted to raw image format. Skipping disk.')
+                   LOGGER.error('Disk image %s could not be converted to raw image format. Skipping disk.' % (file))
 
             else:
                 raw_image = True
@@ -325,7 +348,7 @@ def main():
                     try:
                         subprocess.check_output(['fiwalk', '-X', fiwalk_file, diskimage])
                     except subprocess.CalledProcessError as e:
-                        print('ERROR: Fiwalk could not create DFXML for disk. STDERR: %s' % (e.output))
+                       LOGGER.error('Fiwalk could not create DFXML for disk %s. STDERR: %s' % (diskimage, e.output))
 
                     # carve files
                     disk_files_dir = os.path.join(files_dir, file)
@@ -336,12 +359,12 @@ def main():
                         try:
                             subprocess.check_output(['tsk_recover', '-e', diskimage, disk_files_dir])
                         except subprocess.CalledProcessError as e:
-                            print('ERROR: tsk_recover could not carve all files from disk. STDERR: %s' % (e.output))
+                           LOGGER.error('tsk_recover could not carve all files from disk %s. STDERR: %s' % (diskimage, e.output))
                     else:
                         try:
                             subprocess.check_output(['tsk_recover', '-a', diskimage, disk_files_dir])
                         except subprocess.CalledProcessError as e:
-                            print('ERROR: tsk_recover could not carve allocated files from disk. STDERR: %s' % (e.output))
+                           LOGGER.error('tsk_recover could not carve allocated files from disk %s. STDERR: %s' % (diskimage, e.output))
 
                     # rewrite last modified dates of carved files based on values in DFXML
                     for (event, obj) in Objects.iterparse(fiwalk_file):
@@ -403,7 +426,7 @@ def main():
                     try:
                         subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                     except:
-                        print('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                       LOGGER.error('walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                     
                     # run brunnhilde
                     subprocess.call("brunnhilde.py -zwb /mnt/diskid/ '%s' brunnhilde" % (disk_dir), shell=True)
@@ -421,12 +444,12 @@ def main():
                             try:
                                 subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-resforks', 'APPLEDOUBLE', '-o', disk_files_dir, diskimage])
                             except subprocess.CalledProcessError as e:
-                                print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+                               LOGGER.error('HFS Explorer could not carve the following files from disk %s. Error output: %s' % (diskimage, e.output))
                         else:
                             try:
                                 subprocess.check_output(['bash', '/usr/share/hfsexplorer/bin/unhfs', '-v', '-o', disk_files_dir, diskimage])
                             except subprocess.CalledProcessError as e:
-                                print('ERROR: HFS Explorer could not carve the following files from image: %s' % (e.output))
+                               LOGGER.error('HFS Explorer could not carve the following files from disk %s. Error output: %s' % (diskimage, e.output))
 
 
                 elif 'udf' in disk_fs.lower():
@@ -438,7 +461,7 @@ def main():
                     try:
                         subprocess.call("cd /mnt/diskid/ && python3 /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py > '%s'" % (dfxml_file), shell=True)
                     except:
-                        print('ERROR: walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
+                       LOGGER.error('walk_to_dfxml.py unable to generate DFXML for disk %s' % (diskimage))
                     
                     # write files to tempdir
                     disk_files_dir = os.path.join(files_dir, file)
@@ -460,7 +483,17 @@ def main():
                 
                 else:
                     # add disk to unanalyzed list
-                    unanalyzed.append(diskimage)          
+                    LOGGER.info('Skipping processing of unknown disk type.')
+                    unanalyzed.append(diskimage)    
+
+            # no raw disk image
+            else:
+                LOGGER.info('No raw disk image. Skipping disk.')
+                unprocessed.append(file)  
+
+        else:
+            # write skipped file to log
+            LOGGER.info('File is not a disk image. Skipping file.')    
 
     # delete temp directories
     shutil.rmtree(diskimages_dir)
@@ -477,14 +510,14 @@ def main():
     # add info to analysis csv for each SIP
     for item in sorted(os.listdir(results_dir)):
         disk_result = os.path.join(results_dir, item)
-        write_to_spreadsheet(disk_result, os.path.join(destination, 'analysis.csv'), args.exportall)
+        write_to_spreadsheet(disk_result, os.path.join(destination, 'analysis.csv'), args.exportall, LOGGER)
 
     # write closing message
     if unanalyzed:
         skipped_disks = ', '.join(unanalyzed)
-        print('Analysis complete. Skipped disks: %s.' % (skipped_disks))
+        LOGGER.info('Analysis complete. Skipped disks: %s.' % (skipped_disks))
     else:
-        print('Analysis complete. All disk images analyzed. Results in %s.' % (destination))
+        LOGGER.info('Analysis complete. All disk images analyzed. Results in %s.' % (destination))
 
 if __name__ == '__main__':
     main()
