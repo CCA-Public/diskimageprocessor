@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 0.7.3 (beta)
+Version: 1.0.0
 
 [![Build Status](https://travis-ci.org/timothyryanwalsh/cca-diskimageprocessor.svg?branch=master)](https://travis-ci.org/timothyryanwalsh/cca-diskimageprocessor)
 
@@ -106,35 +106,21 @@ Disk Image Processor recognizes which files are disk images by their file extens
 
 ## Installation and dependencies
 
-This utility is designed for easy use in BitCurator v1.8.0+. It requires Python 2.7 (to run the GUI) and Python 3.4+ (to run the scripts that analyze and process disk images), both of which are already included in BitCurator.    
+This utility is designed for easy use in BitCurator v1.8.0+. All dependencies should already be installed in new releases of BitCurator. Installation outside of BitCurator is possible but difficult, with many dependencies, including Python3, PyQt5, TSK, Bulk Extractor, and the DFXML Python bindings. You will likely also need to modify some hardcoded paths in `main.py` and the processing scripts.
 
 ### Install as part of CCA Tools  
 
-Install all of the CCA Tools (and PyQT4) together using the install bash script in the [CCA Tools repo](https://github.com/timothyryanwalsh/cca-tools).  
+Install all of the CCA Tools together using the installation script included in the [CCA Tools repo](https://github.com/CCA-Public/cca-tools).  
 
 ### Install as a separate utility
+* Install [PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5):  
+`sudo pip3 install pyqt5`  
 * Clone this repo to your local machine.  
 * Make install script executable (may need to be run with sudo privileges):  
 `chmod u+x install.sh` 
 * Run the install script with sudo privileges:  
-`sudo ./install.sh`  
-
-### Dependency and verison issues
-
-#### Brunnhilde
-
-Disk Image Processor will work with all versions of [Brunnhilde](https://github.com/timothyryanwalsh/brunnhilde); however, changes to Brunnhilde 1.5.1's default pattern matching for SSNs with bulk_extractor help in minimizing the number of false positives reported and keeping the Brunnhilde HTML report size reasonable. For best results, it is recommended to upgrade the version of Brunnhilde on your machine to 1.5.1+.  
-
-#### HFS Explorer
-
-unhfs, the command-line version of HFSExplorer, until recently had a bug that caused failures when attempting to extract AppleDouble resource forks alongside files. To avoid this issue, be sure that you have the [latest version](https://sourceforge.net/projects/catacombae/files/HFSExplorer/0.23.1%20%28snapshot%202016-09-02%29/) of HFSExplorer installed. In BitCurator 1.7.106+ and 1.8.0+, the patched version of HFS Explorer is already installed. 
-
-In this patched release, unhfs.sh is renamed to unhfs (without a file extension). If file /usr/share/hfsexplorer/bin/unhfs.sh (with file extension) exists in your system, you must update HFSExplorer with the version linked above (recommended) or rename the unhfs.sh file to remove the file extension.
-
-In BitCurator versions before 1.7.106, installation of the latest release of HFSEexplorer must be done manually by replacing the contents of /usr/share/hfsexplorer with the downloaded and extracted source. In order to continue using the HFSExplorer GUI in BitCurator versions before 1.7.106 after updating HFSExplorer, right-click on the HFS Explorer icon in "Additional Tools", select "Properties", and amend the text in "Command" to:  
-
-`/usr/share/hfsexplorer/bin/./hfsexplorer %F`   
+`sudo ./install.sh`   
 
 ## Credit  
 
-Inspired by [Jess Whyte's work at the University of Toronto's Fisher Rare Book Library](https://saaers.wordpress.com/2016/04/12/clearing-the-digital-backlog-at-the-thomas-fisher-rare-book-library/comment-page-1/), especially the [Disk-ID-md5deep script](https://github.com/jesswhyte/Disk-ID-md5deep/).
+Inspired by [Jess Whyte's work at the University of Toronto's Fisher Rare Book Library](https://saaers.wordpress.com/2016/04/12/clearing-the-digital-backlog-at-the-thomas-fisher-rare-book-library/comment-page-1/), especially the [Disk-ID-md5deep script](https://github.com/jesswhyte/Disk-ID-md5deep/).  
