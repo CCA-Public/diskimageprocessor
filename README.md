@@ -3,8 +3,6 @@
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 Version: 1.0.0
 
-[![Build Status](https://travis-ci.org/timothyryanwalsh/cca-diskimageprocessor.svg?branch=master)](https://travis-ci.org/timothyryanwalsh/cca-diskimageprocessor)
-
 ## Usage
 
 Disk Image Processor has two modes: Analysis and Processing. Each mode can be run from the GUI interface or as a separate CLI utility by calling the underlying Python 3 script.  
