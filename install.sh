@@ -2,8 +2,8 @@
 
 ### Install script for CCA Disk Image Processor in Bitcurator
 
-# Install PyQt4
-sudo apt-get install python3-pyqt5
+# Install PyQt5
+sudo pip3 install pyqt5
 
 # Make /usr/share/ccatools if doesn't already exist
 if [ ! -d /usr/share/ccatools ]; then
