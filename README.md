@@ -119,6 +119,10 @@ Install all of the CCA Tools together using the installation script included in 
 * Run the install script with sudo privileges:  
 `sudo ./install.sh`   
 
+### PyQt4 version
+
+Please note that Disk Image Processor v1.0.0 uses PyQt5. Installation of PyQt5 may cause issues with existing PyQt4 programs in BitCurator. For the a PyQt4 version of the Disk Image Processor that will not affect the functionality of other tools, see the [0.7.3 release](https://github.com/CCA-Public/diskimageprocessor/releases/tag/v0.7.3).
+
 ## Credit  
 
 Inspired by [Jess Whyte's work at the University of Toronto's Fisher Rare Book Library](https://saaers.wordpress.com/2016/04/12/clearing-the-digital-backlog-at-the-thomas-fisher-rare-book-library/comment-page-1/), especially the [Disk-ID-md5deep script](https://github.com/jesswhyte/Disk-ID-md5deep/).  
