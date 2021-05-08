@@ -2,49 +2,41 @@
 
 ### Install script for CCA Disk Image Processor in Bitcurator
 
+# Update submodules
+git submodule update --init --recursive
+
 # Make /usr/share/ccatools if doesn't already exist
 if [ ! -d /usr/share/ccatools ]; then
   sudo mkdir /usr/share/ccatools
 fi
 
-# Make disk image processor folder if doesn't already exist
-if [ ! -d /usr/share/ccatools/diskimageprocessor ]; then
-  sudo mkdir /usr/share/ccatools/diskimageprocessor
+# Delete /usr/share directory for Disk Image Processor if it already exists
+if [ -d /usr/share/ccatools/diskimageprocessor ]; then
+  sudo rm -rf /usr/share/ccatools/diskimageprocessor
 fi
+
+# Make /usr/share directory for Disk Image Processor
+sudo mkdir /usr/share/ccatools/diskimageprocessor
 
 # Make /mnt/diskid/ if doesn't already exist
 if [ ! -d /mnt/diskid ]; then
   sudo mkdir /mnt/diskid
 fi
 
-
 # Move files into /usr/share/ccatools/diskimageprocessor
-sudo mv diskimageprocessor.py /usr/share/ccatools/diskimageprocessor
-sudo mv diskimageanalyzer.py /usr/share/ccatools/diskimageprocessor
-sudo mv process_with_tsk_options.py /usr/share/ccatools/diskimageprocessor
-sudo mv main.py /usr/share/ccatools/diskimageprocessor
-sudo mv launch /usr/share/ccatools/diskimageprocessor
-sudo mv design.py /usr/share/ccatools/diskimageprocessor
-sudo mv design.ui /usr/share/ccatools/diskimageprocessor
-sudo mv icon.png /usr/share/ccatools/diskimageprocessor
-sudo mv LICENSE /usr/share/ccatools/diskimageprocessor
-sudo mv README.md /usr/share/ccatools/diskimageprocessor
-
-# Check for DFXML libraries
-if [ ! -d /usr/share/dfxml/python ]; then
-  git submodule update --init --recursive
-  sudo mv deps/ /usr/share/ccatools/diskimageprocessor
-  sudo mv dfxml.py /usr/share/ccatools/diskimageprocessor
-  sudo mv Objects.py /usr/share/ccatools/diskimageprocessor
-  sudo mv walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor
-
-# Else use existing libraries
-else
-  sudo ln -s /usr/share/dfxml/python/dfxml.py /usr/share/ccatools/diskimageprocessor/dfxml.py
-  sudo ln -s /usr/share/dfxml/python/Objects.py /usr/share/ccatools/diskimageprocessor/Objects.py
-  sudo ln -s /usr/share/dfxml/python/walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor/walk_to_dfxml.py
-fi
-
+sudo cp diskimageprocessor.py /usr/share/ccatools/diskimageprocessor
+sudo cp diskimageanalyzer.py /usr/share/ccatools/diskimageprocessor
+sudo cp process_with_tsk_options.py /usr/share/ccatools/diskimageprocessor
+sudo cp main.py /usr/share/ccatools/diskimageprocessor
+sudo cp launch /usr/share/ccatools/diskimageprocessor
+sudo cp design.py /usr/share/ccatools/diskimageprocessor
+sudo cp design.ui /usr/share/ccatools/diskimageprocessor
+sudo cp icon.png /usr/share/ccatools/diskimageprocessor
+sudo cp LICENSE /usr/share/ccatools/diskimageprocessor
+sudo cp README.md /usr/share/ccatools/diskimageprocessor
+sudo cp deps/dfxml/python/dfxml.py /usr/share/ccatools/diskimageprocessor
+sudo cp deps/dfxml/python/Objects.py /usr/share/ccatools/diskimageprocessor
+sudo cp deps/dfxml/python/walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor
 
 # Make "CCA Tools" folder on Desktop if doesn't already exist
 if [ ! -d "/home/bcadmin/Desktop/CCA Tools" ]; then
