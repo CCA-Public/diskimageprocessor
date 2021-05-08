@@ -20,7 +20,7 @@ For processing HFS and UDF disk images, make sure /mnt/diskid/ exists prior to u
 
 Python 3
 
-Tim Walsh
+Tessa Walsh
 https://bitarchivist.net
 """
 

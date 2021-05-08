@@ -9,7 +9,7 @@ or run as separate script.
 
 Python 3
 
-Tim Walsh
+Tessa Walsh
 https://bitarchivist.net
 """
 

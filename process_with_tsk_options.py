@@ -10,7 +10,7 @@ able to be parsed by TSK.
 
 Python 3
 
-Tim Walsh
+Tessa Walsh
 https://bitarchivist.net
 """
 
