@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_DiskImageProcessor(object):
     def setupUi(self, DiskImageProcessor):
         DiskImageProcessor.setObjectName("DiskImageProcessor")
@@ -212,39 +213,124 @@ class Ui_DiskImageProcessor(object):
 
     def retranslateUi(self, DiskImageProcessor):
         _translate = QtCore.QCoreApplication.translate
-        DiskImageProcessor.setWindowTitle(_translate("DiskImageProcessor", "Disk Image Processor"))
-        self.label.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Source</span></p></body></html>"))
-        self.analysisSource.setPlaceholderText(_translate("DiskImageProcessor", "/path/to/source/directory"))
+        DiskImageProcessor.setWindowTitle(
+            _translate("DiskImageProcessor", "Disk Image Processor")
+        )
+        self.label.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Source</span></p></body></html>',
+            )
+        )
+        self.analysisSource.setPlaceholderText(
+            _translate("DiskImageProcessor", "/path/to/source/directory")
+        )
         self.analysisSourceBtn.setText(_translate("DiskImageProcessor", "Browse"))
-        self.label_5.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Destination</span></p></body></html>"))
-        self.analysisDest.setPlaceholderText(_translate("DiskImageProcessor", "/path/to/output/directory"))
+        self.label_5.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Destination</span></p></body></html>',
+            )
+        )
+        self.analysisDest.setPlaceholderText(
+            _translate("DiskImageProcessor", "/path/to/output/directory")
+        )
         self.analysisDestBtn.setText(_translate("DiskImageProcessor", "Browse"))
-        self.label_6.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Options</span></p></body></html>"))
-        self.retainFilesBtn.setText(_translate("DiskImageProcessor", "Retain logical files at end of process"))
-        self.label_7.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Status</span></p></body></html>"))
+        self.label_6.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Options</span></p></body></html>',
+            )
+        )
+        self.retainFilesBtn.setText(
+            _translate("DiskImageProcessor", "Retain logical files at end of process")
+        )
+        self.label_7.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Status</span></p></body></html>',
+            )
+        )
         self.analysisCancelBtn.setText(_translate("DiskImageProcessor", "Cancel"))
-        self.analysisStartBtn.setText(_translate("DiskImageProcessor", "Start analysis"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.analysisTab), _translate("DiskImageProcessor", "Analysis"))
-        self.label_9.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Source</span></p></body></html>"))
-        self.procSource.setPlaceholderText(_translate("DiskImageProcessor", "/path/to/source/directory"))
+        self.analysisStartBtn.setText(
+            _translate("DiskImageProcessor", "Start analysis")
+        )
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.analysisTab),
+            _translate("DiskImageProcessor", "Analysis"),
+        )
+        self.label_9.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Source</span></p></body></html>',
+            )
+        )
+        self.procSource.setPlaceholderText(
+            _translate("DiskImageProcessor", "/path/to/source/directory")
+        )
         self.procSourceBtn.setText(_translate("DiskImageProcessor", "Browse"))
-        self.label_10.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Destination</span></p></body></html>"))
-        self.procDest.setPlaceholderText(_translate("DiskImageProcessor", "/path/to/output/directory"))
+        self.label_10.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Destination</span></p></body></html>',
+            )
+        )
+        self.procDest.setPlaceholderText(
+            _translate("DiskImageProcessor", "/path/to/output/directory")
+        )
         self.procDestBtn.setText(_translate("DiskImageProcessor", "Browse"))
-        self.label_2.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Options</span></p></body></html>"))
+        self.label_2.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Options</span></p></body></html>',
+            )
+        )
         self.bagBtn.setText(_translate("DiskImageProcessor", "Bag SIPs"))
-        self.logicalFilesOnlyBtn.setText(_translate("DiskImageProcessor", "Make SIPs from carved files only (no disk image)"))
+        self.logicalFilesOnlyBtn.setText(
+            _translate(
+                "DiskImageProcessor", "Make SIPs from carved files only (no disk image)"
+            )
+        )
         self.bulkExtBtn.setText(_translate("DiskImageProcessor", "Run bulk_extractor"))
-        self.label_12.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">Status</span></p></body></html>"))
+        self.label_12.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">Status</span></p></body></html>',
+            )
+        )
         self.procCancelBtn.setText(_translate("DiskImageProcessor", "Cancel"))
         self.procStartBtn.setText(_translate("DiskImageProcessor", "Start processing"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.processingTab), _translate("DiskImageProcessor", "Processing"))
-        self.label_3.setText(_translate("DiskImageProcessor", "<html><head/><body><p><span style=\" font-weight:600;\">General options</span></p></body></html>"))
-        self.unallocBtn.setText(_translate("DiskImageProcessor", "Include deleted/unallocated files (excluding HFS-formatted disks)"))
-        self.resForksBtn.setText(_translate("DiskImageProcessor", "Include AppleDouble resource forks (HFS-formatted disks)"))
-        self.quietLogBtn.setText(_translate("DiskImageProcessor", "Include only Error messages in log (--quiet)"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.optionsTab), _translate("DiskImageProcessor", "Options"))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.processingTab),
+            _translate("DiskImageProcessor", "Processing"),
+        )
+        self.label_3.setText(
+            _translate(
+                "DiskImageProcessor",
+                '<html><head/><body><p><span style=" font-weight:600;">General options</span></p></body></html>',
+            )
+        )
+        self.unallocBtn.setText(
+            _translate(
+                "DiskImageProcessor",
+                "Include deleted/unallocated files (excluding HFS-formatted disks)",
+            )
+        )
+        self.resForksBtn.setText(
+            _translate(
+                "DiskImageProcessor",
+                "Include AppleDouble resource forks (HFS-formatted disks)",
+            )
+        )
+        self.quietLogBtn.setText(
+            _translate(
+                "DiskImageProcessor", "Include only Error messages in log (--quiet)"
+            )
+        )
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.optionsTab),
+            _translate("DiskImageProcessor", "Options"),
+        )
         self.menuAbout.setTitle(_translate("DiskImageProcessor", "About"))
         self.actionAbout.setText(_translate("DiskImageProcessor", "About"))
         self.actionAbout.setToolTip(_translate("DiskImageProcessor", "About"))
-

@@ -1,0 +1,5 @@
+-r base.txt
+
+pytest==6.2.4
+pytest-mock==3.6.1
+tox==3.23.1
