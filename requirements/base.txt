@@ -1,0 +1,2 @@
+bagit>=1.7.0
+brunnhilde>=1.9.1

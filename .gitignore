@@ -1,0 +1,6 @@
+.python-version
+*__pycache__/
+*.pyc
+.tox/
+.pytest_cache/
+.DS_Store

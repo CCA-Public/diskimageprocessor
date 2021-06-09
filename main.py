@@ -2,28 +2,28 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtGui import *
-from PyQt5.QtCore import * 
+from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import subprocess
 import sys
 
 import design
 
-class StartScanThread(QThread):
 
+class StartScanThread(QThread):
     def __init__(self, process_list):
         QThread.__init__(self)
         self.process_list = process_list
 
     def start_scan(self):
-        print(self.process_list) # for debugging
+        print(self.process_list)  # for debugging
         subprocess.check_output(self.process_list)
 
     def run(self):
         self.start_scan()
 
-class DiskImageProcessorApp(QMainWindow, design.Ui_DiskImageProcessor):
 
+class DiskImageProcessorApp(QMainWindow, design.Ui_DiskImageProcessor):
     def __init__(self, parent=None):
         super(DiskImageProcessorApp, self).__init__(parent)
         self.setupUi(self)
@@ -42,35 +42,38 @@ class DiskImageProcessorApp(QMainWindow, design.Ui_DiskImageProcessor):
         self.actionAbout.triggered.connect(self.about_dialog)
 
     def about_dialog(self):
-        QMessageBox.information(self, "About", 
-            "Disk Image Processor v1.0.0\nCanadian Centre for Architecture\nDeveloper: Tim Walsh\n2018\nMIT License\nhttps://github.com/CCA-Public/cca-diskimageprocessor")
+        QMessageBox.information(
+            self,
+            "About",
+            "Disk Image Processor v1.0.0\nCanadian Centre for Architecture\nDeveloper: Tessa Walsh\n2018\nMIT License\nhttps://github.com/CCA-Public/cca-diskimageprocessor",
+        )
 
     def browse_analysis_source(self):
-        self.analysisSource.clear() # clear directory source text
+        self.analysisSource.clear()  # clear directory source text
         directory = QFileDialog.getExistingDirectory(self, "Select folder")
 
-        if directory: # if user didn't pick directory don't continue
+        if directory:  # if user didn't pick directory don't continue
             self.analysisSource.setText(directory)
 
     def browse_processing_source(self):
-        self.procSource.clear() # clear directory source text
+        self.procSource.clear()  # clear directory source text
         directory = QFileDialog.getExistingDirectory(self, "Select folder")
 
-        if directory: # if user didn't pick directory don't continue
+        if directory:  # if user didn't pick directory don't continue
             self.procSource.setText(directory)
 
     def browse_analysis_dest(self):
-        self.analysisDest.clear() # clear directory source text
+        self.analysisDest.clear()  # clear directory source text
         directory = QFileDialog.getExistingDirectory(self, "Select folder")
 
-        if directory: # if user didn't pick directory don't continue
+        if directory:  # if user didn't pick directory don't continue
             self.analysisDest.setText(directory)
 
     def browse_processing_dest(self):
-        self.procDest.clear() # clear directory source text
+        self.procDest.clear()  # clear directory source text
         directory = QFileDialog.getExistingDirectory(self, "Select folder")
 
-        if directory: # if user didn't pick directory don't continue
+        if directory:  # if user didn't pick directory don't continue
             self.procDest.setText(directory)
 
     def done_analysis(self):
@@ -92,7 +95,9 @@ class DiskImageProcessorApp(QMainWindow, design.Ui_DiskImageProcessor):
         # create list for process
         self.process_list = list()
         self.process_list.append("python3")
-        self.process_list.append("/usr/share/ccatools/diskimageprocessor/diskimageanalyzer.py")
+        self.process_list.append(
+            "/usr/share/ccatools/diskimageprocessor/diskimageanalyzer.py"
+        )
 
         # give indication process has started
         self.analysisStatus.setText("Processing. Please be patient.")
@@ -126,7 +131,9 @@ class DiskImageProcessorApp(QMainWindow, design.Ui_DiskImageProcessor):
         # create list for process
         self.process_list = list()
         self.process_list.append("python3")
-        self.process_list.append("/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py")
+        self.process_list.append(
+            "/usr/share/ccatools/diskimageprocessor/diskimageprocessor.py"
+        )
 
         # give indication process has started
         self.procStatus.setText("Processing. Please be patient.")
@@ -164,5 +171,6 @@ def main():
     form.show()
     app.exec_()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
