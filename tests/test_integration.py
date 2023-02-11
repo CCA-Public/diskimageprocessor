@@ -7,7 +7,10 @@ import unittest
 from os.path import join as j
 
 TEST_FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-TSK_FIXTURE_PATH = j(TEST_FILE_DIR, "fixtures", "tsk")
+TSK_FIXTURE_PATH = j(TEST_FILE_DIR, "fixtures", "fat12")
+TSK_VOLUME_NAME = "volume-1-fat12"
+
+# TODO: Add tests with new HFS and ISO-HFS fixtures
 
 
 def is_non_zero_file(fpath):
@@ -60,9 +63,11 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
         self.BULK_EXTRACTOR_REPORT = j(self.BULK_EXTRACTOR_DIR, "report.xml")
 
         self.DISK_IMAGE_IN_SIP = j(self.DISK_IMAGE_DIR, self.DISK_IMAGE_NAME)
-        self.ALLOCATED_FILE = j(self.FILES_DIR, "ARP.EXE")
-        self.UNALLOCATED_FILE = j(self.FILES_DIR, "Docs", "Private", "ReyHalif.doc")
-        self.ALLOCATED_FILE_OBJECTS = j(self.OBJECTS_DIR, "ARP.EXE")
+        self.ALLOCATED_FILE = j(self.FILES_DIR, TSK_VOLUME_NAME, "ARP.EXE")
+        self.UNALLOCATED_FILE = j(
+            self.FILES_DIR, TSK_VOLUME_NAME, "Docs", "Private", "ReyHalif.doc"
+        )
+        self.ALLOCATED_FILE_OBJECTS = j(self.OBJECTS_DIR, TSK_VOLUME_NAME, "ARP.EXE")
 
     def test_integration_processing_tsk(self):
         """End-to-end test using sleuthkit to process disk image."""
@@ -72,6 +77,8 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
             ),
             shell=True,
         )
+
+        self.assertTrue(is_non_zero_file(j(TSK_FIXTURE_PATH, "practical.floppy.dd")))
 
         self.assertTrue(is_non_zero_file(self.DESCRIPTION_CSV))
         self.assertTrue(is_non_zero_file(self.LOG_FILE))
@@ -93,8 +100,8 @@ class TestDiskImageProcessorIntegration(SelfCleaningTestCase):
 
         self.assertTrue(os.path.isdir(self.BRUNNHILDE_DIR))
         self.assertTrue(is_non_zero_file(self.BRUNNHILDE_REPORT))
-        self.assertTrue(is_non_zero_file(self.DFXML_FILE))
         self.assertTrue(is_non_zero_file(self.DISKTYPE_FILE))
+        self.assertTrue(is_non_zero_file(self.DFXML_FILE))
 
     def test_integration_processing_bag(self):
         """Test packaging of SIPs as a BagIt bag."""
@@ -161,9 +168,13 @@ class TestDiskImageAnalyzerIntegration(SelfCleaningTestCase):
         self.DISKTYPE_FILE = j(self.DISK_IMAGE_REPORTS_DIR, "disktype.txt")
 
         self.DISK_IMAGE_FILES_DIR = j(self.FILES_DIR, self.DISK_IMAGE_NAME)
-        self.ALLOCATED_FILE = j(self.DISK_IMAGE_FILES_DIR, "ARP.EXE")
+        self.ALLOCATED_FILE = j(self.DISK_IMAGE_FILES_DIR, TSK_VOLUME_NAME, "ARP.EXE")
         self.UNALLOCATED_FILE = j(
-            self.DISK_IMAGE_FILES_DIR, "Docs", "Private", "ReyHalif.doc"
+            self.DISK_IMAGE_FILES_DIR,
+            TSK_VOLUME_NAME,
+            "Docs",
+            "Private",
+            "ReyHalif.doc",
         )
 
     def test_integration_analysis_tsk(self):
@@ -180,10 +191,11 @@ class TestDiskImageAnalyzerIntegration(SelfCleaningTestCase):
         self.assertTrue(os.path.isdir(self.REPORTS_DIR))
         self.assertFalse(os.path.isdir(self.FILES_DIR))
 
-        self.assertTrue(is_non_zero_file(self.DFXML_FILE))
-        self.assertTrue(is_non_zero_file(self.DISKTYPE_FILE))
         self.assertTrue(os.path.isdir(self.BRUNNHILDE_DIR))
         self.assertTrue(is_non_zero_file(self.BRUNNHILDE_REPORT))
+
+        self.assertTrue(is_non_zero_file(self.DISKTYPE_FILE))
+        self.assertTrue(is_non_zero_file(self.DFXML_FILE))
 
     def test_integration_analysis_keepfiles(self):
         """Test option to retain carved files."""

@@ -1,8 +1,9 @@
 repos:
 - repo: https://github.com/ambv/black
-  rev: 18.9b0
+  rev: 23.1.0
   hooks:
   - id: black
+    exclude: disk_image_toolkit/dfxml/
     args: [--safe, --quiet]
     language_version: python3
 # - repo: https://gitlab.com/pycqa/flake8

@@ -25,34 +25,13 @@ import subprocess
 import sys
 import time
 
-# import Objects.py from python dfxml tools
-import Objects
-
-
-def convert_size(size):
-    # convert size to human-readable form
-    if size == 0:
-        return "0 bytes"
-    size_name = ("bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(size, 1024)))
-    p = math.pow(1024, i)
-    s = round(size / p)
-    s = str(s)
-    s = s.replace(".0", "")
-    return "%s %s" % (s, size_name[i])
-
-
-def time_to_int(str_time):
-    dt = time.mktime(
-        datetime.datetime.strptime(str_time, "%Y-%m-%dT%H:%M:%S").timetuple()
-    )
-    return dt
+from disk_image_toolkit.dfxml import objects
+from disk_image_toolkit.util import human_readable_size, time_to_int
 
 
 def create_spreadsheet(args, destination, sip_dir, filename):
     # open description spreadsheet and write header
     with open(os.path.join(destination, "description.csv"), "w") as spreadsheet:
-
         writer = csv.writer(spreadsheet, quoting=csv.QUOTE_NONNUMERIC)
         header_list = [
             "Parent ID",
@@ -88,7 +67,6 @@ def create_spreadsheet(args, destination, sip_dir, filename):
         current = os.path.abspath(sip_dir)
         # test if entry if directory
         if os.path.isdir(current):
-
             # intialize values
             number_files = 0
             total_bytes = 0
@@ -117,10 +95,9 @@ def create_spreadsheet(args, destination, sip_dir, filename):
             # try to read DFXML file
             try:
                 # gather info for each FileObject
-                for (event, obj) in Objects.iterparse(dfxml_file):
-
+                for event, obj in objects.iterparse(dfxml_file):
                     # only work on FileObjects
-                    if not isinstance(obj, Objects.FileObject):
+                    if not isinstance(obj, objects.FileObject):
                         continue
 
                     # skip directories and links
@@ -166,7 +143,7 @@ def create_spreadsheet(args, destination, sip_dir, filename):
                         date_list.remove("None")
 
                 # build extent statement
-                size_readable = convert_size(total_bytes)
+                size_readable = human_readable_size(total_bytes)
                 if number_files == 1:
                     extent = "1 digital file (%s)" % size_readable
                 elif number_files == 0:
@@ -369,7 +346,6 @@ def keep_logical_files_only(objects_dir):
 
 
 def _make_parser():
-
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-b",
@@ -431,13 +407,11 @@ def main():
 
     # iterate through files in source directory
     for file in sorted(os.listdir(source)):
-
         # record filename in log
         print(">>> NEW FILE: %s" % (file))
 
         # determine if disk image
         if file.endswith((".E01", ".000", ".001", ".raw", ".img", ".dd", ".iso")):
-
             # save info about file
             image_path = os.path.join(source, file)
             image_id = os.path.splitext(file)[0]
@@ -523,7 +497,6 @@ def main():
 
             # if raw disk image, process
             if raw_image == True:
-
                 # use fiwalk to make dfxml
                 fiwalk_file = os.path.join(subdoc_dir, "dfxml.xml")
                 try:
@@ -569,10 +542,9 @@ def main():
                 )
 
                 # rewrite last modified dates of files based on values in DFXML
-                for (event, obj) in Objects.iterparse(fiwalk_file):
-
-                    # only work on FileObjects
-                    if not isinstance(obj, Objects.FileObject):
+                for event, obj in objects.iterparse(fiwalk_file):
+                    # only work on Fileobjects
+                    if not isinstance(obj, objects.FileObject):
                         continue
 
                     # skip directories and links

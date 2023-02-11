@@ -1,0 +1,8 @@
+
+--- /Users/tessa/dev/diskimageprocessor/tests/fixtures/tsk/practical.floppy.dd
+Regular file, size 1.406 MiB (1474560 bytes)
+No type and creator code
+Windows 95/98/ME boot loader
+FAT12 file system (hints score 5 of 5)
+  Volume size 1.390 MiB (1457664 bytes, 2847 clusters of 512 bytes)
+

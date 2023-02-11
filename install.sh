@@ -2,9 +2,6 @@
 
 ### Install script for CCA Disk Image Processor in Bitcurator
 
-# Update submodules
-git submodule update --init --recursive
-
 # Make /usr/share/ccatools if doesn't already exist
 if [ ! -d /usr/share/ccatools ]; then
   sudo mkdir /usr/share/ccatools
@@ -34,9 +31,9 @@ sudo cp design.ui /usr/share/ccatools/diskimageprocessor
 sudo cp icon.png /usr/share/ccatools/diskimageprocessor
 sudo cp LICENSE /usr/share/ccatools/diskimageprocessor
 sudo cp README.md /usr/share/ccatools/diskimageprocessor
-sudo cp deps/dfxml/python/dfxml.py /usr/share/ccatools/diskimageprocessor
-sudo cp deps/dfxml/python/Objects.py /usr/share/ccatools/diskimageprocessor
-sudo cp deps/dfxml/python/walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor
+sudo cp disk_image_toolkit/dfxml/dfxml.py /usr/share/ccatools/diskimageprocessor
+sudo cp disk_image_toolkit/dfxml/objects.py /usr/share/ccatools/diskimageprocessor
+sudo cp disk_image_toolkit/dfxml/walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor
 
 # Make "CCA Tools" folder on Desktop if doesn't already exist
 if [ ! -d "/home/bcadmin/Desktop/CCA Tools" ]; then
