@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 1.0.0
+Version: 1.1.0
 
 ## Usage
 
