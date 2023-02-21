@@ -29,7 +29,6 @@ fi
 sudo mkdir $dip_dir/disk_image_toolkit/
 sudo mkdir $dip_dir/disk_image_toolkit/dfxml/
 
-# Move files into /usr/share/ccatools/diskimageprocessor
 sudo cp diskimageprocessor.py $dip_dir
 sudo cp diskimageanalyzer.py $dip_dir
 sudo cp process_with_tsk_options.py $dip_dir
@@ -40,6 +39,12 @@ sudo cp design.ui $dip_dir
 sudo cp icon.png $dip_dir
 sudo cp LICENSE $dip_dir
 sudo cp README.md $dip_dir
+sudo cp -r disk_image_toolkit/ $dip_dir
+
+if [ ! -d $dip_dir/disk_image_toolkit/dfxml ]; then
+  sudo mkdir $dip_dir/disk_image_toolkit/dfxml/
+fi
+
 sudo cp disk_image_toolkit/dfxml/dfxml.py /usr/share/ccatools/diskimageprocessor/disk_image_toolkit/dfxml/
 sudo cp disk_image_toolkit/dfxml/objects.py /usr/share/ccatools/diskimageprocessor/disk_image_toolkit/dfxml/
 sudo cp disk_image_toolkit/dfxml/walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor/disk_image_toolkit/dfxml/
