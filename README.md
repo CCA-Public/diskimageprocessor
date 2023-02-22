@@ -1,7 +1,7 @@
 # Disk Image Processor  
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
-Version: 1.0.0
+Version: 1.1.0
 
 ## Usage
 
@@ -14,7 +14,8 @@ Underlying script: `diskimageanalyzer.py`
 In Analysis mode, each disk image is scanned and reported on. When complete, an "analysis.csv" file is created containing the following information for each disk image:  
 
 * Disk image name  
-* File system  
+* Volumes  
+* File systems  
 * Date statement  
 * Date begin  
 * Date end  
@@ -26,7 +27,7 @@ The destination directory also contains a "reports" directory containing a sub-d
 
 * A DFXML file  
 * Text output from "disktype"  
-* Brunnhilde reports (including logs and reports from clamAV and bulk_extractor)  
+* Brunnhilde reports (including logs and reports from ClamAV and bulk_extractor)  
 
 Optionally, the destination directory may also contain a "files" directory, containing exported logical files from each recognized disk image in the source.
 
@@ -38,11 +39,13 @@ Underlying script: `diskimageprocessor.py`
 
 In Processing mode, each disk image is turned into a SIP, packaged as an ideal transfer to Archivematica's Automation tools, and reported on.
 
-For disks with most file systems, `fiwalk` is used to generate DFXML and The Sleuth Kit's `tsk_recover` utility is used to carve allocated files from each disk image. Modified dates for the carved files are then restored from their recorded values in the fiwalk-generated DFXML file.
+From v1.1.0, Disk Image Processor will export files from multiple volumes if they are present on the disk image. In v1.0.0 and earlier, only one volume was exported depending on the first file system volume found by disktype.
 
-For disks with an HFS file system, files are exported from the disk image using CLI version of HFSExplorer and DFXML is generated using the `walk_to_dfxml.py` script from the DFXML Python bindings.
+For most file systems, `fiwalk` is used to generate DFXML and The Sleuth Kit's `tsk_recover` utility is used to carve allocated files from each disk image. Modified dates for the carved files are then restored from their recorded values in the fiwalk-generated DFXML file.
 
-For disks with a UDF file system, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
+For HFS file systems, files are exported from the disk image using CLI version of HFSExplorer and DFXML is generated using the `walk_to_dfxml.py` script from the DFXML Python bindings.
+
+For UDF file systems, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
 
 When complete, a "description.csv" spreadsheet is created containing some pre-populated archival description:  
 * Date statement  
@@ -59,9 +62,9 @@ By default, the "objects" directory in each SIP contains both a copy of a raw di
 
 The "metadata/submissionDocumentation" directory in each SIP contains:  
 
-* A DFXML file  
+* One or more DFXML files  
 * Text output from "disktype"  
-* Brunnhilde reports (including logs and reports from clamAV and, optionally, bulk_extractor)  
+* Brunnhilde reports (including logs and reports from ClamAV and, optionally, bulk_extractor)  
 
 ### Process a single disk image, providing options to tsk_recover (CLI only)  
 
@@ -104,24 +107,19 @@ Disk Image Processor recognizes which files are disk images by their file extens
 
 ## Installation and dependencies
 
-This utility is designed for easy use in BitCurator v1.8.0+. All dependencies should already be installed in new releases of BitCurator. Installation outside of BitCurator is possible but difficult, with many dependencies, including Python3, PyQt5, TSK, Bulk Extractor, and the DFXML Python bindings. You will likely also need to modify some hardcoded paths in `main.py` and the processing scripts.
+This utility is designed for easy use in BitCurator versions 2-4. All dependencies should already be installed in new releases of BitCurator. Installation outside of BitCurator is possible but difficult, with many dependencies, including Python3, PyQt5, TSK, HFS Explorer, md5deep, and Bulk Extractor.
 
 ### Install as part of CCA Tools  
 
 Install all of the CCA Tools together using the installation script included in the [CCA Tools repo](https://github.com/CCA-Public/cca-tools).  
 
 ### Install as a separate utility
+
 * Install [PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5):  
-`sudo pip3 install pyqt5`  
+`sudo pip3 install pyqt5`
 * Clone this repo to your local machine.  
-* Make install script executable (may need to be run with sudo privileges):  
-`chmod u+x install.sh` 
-* Run the install script with sudo privileges:  
-`sudo ./install.sh`   
-
-### PyQt4 version
-
-Please note that Disk Image Processor v1.0.0 uses PyQt5. Installation of PyQt5 may cause issues with existing PyQt4 programs in BitCurator. For the a PyQt4 version of the Disk Image Processor that will not affect the functionality of other tools, see the [0.7.3 release](https://github.com/CCA-Public/diskimageprocessor/releases/tag/v0.7.3).
+* Run the install script with sudo privileges (assuming BitCurator 4; for BitCurator 2-3 run `./install-bc2-ubuntu18.sh` instead):  
+`sudo ./install.sh`
 
 ## Credit  
 

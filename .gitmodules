@@ -1,3 +1,0 @@
-[submodule "deps/dfxml"]
-	path = deps/dfxml
-	url = https://github.com/simsong/dfxml.git

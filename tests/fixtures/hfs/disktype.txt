@@ -1,0 +1,22 @@
+
+--- /Users/tessa/dev/diskimageprocessor/tests/fixtures/hfs/hfs-example.dd
+Regular file, size 96 MiB (100663296 bytes)
+No type and creator code
+Apple partition map, 6 entries
+Partition 1: 40 KiB (40960 bytes, 80 sectors from 1)
+  Type "Apple_partition_map"
+Partition 2: 5 KiB (5120 bytes, 10 sectors from 81)
+  Type "Iomega_DiskInfo"
+Partition 3: 200 KiB (204800 bytes, 400 sectors from 91)
+  Type "Apple_Driver"
+Partition 4: 95.75 MiB (100406272 bytes, 196106 sectors from 491)
+  Type "Apple_HFS"
+  HFS file system
+    Volume name "ok_images + rome2"
+    Volume size 95.74 MiB (100392960 bytes, 65360 blocks of 1536 bytes)
+Partition 5: 512 bytes (1 sectors from 196597)
+  Type "Iomega_backup"
+  Blank disk/medium
+Partition 6: 5 KiB (5120 bytes, 10 sectors from 196598)
+  Type "Iomega_DiskInfo"
+

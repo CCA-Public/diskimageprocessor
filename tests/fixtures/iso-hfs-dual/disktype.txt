@@ -1,0 +1,13 @@
+
+--- /Users/tessa/dev/diskimageprocessor/tests/fixtures/iso-hfs-dual/iso9660_hfs.iso
+Regular file, size 1.154 MiB (1210368 bytes)
+No type and creator code
+HFS file system
+  Volume name "ISO9660/HFS"
+  Volume size 880 KiB (901120 bytes, 440 blocks of 2 KiB)
+ISO9660 file system
+  Volume name "ISO9660/HFS"
+  Application "GENISOIMAGE ISO 9660/HFS FILESYSTEM CREATOR (C) 1993 E.YOUNGDALE (C) 1997-2006 J.PEARSON/J.SCHILLING (C) 2006-2007 CDRKIT TEAM"
+  Data size 1.154 MiB (1210368 bytes, 591 blocks of 2 KiB)
+  Joliet extension, volume name "ISO9660_HFS"
+
