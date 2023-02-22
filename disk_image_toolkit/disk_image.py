@@ -22,6 +22,8 @@ from disk_image_toolkit.util import time_to_int
 
 __version__ = "1.0.0"
 
+THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
 UNHFS_DEFAULT_BIN = "/usr/share/hfsexplorer/bin/unhfs"
 
 logger = logging.getLogger()
@@ -51,6 +53,9 @@ class DiskImage:
 
     ALL_FILE_SYSTEMS = TSK_FILE_SYSTEMS + OTHER_FILE_SYSTEMS
 
+    DEFAULT_RAW_IMAGE = os.path.join(THIS_DIR, "raw_disk_image.img")
+    DEFAULT_DISKTYPE_TXT = os.path.join(THIS_DIR, "disktype.txt")
+
     def __init__(self, path, unhfs_bin=UNHFS_DEFAULT_BIN):
         self.path = os.path.abspath(path)
         self.filename = os.path.basename(path)
@@ -65,7 +70,7 @@ class DiskImage:
         command: list,
         error_msg: str = "Error running subprocess",
         raise_exception: bool = False,
-        cwd=os.path.abspath(os.path.dirname(os.path.realpath(__file__))),
+        cwd=THIS_DIR,
     ):
         """Call subprocess and handle exception."""
         try:
@@ -76,7 +81,7 @@ class DiskImage:
             if raise_exception:
                 raise DiskImageError(err_msg)
 
-    def convert_to_raw(self, destination_path="raw_disk_image.img"):
+    def convert_to_raw(self, destination_path=DEFAULT_RAW_IMAGE):
         """Convert disk image from EWF to raw format and return new path.
 
         If disk image is already raw, return path to existing image.
@@ -124,7 +129,7 @@ class DiskImage:
 
         return self.raw_disk_image
 
-    def run_disktype(self, output_file="disktype.txt"):
+    def run_disktype(self, output_file=DEFAULT_DISKTYPE_TXT):
         """Run disktype on disk image and return output.
 
         :param output_file: Optional path to file to write output to (str)
@@ -214,10 +219,10 @@ class DiskImage:
 
     def carve_files_from_all_volumes(
         self,
-        destination_path="carved_files",
+        destination_path=os.path.join(THIS_DIR, "carved_files"),
         export_unallocated=False,
         appledouble_resforks=True,
-        dfxml_directory=None,
+        dfxml_directory=THIS_DIR,
     ):
         """Attempt to carve files from each volume identified by disktype.
 
@@ -231,7 +236,7 @@ class DiskImage:
         if not self.disktype:
             self.run_disktype()
 
-        dfxml_path = "dfxml.xml"
+        dfxml_path = os.path.join(THIS_DIR, "dfxml.xml")
         if dfxml_directory:
             dfxml_path = os.path.join(dfxml_directory, "dfxml.xml")
 
@@ -245,12 +250,12 @@ class DiskImage:
 
         for volume in volumes:
             output_dir_name = volume["output_directory_name"]
-            output_dir = os.path.join(destination_path, volume["output_directory_name"])
+            output_dir = os.path.join(destination_path, output_dir_name)
             os.makedirs(output_dir)
 
-            volume_dfxml_path = "dfxml_{}.xml".format(volume["output_directory_name"])
-            if dfxml_directory:
-                volume_dfxml_path = os.path.join(dfxml_directory, volume_dfxml_path)
+            volume_dfxml_path = os.path.join(
+                dfxml_directory, "dfxml_{}.xml".format(volume["output_directory_name"])
+            )
 
             self.carve_files(
                 volume["file_system"],
@@ -271,11 +276,11 @@ class DiskImage:
     def carve_files(
         self,
         file_system,
-        destination_path="carved_files",
+        destination_path=os.path.join(THIS_DIR, "carved_files"),
         export_unallocated=False,
         appledouble_resforks=False,
         disk_dfxml_path="dfxml.xml",
-        volume_dfxml_path="volume_dfxml.xml",
+        volume_dfxml_path=os.path.join(THIS_DIR, "volume_dfxml.xml"),
     ):
         """Carve files from disk image, choosing method based on file system
             information produced by disktype.

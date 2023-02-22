@@ -40,6 +40,9 @@ from disk_image_toolkit.dfxml import objects
 from disk_image_toolkit.util import human_readable_size
 
 
+THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
+
 def create_spreadsheet(args, sips, volumes, logger):
     """Create csv describing created SIPs"""
 
@@ -550,7 +553,7 @@ def main():
             # https://github.com/LibraryOfCongress/bagit-python/issues/130 is
             # resolved.
             subprocess.call(
-                'cd ~ && bagit.py "{}"'.format(sip_dir),
+                'cd {} && bagit.py "{}"'.format(THIS_DIR, sip_dir),
                 shell=True,
             )
         else:

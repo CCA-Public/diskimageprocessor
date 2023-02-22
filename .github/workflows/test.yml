@@ -55,6 +55,12 @@ jobs:
       - name: Install bulk_extractor
         run: |
           brew install bulk_extractor
+      - name: Install unhfs
+        run: |
+          curl -sfL -o hfsexplorer-2021.10.9-bin.zip https://github.com/unsound/hfsexplorer/releases/download/hfsexplorer-2021.10.9/hfsexplorer-2021.10.9-bin.zip
+          mkdir /usr/share/hfsexplorer
+          unzip hfsexplorer-2021.10.9-bin.zip -d /usr/share/hfsexplorer/
+          chmod +x /usr/share/hfsexplorer/bin/unhfs
       - name: Run install script
         run: |
           ./test-install.sh
