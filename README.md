@@ -107,7 +107,9 @@ Disk Image Processor recognizes which files are disk images by their file extens
 
 ## Installation and dependencies
 
-This utility is designed for easy use in BitCurator versions 2-4. All dependencies should already be installed in new releases of BitCurator. Installation outside of BitCurator is possible but difficult, with many dependencies, including Python3, PyQt5, TSK, HFS Explorer, md5deep, and Bulk Extractor.
+This utility is designed for easy use in BitCurator 4.
+
+Installation outside of BitCurator is possible but difficult, with many dependencies, including Python 3.7+, PyQt5, TSK, HFS Explorer, md5deep, and Bulk Extractor.
 
 ### Install as part of CCA Tools  
 
