@@ -481,10 +481,6 @@ class DiskImage:
             shell=True,
         )
 
-        # Create DFXML from mounted volume.
-        if create_dfxml:
-            self.write_dfxml_from_path(UDF_MOUNT, dfxml_path)
-
         # Copy files.
         try:
             if os.path.isdir(destination_path):
@@ -501,6 +497,9 @@ class DiskImage:
         subprocess.call("sudo umount {}".format(UDF_MOUNT), shell=True)
 
         self.set_file_permissions(destination_path)
+
+        if create_dfxml:
+            self.write_dfxml_from_path(destination_path, dfxml_path)
 
     @staticmethod
     def write_dfxml_from_path(target_path, dfxml_path="dfxml.xml"):
