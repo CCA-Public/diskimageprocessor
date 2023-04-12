@@ -25,6 +25,8 @@ __version__ = "1.0.0"
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
 UNHFS_DEFAULT_BIN = "/usr/share/hfsexplorer/bin/unhfs"
+UDF_MOUNT = "/mnt/diskid/"
+
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -471,30 +473,32 @@ class DiskImage:
         if not self.raw_disk_image:
             self.convert_to_raw()
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Mount disk image
-            subprocess.call(
-                "sudo mount -t {} -o loop '{}' {}".format(
-                    file_system, self.raw_disk_image, temp_dir
-                ),
-                shell=True,
+        # Mount disk image.
+        subprocess.call(
+            "sudo mount -t {} -o loop '{}' {}".format(
+                file_system, self.raw_disk_image, UDF_MOUNT
+            ),
+            shell=True,
+        )
+
+        # Create DFXML from mounted volume.
+        if create_dfxml:
+            self.write_dfxml_from_path(UDF_MOUNT, dfxml_path)
+
+        # Copy files.
+        try:
+            if os.path.isdir(destination_path):
+                shutil.rmtree(destination_path)
+            shutil.copytree(UDF_MOUNT, destination_path, symlinks=False, ignore=None)
+        except OSError as err:
+            logger.error(
+                "Error copying files from disk image {} mounted at {}: {}".format(
+                    self.raw_disk_image, UDF_MOUNT, err
+                )
             )
 
-            # Create DFXML from mounted volume.
-            if create_dfxml:
-                self.write_dfxml_from_path(temp_dir, dfxml_path)
-
-            # Copy files.
-            try:
-                if os.path.isdir(destination_path):
-                    shutil.rmtree(destination_path)
-                shutil.copytree(temp_dir, destination_path, symlinks=False, ignore=None)
-            except OSError as err:
-                logger.error(
-                    "Error copying files from disk image {} mounted at {}: {}".format(
-                        self.raw_disk_image, temp_dir, err
-                    )
-                )
+        # Unmount disk image.
+        subprocess.call("sudo umount {}".format(UDF_MOUNT), shell=True)
 
         self.set_file_permissions(destination_path)
 
