@@ -340,8 +340,8 @@ def _parse_dfxml(dfxml_path, logger, export_all=False):
         use_crtimes = False
 
         if not date_earliest_m:
-            date_earliest_m = datetime.datetime.now().year
-            date_latest_m = datetime.datetime.now().year
+            date_earliest_m = str(datetime.datetime.now().year)
+            date_latest_m = str(datetime.datetime.now().year)
         date_to_use = date_earliest_m
 
         if date_earliest_c:
