@@ -49,7 +49,7 @@ sudo touch $launch_file
 echo '[Desktop Entry]' | sudo tee --append $launch_file
 echo 'Type=Application' | sudo tee --append $launch_file
 echo 'Name=Disk Image Processor' | sudo tee --append $launch_file
-echo 'Exec=/usr/share/ccatools/diskimageprocessor/launch' | sudo tee --append $launch_file
+echo 'Exec=sudo /usr/share/ccatools/diskimageprocessor/launch' | sudo tee --append $launch_file
 echo 'Icon=/usr/share/ccatools/diskimageprocessor/icon.png' | sudo tee --append $launch_file
 echo 'Categories=Forensics and Reporting' | sudo tee --append $launch_file
 

@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 /usr/share/ccatools/diskimageprocessor/main.py
+sudo python3 /usr/share/ccatools/diskimageprocessor/main.py
