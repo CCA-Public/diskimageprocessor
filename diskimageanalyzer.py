@@ -52,7 +52,7 @@ def write_to_spreadsheet(disk_result, volumes, spreadsheet_path, export_all, log
 
     dfxml_files_info = []
     for dfxml_file in dfxml_files:
-        dfxml_info = _parse_dfxml(dfxml_file)
+        dfxml_info = _parse_dfxml(dfxml_file, logger)
         if not dfxml_info:
             logger.warning(
                 "No fileobjects in DFXML file {} - possibly file system fiwalk doesn't recognize".format(
@@ -154,7 +154,7 @@ def write_to_spreadsheet(disk_result, volumes, spreadsheet_path, export_all, log
     spreadsheet.close()
 
 
-def _parse_dfxml(dfxml_path, export_all=False):
+def _parse_dfxml(dfxml_path, logger, export_all=False):
     """Parse DFXML and return dict of information for spreadsheet."""
     volume_info = {"files": 0, "bytes": 0, "date_earliest": "", "date_latest": ""}
 

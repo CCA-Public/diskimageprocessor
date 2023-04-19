@@ -109,7 +109,7 @@ def create_spreadsheet(args, sips, volumes, logger):
 
             dfxml_files_info = []
             for dfxml_file in dfxml_files:
-                dfxml_info = _parse_dfxml(dfxml_file)
+                dfxml_info = _parse_dfxml(dfxml_file, logger)
                 if not dfxml_info:
                     logger.warning(
                         "No fileobjects in DFXML file {} - possibly file system fiwalk doesn't recognize".format(
@@ -256,7 +256,7 @@ def create_spreadsheet(args, sips, volumes, logger):
     logger.info("Description CSV created.")
 
 
-def _parse_dfxml(dfxml_path, export_all=False):
+def _parse_dfxml(dfxml_path, logger, export_all=False):
     """Parse DFXML and return dict of information for spreadsheet."""
     volume_info = {
         "files": 0,
