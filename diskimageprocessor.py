@@ -367,7 +367,8 @@ def _parse_dfxml(dfxml_path, export_all=False):
         volume_info["date_earliest"] = date_earliest
         volume_info["date_latest"] = date_latest
 
-    except Exception:
+    except Exception as err:
+        logger.error("Error reading DFXML file {}: {}".format(dfxml_path, err))
         return
 
     return volume_info
