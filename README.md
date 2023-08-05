@@ -2,7 +2,7 @@
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
-Version: 1.1.1
+Version: 1.2.0
 
 ## Usage
 
@@ -48,7 +48,12 @@ For HFS file systems, files are exported from the disk image using CLI version o
 
 For UDF file systems, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
 
-When complete, a "description.csv" spreadsheet is created containing some pre-populated archival description:  
+When complete, a description spreadsheet will be created containings ome pre-populated archival description.
+
+From v1.2.0, Disk Image Processor will write this information into an ArchivesSpace description XLSX spreadsheet.
+
+In previous versions or if the `"-c"/"--csv"` option is passed in v1.2.0+, a description.csv file will be created instead, containing the following columns:
+
 * Date statement  
 * Date begin  
 * Date end  
