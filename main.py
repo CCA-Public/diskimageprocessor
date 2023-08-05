@@ -45,7 +45,7 @@ class DiskImageProcessorApp(QMainWindow, design.Ui_DiskImageProcessor):
         QMessageBox.information(
             self,
             "About",
-            "Disk Image Processor v1.1.0\nCanadian Centre for Architecture\nDeveloper: Tessa Walsh\n2018-2023\nMIT License\nhttps://github.com/CCA-Public/cca-diskimageprocessor",
+            "Disk Image Processor v1.1.1\nCanadian Centre for Architecture\nDeveloper: Tessa Walsh\n2018-2023\nMIT License\nhttps://github.com/CCA-Public/cca-diskimageprocessor",
         )
 
     def browse_analysis_source(self):
