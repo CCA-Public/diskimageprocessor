@@ -380,8 +380,7 @@ def test_mount_image_and_copy_files(mocker, raw_image, create_dfxml):
     else:
         assert convert_raw.call_count == 0
 
-    cmd = "sudo mount -t udf -o loop '{}' /".format(raw_image)
-    subprocess_call.assert_called_with(cmd, shell=True)
+    subprocess_call.assert_called_with("sudo umount /mnt/diskid/", shell=True)
 
     if create_dfxml:
         write_dfxml.call_count == 1
