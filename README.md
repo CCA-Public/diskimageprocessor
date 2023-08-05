@@ -4,9 +4,15 @@ Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk 
 
 Version: 1.2.0
 
+## Breaking Changes
+
+Starting in v1.2.0, diskimageprocessor.py and the Processing mode of the GUI populate an ArchivesSpace description import XLSX instead of the previous ISAD-based CSV.
+
+To have Disk Image Processor create the original ISAD-based description CSV instead, use the `-c` or `--csv` option (GUI support coming soon).
+
 ## Usage
 
-Disk Image Processor has two modes: Analysis and Processing. Each mode can be run from the GUI interface or as a separate CLI utility by calling the underlying Python 3 script.  
+Disk Image Processor has two modes: Analysis and Processing. Each mode can be run from the GUI interface or as a separate CLI utility by calling the underlying Python 3 script.
 
 ### Analysis
 
