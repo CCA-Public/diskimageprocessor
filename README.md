@@ -2,11 +2,17 @@
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
-Version: 1.1.1
+Version: 1.2.0
+
+## Breaking Changes
+
+Starting in v1.2.0, diskimageprocessor.py and the Processing mode of the GUI populate an ArchivesSpace description import XLSX instead of the previous ISAD-based CSV.
+
+To have Disk Image Processor create the original ISAD-based description CSV instead, use the `-c` or `--csv` option (GUI support not yet added- for now use version 1.1.0 or before from the Releases tab for a GUI that writes the description CSV.
 
 ## Usage
 
-Disk Image Processor has two modes: Analysis and Processing. Each mode can be run from the GUI interface or as a separate CLI utility by calling the underlying Python 3 script.  
+Disk Image Processor has two modes: Analysis and Processing. Each mode can be run from the GUI interface or as a separate CLI utility by calling the underlying Python 3 script.
 
 ### Analysis
 
@@ -48,7 +54,12 @@ For HFS file systems, files are exported from the disk image using CLI version o
 
 For UDF file systems, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
 
-When complete, a "description.csv" spreadsheet is created containing some pre-populated archival description:  
+When complete, a description spreadsheet will be created containings ome pre-populated archival description.
+
+From v1.2.0, Disk Image Processor will write this information into an ArchivesSpace description XLSX spreadsheet.
+
+In previous versions or if the `"-c"/"--csv"` option is passed in v1.2.0+, a description.csv file will be created instead, containing the following columns:
+
 * Date statement  
 * Date begin  
 * Date end  

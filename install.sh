@@ -2,6 +2,9 @@
 
 ### Install script for CCA Disk Image Processor in Bitcurator 4/Ubuntu 22
 
+sudo python3 -m pip install pyqt5
+sudo python3 -m pip install -r requirements/base.txt
+
 if [ ! -d /usr/share/ccatools ]; then
   sudo mkdir /usr/share/ccatools
 fi
@@ -29,6 +32,11 @@ sudo cp icon.png $dip_dir
 sudo cp LICENSE $dip_dir
 sudo cp README.md $dip_dir
 sudo cp -r disk_image_toolkit/ $dip_dir
+
+if [ ! -d $dip_dir/aspace_template ]; then
+  sudo mkdir $dip_dir/aspace_template
+fi
+sudo cp aspace_template/aspace_import_template.xlsx $dip_dir/aspace_template
 
 if [ ! -d $dip_dir/disk_image_toolkit/dfxml ]; then
   sudo mkdir $dip_dir/disk_image_toolkit/dfxml/
