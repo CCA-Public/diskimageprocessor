@@ -8,7 +8,7 @@ Version: 1.2.0
 
 Starting in v1.2.0, diskimageprocessor.py and the Processing mode of the GUI populate an ArchivesSpace description import XLSX instead of the previous ISAD-based CSV.
 
-To have Disk Image Processor create the original ISAD-based description CSV instead, use the `-c` or `--csv` option (GUI support not yet added- for now use version 1.1.0 or before from the Releases tab for a GUI that writes the description CSV.
+To have Disk Image Processor create the original ISAD-based description CSV instead, use the `-c` or `--csv` option (GUI support not yet added - use version 1.1.0 or before from the Releases tab for a GUI that writes the description CSV instead).
 
 ## Usage
 
