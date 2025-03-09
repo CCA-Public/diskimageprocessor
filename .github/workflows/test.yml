@@ -70,7 +70,7 @@ jobs:
         run: |
           echo "::set-output name=dir::$(pip cache dir)"
       - name: "Cache pip packages"
-        uses: "actions/cache@v2"
+        uses: "actions/cache@v4"
         with:
           path: "${{ steps.pip-cache.outputs.dir }}"
           key: "${{ runner.os }}-pip-${{ hashFiles('**/base.txt','**/test.txt') }}"
