@@ -2,13 +2,13 @@
 
 Analyze disk images and/or create ready-to-ingest SIPs from a directory of disk images and related files.  
 
-Version: 1.2.0
+Version: 1.3.0
 
 ## Breaking Changes
 
-Starting in v1.2.0, diskimageprocessor.py and the Processing mode of the GUI populate an ArchivesSpace description import XLSX instead of the previous ISAD-based CSV.
+In v1.2.0, diskimageprocessor.py and the Processing mode of the GUI were changed to populate an ArchivesSpace description import XLSX instead of the previous ISAD-based CSV.
 
-To have Disk Image Processor create the original ISAD-based description CSV instead, use the `-c` or `--csv` option (GUI support not yet added - use version 1.1.0 or before from the Releases tab for a GUI that writes the description CSV instead).
+In v1.3.0+, this change is reverted and the option to create an ArchivesSpace description XLSX removed.
 
 ## Usage
 
@@ -54,17 +54,15 @@ For HFS file systems, files are exported from the disk image using CLI version o
 
 For UDF file systems, files are copied from the mounted disk image and `walk_to_dfxml.py` is used to generate DFXML.
 
-When complete, a description spreadsheet will be created containings ome pre-populated archival description.
-
-From v1.2.0, Disk Image Processor will write this information into an ArchivesSpace description XLSX spreadsheet.
-
-In previous versions or if the `"-c"/"--csv"` option is passed in v1.2.0+, a description.csv file will be created instead, containing the following columns:
+Disk Image Processor will create a description.csv file containing the following columns:
 
 * Date statement  
 * Date begin  
 * Date end  
 * Extent  
 * Scope and content (containing information about the tool used to carve logical files and the most common file formats)
+
+(*Note in Disk Image Processor 1.2.0, this CSV file was replaced by an ArchivesSpace Excel spreadsheet by default. This change has been reverted in 1.3.0.*)
 
 The destination directory also contains a log file and a "SIPs" directory containing a SIP created from each input disk image. 
 

@@ -35,11 +35,6 @@ sudo cp disk_image_toolkit/dfxml/dfxml.py /usr/share/ccatools/diskimageprocessor
 sudo cp disk_image_toolkit/dfxml/objects.py /usr/share/ccatools/diskimageprocessor
 sudo cp disk_image_toolkit/dfxml/walk_to_dfxml.py /usr/share/ccatools/diskimageprocessor
 
-if [ ! -d /usr/share/ccatools/diskimageprocessor/aspace_template ]; then
-  sudo mkdir /usr/share/ccatools/diskimageprocessor/aspace_template
-fi
-sudo cp aspace_template/aspace_import_template.xlsx /usr/share/ccatools/diskimageprocessor/aspace_template
-
 sudo cp disk_image_toolkit/dfxml/dfxml.py .
 sudo cp disk_image_toolkit/dfxml/objects.py .
 sudo cp disk_image_toolkit/dfxml/walk_to_dfxml.py .

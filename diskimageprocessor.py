@@ -29,10 +29,8 @@ import csv
 import datetime
 import itertools
 import logging
-import openpyxl
 import os
 import shutil
-import stat
 import subprocess
 import sys
 import time
@@ -258,174 +256,6 @@ def create_spreadsheet(args, sips, volumes, logger):
     logger.info("Description CSV created.")
 
 
-def create_aspace_excel_sheet(args, sips, volumes, logger):
-    """Create new copy of ASpace XLSX and append rows describing disk images."""
-    xlsx_path = os.path.abspath(os.path.join(args.destination, "description.xlsx"))
-    template_path = os.path.abspath(
-        os.path.join(THIS_DIR, "aspace_template", "aspace_import_template.xlsx")
-    )
-
-    try:
-        shutil.copyfile(template_path, xlsx_path)
-    except OSError as err:
-        logger.error(f"Unable to copy ASpace template to destination: {err}")
-
-    # Set ASpace file permissions
-    try:
-        os.chmod(
-            xlsx_path,
-            stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IROTH,
-        )
-    except OSError as err:
-        logger.error(f"Error setting permissions: {err}")
-
-    workbook = openpyxl.load_workbook(filename=xlsx_path)
-    worksheet = workbook["Data"]
-
-    # TODO: Deduplicate with create_speadsheet
-    # Maybe create separate method that creates dict with info, and handle
-    # opening/writing csv or xlsx separately
-    for item in sorted(os.listdir(sips)):
-        sip_path = os.path.join(sips, item)
-
-        if not os.path.isdir(sip_path):
-            continue
-
-        disk_volumes = volumes[item]
-        number_volumes = len(disk_volumes)
-
-        date_earliest = ""
-        date_latest = ""
-
-        # Get and sum information from all DFXML files generated
-        dfxml_files = []
-        subdoc_dir = os.path.join(sip_path, "metadata", "submissionDocumentation")
-        if args.bagfiles:
-            subdoc_dir = os.path.join(
-                sip_path, "data", "metadata", "submissionDocumentation"
-            )
-        for root, _, files in os.walk(subdoc_dir):
-            for file in files:
-                if file.startswith("dfxml"):
-                    dfxml_files.append(os.path.join(root, file))
-
-        dfxml_files_info = []
-        for dfxml_file in dfxml_files:
-            dfxml_info = _parse_dfxml(dfxml_file, logger)
-            if not dfxml_info:
-                logger.warning(
-                    "No fileobjects in DFXML file {} - possibly file system fiwalk doesn't recognize".format(
-                        dfxml_file
-                    )
-                )
-                continue
-            dfxml_files_info.append(dfxml_info)
-
-        file_count = sum([dfxml_info["files"] for dfxml_info in dfxml_files_info])
-        total_bytes = sum([dfxml_info["bytes"] for dfxml_info in dfxml_files_info])
-        file_systems = [volume["file_system"] for volume in disk_volumes]
-        # Deduplicate list
-        file_systems = list(dict.fromkeys(file_systems))
-        file_systems_str = ", ".join(file_systems)
-
-        for dfxml_info in dfxml_files_info:
-            if not date_earliest or dfxml_info["date_earliest"] < date_earliest:
-                date_earliest = dfxml_info["date_earliest"]
-            if not date_latest or dfxml_info["date_latest"] > date_latest:
-                date_latest = dfxml_info["date_latest"]
-
-        # Create list with empty string for each of template's columns
-        row_to_write = []
-        for _ in range(173):
-            row_to_write.append("")
-
-        # Row indices for fields to write
-        INDEX_FILENAME = 6
-        INDEX_LEVEL_OF_DESCRIPTION = 8
-        INDEX_DATE_START = 23
-        INDEX_DATE_END = 24
-        INDEX_EXTENT_NUMBER = 34
-        INDEX_EXTENT_TYPE = 35
-        INDEX_SIZE = 36
-        INDEX_SCOPE_CONTENTS = 170
-
-        # Fields that are always constant
-        row_to_write[INDEX_FILENAME] = item
-        row_to_write[INDEX_LEVEL_OF_DESCRIPTION] = "File"
-
-        if file_count == 0:
-            row_to_write[
-                INDEX_SCOPE_CONTENTS
-            ] = "Error gathering statistics from SIP directory"
-
-            worksheet.append(row_to_write)
-
-            logger.error("Unable to read DFXML files for {}".format(sip_path))
-            continue
-
-        # Get file formats from Brunnhilde
-        file_formats = []
-        file_format_csv = os.path.join(
-            sip_path,
-            "metadata",
-            "submissionDocumentation",
-            "brunnhilde",
-            "csv_reports",
-            "formats.csv",
-        )
-        if args.bagfiles:
-            file_format_csv = os.path.join(
-                sip_path,
-                "data",
-                "metadata",
-                "submissionDocumentation",
-                "brunnhilde",
-                "csv_reports",
-                "formats.csv",
-            )
-
-        try:
-            with open(file_format_csv, "r") as f:
-                reader = csv.reader(f)
-                next(reader)
-                for row in itertools.islice(reader, 5):
-                    file_formats.append(row[0])
-        except:
-            file_formats.append(
-                "ERROR! No Brunnhilde formats.csv file to pull formats from."
-            )
-
-        file_formats = [element or "Unidentified" for element in file_formats]
-        file_formats_str = ", ".join(file_formats)
-
-        if number_volumes > 1:
-            scope_content = "Files exported from {} volumes with file systems: {}. File formats: {}".format(
-                number_volumes, file_systems_str, file_formats_str
-            )
-        else:
-            scope_content = (
-                "Files exported from {} file system volume. File formats: {}".format(
-                    disk_volumes[0]["file_system"], file_formats_str
-                )
-            )
-
-        row_to_write[INDEX_DATE_START] = str(date_earliest[:4])
-        row_to_write[INDEX_DATE_END] = str(date_latest[:4])
-        row_to_write[INDEX_EXTENT_NUMBER] = str(file_count)
-        row_to_write[INDEX_EXTENT_TYPE] = "digital files"
-        row_to_write[INDEX_SIZE] = str(human_readable_size(total_bytes))
-        row_to_write[INDEX_SCOPE_CONTENTS] = scope_content
-
-        worksheet.append(row_to_write)
-
-        logger.info("Described %s successfully." % (sip_path))
-
-    workbook.save(filename=xlsx_path)
-    workbook.close()
-
-    logger.info("ArchivesSpace description XLSX created.")
-
-
 def _parse_dfxml(dfxml_path, logger, export_all=False):
     """Parse DFXML and return dict of information for spreadsheet."""
     volume_info = {
@@ -593,12 +423,6 @@ def _make_parser():
         help="Export AppleDouble resource forks from HFS-formatted disks",
         action="store_true",
     )
-    parser.add_argument(
-        "-c",
-        "--csv",
-        help="Write description CSV (old default) instead of ArchivesSpace XLSX",
-        action="store_true",
-    )
     parser.add_argument("--quiet", action="store_true", help="Write only errors to log")
     parser.add_argument(
         "source", help="Source directory containing disk images (and related files)"
@@ -740,16 +564,10 @@ def main():
             )
 
     # write description
-    if args.csv:
-        try:
-            create_spreadsheet(args, sips, volumes, logger)
-        except Exception as err:
-            logger.error(f"Error creating description csv: {err}")
-    else:
-        try:
-            create_aspace_excel_sheet(args, sips, volumes, logger)
-        except Exception as err:
-            logger.error(f"Error creating ArchivesSpace description xlsx: {err}")
+    try:
+        create_spreadsheet(args, sips, volumes, logger)
+    except Exception as err:
+        logger.error(f"Error creating description csv: {err}")
 
     # print unprocessed list
     if unprocessed:

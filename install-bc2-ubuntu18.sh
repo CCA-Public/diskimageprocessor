@@ -41,11 +41,6 @@ sudo cp LICENSE $dip_dir
 sudo cp README.md $dip_dir
 sudo cp -r disk_image_toolkit/ $dip_dir
 
-if [ ! -d $dip_dir/aspace_template ]; then
-  sudo mkdir $dip_dir/aspace_template
-fi
-sudo cp aspace_template/aspace_import_template.xlsx $dip_dir/aspace_template
-
 if [ ! -d $dip_dir/disk_image_toolkit/dfxml ]; then
   sudo mkdir $dip_dir/disk_image_toolkit/dfxml/
 fi

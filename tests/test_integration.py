@@ -54,7 +54,6 @@ class TestDiskImageProcessorIntegrationTSK(SelfCleaningTestCase):
         self.DISK_IMAGE_NAME = "practical.floppy.dd"
 
         self.DESCRIPTION_CSV = j(self.OUTPUT_DIR, "description.csv")
-        self.DESCRIPTION_XLSX = j(self.OUTPUT_DIR, "description.xlsx")
         self.LOG_FILE = j(self.OUTPUT_DIR, "diskimageprocessor.log")
         self.SIPS_DIR = j(self.OUTPUT_DIR, "SIPs")
         self.SIP_DIR = j(self.SIPS_DIR, self.DISK_IMAGE_NAME)
@@ -90,7 +89,7 @@ class TestDiskImageProcessorIntegrationTSK(SelfCleaningTestCase):
 
         self.assertTrue(is_non_zero_file(j(TSK_FIXTURE_PATH, "practical.floppy.dd")))
 
-        self.assertTrue(is_non_zero_file(self.DESCRIPTION_XLSX))
+        self.assertTrue(is_non_zero_file(self.DESCRIPTION_CSV))
 
         self.assertTrue(is_non_zero_file(self.LOG_FILE))
 
@@ -157,16 +156,6 @@ class TestDiskImageProcessorIntegrationTSK(SelfCleaningTestCase):
         )
         self.assertTrue(is_non_zero_file(self.UNALLOCATED_FILE))
 
-    def test_integration_processing_csv(self):
-        """Test writing description CSV instead of ASpace XLSX."""
-        subprocess.call(
-            "python {} -c {} {}".format(
-                self.SCRIPT_PATH, TSK_FIXTURE_PATH, self.OUTPUT_DIR
-            ),
-            shell=True,
-        )
-        self.assertTrue(is_non_zero_file(self.DESCRIPTION_CSV))
-
 
 class TestDiskImageProcessorIntegrationHFS(SelfCleaningTestCase):
     """Integration tests for diskimageprocessor.py with HFS disk image."""
@@ -179,7 +168,6 @@ class TestDiskImageProcessorIntegrationHFS(SelfCleaningTestCase):
         self.DISK_IMAGE_NAME = "hfs-example.dd"
 
         self.DESCRIPTION_CSV = j(self.OUTPUT_DIR, "description.csv")
-        self.DESCRIPTION_XLSX = j(self.OUTPUT_DIR, "description.xlsx")
         self.LOG_FILE = j(self.OUTPUT_DIR, "diskimageprocessor.log")
         self.SIPS_DIR = j(self.OUTPUT_DIR, "SIPs")
         self.SIP_DIR = j(self.SIPS_DIR, self.DISK_IMAGE_NAME)
@@ -212,7 +200,7 @@ class TestDiskImageProcessorIntegrationHFS(SelfCleaningTestCase):
             shell=True,
         )
 
-        self.assertTrue(is_non_zero_file(self.DESCRIPTION_XLSX))
+        self.assertTrue(is_non_zero_file(self.DESCRIPTION_CSV))
 
         self.assertTrue(is_non_zero_file(self.LOG_FILE))
 
@@ -268,16 +256,6 @@ class TestDiskImageProcessorIntegrationHFS(SelfCleaningTestCase):
         self.assertFalse(os.path.isdir(self.DISK_IMAGE_DIR))
         self.assertTrue(is_non_zero_file(self.ALLOCATED_FILE_OBJECTS))
 
-    def test_integration_processing_csv(self):
-        """Test writing description CSV instead of ASpace XLSX."""
-        subprocess.call(
-            "python {} -c {} {}".format(
-                self.SCRIPT_PATH, HFS_FIXTURE_PATH, self.OUTPUT_DIR
-            ),
-            shell=True,
-        )
-        self.assertTrue(is_non_zero_file(self.DESCRIPTION_CSV))
-
 
 class TestDiskImageProcessorIntegrationISOHFSDual(SelfCleaningTestCase):
     """Integration tests for diskimageprocessor.py with ISO-HFS dual formatted disk image."""
@@ -290,7 +268,6 @@ class TestDiskImageProcessorIntegrationISOHFSDual(SelfCleaningTestCase):
         self.DISK_IMAGE_NAME = "iso9660_hfs.iso"
 
         self.DESCRIPTION_CSV = j(self.OUTPUT_DIR, "description.csv")
-        self.DESCRIPTION_XLSX = j(self.OUTPUT_DIR, "description.xlsx")
         self.LOG_FILE = j(self.OUTPUT_DIR, "diskimageprocessor.log")
         self.SIPS_DIR = j(self.OUTPUT_DIR, "SIPs")
         self.SIP_DIR = j(self.SIPS_DIR, self.DISK_IMAGE_NAME)
@@ -325,7 +302,7 @@ class TestDiskImageProcessorIntegrationISOHFSDual(SelfCleaningTestCase):
             shell=True,
         )
 
-        self.assertTrue(is_non_zero_file(self.DESCRIPTION_XLSX))
+        self.assertTrue(is_non_zero_file(self.DESCRIPTION_CSV))
 
         self.assertTrue(is_non_zero_file(self.LOG_FILE))
 
@@ -381,16 +358,6 @@ class TestDiskImageProcessorIntegrationISOHFSDual(SelfCleaningTestCase):
         )
         self.assertFalse(os.path.isdir(self.DISK_IMAGE_DIR))
         self.assertTrue(is_non_zero_file(self.ALLOCATED_FILE_OBJECTS))
-
-    def test_integration_processing_csv(self):
-        """Test writing description CSV instead of ASpace XLSX."""
-        subprocess.call(
-            "python {} -c {} {}".format(
-                self.SCRIPT_PATH, ISO_HFS_DUAL_FIXTURE_PATH, self.OUTPUT_DIR
-            ),
-            shell=True,
-        )
-        self.assertTrue(is_non_zero_file(self.DESCRIPTION_CSV))
 
 
 class TestDiskImageAnalyzerIntegration(SelfCleaningTestCase):
